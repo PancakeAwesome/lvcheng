@@ -1,0 +1,152 @@
+﻿﻿<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<base href="${basePath}" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<script type="text/javascript" src="lib/PIE_IE678.js"></script>
+<![endif]-->
+<link href="static/h-ui/css/H-ui.min.css" rel="stylesheet" type="text/css" />
+<link href="static/h-ui/css/H-ui.login.css" rel="stylesheet" type="text/css" />
+<link href="static/h-ui/css/style.css" rel="stylesheet" type="text/css" />
+<link href="lib/Hui-iconfont/1.0.7/iconfont.css" rel="stylesheet" type="text/css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>旅城后台</title>
+<meta name="keywords" content="H-ui.admin v2.3,H-ui网站后台模版,后台模版下载,后台管理系统模版,HTML后台模版下载">
+<meta name="description" content="H-ui.admin v2.3，是一款由国人开发的轻量级扁平化网站后台模板，完全免费开源的网站后台管理系统模版，适合中小型CMS后台系统。">
+</head>
+<body>
+<input type="hidden" id="TenantId" name="TenantId" value="" />
+<div class="header"><img width="3%;" height="100%;" style="margin-left:2%;"  src="static/h-ui/images/logo_lv_1280.png" /></div>
+<div class="loginWraper">
+  <div id="loginform" class="loginBox">
+    <form class="form form-horizontal" action="${basePath!}login/login" method="post">
+      <div class="row cl">
+        <label class="form-label col-xs-3"><i class="Hui-iconfont">&#xe60d;</i></label>
+        <div class="formControls col-xs-8">
+          <input id="userName" name="userName" type="text" placeholder="账户" class="input-text size-L">
+        </div>
+      </div>
+      <div class="row cl">
+        <label class="form-label col-xs-3"><i class="Hui-iconfont">&#xe60e;</i></label>
+        <div class="formControls col-xs-8">
+          <input id="password" name="password" type="password" placeholder="密码" class="input-text size-L">
+        </div>
+      </div>
+     <div class="row cl">
+        <label class="form-label col-xs-3"><i class="Hui-iconfont">&#xe6cd;</i></label>
+        <div class="formControls col-xs-8">
+          <input id="validCode" name="validCode" type="text" placeholder="验证码" style="width: 40%; margin-right: 5%;" class="input-text size-L">
+          <img id="vcode_img" style="cursor:pointer;z-index:10;" name = "vcode_img" src='${basePath!}patchca' onclick='refreshVcode();'></img>
+        </div>
+      </div>
+      <div class="row cl" Style="height:20px;">
+        <label class="form-label col-xs-3"></label>
+        <div class="formControls col-xs-8">
+          <div id="message"></div>
+        </div>
+      </div>
+      <div class="row cl">
+        <div class="formControls col-xs-8 col-xs-offset-3">
+          <input id ="submit" name="submit" type="button" onclick="login()" class="btn btn-success radius size-L" value="&nbsp;登&nbsp;&nbsp;&nbsp;&nbsp;录&nbsp;">
+          <input name="" type=reset class="btn btn-default radius size-L" onclick="reset1()"  value="&nbsp;取&nbsp;&nbsp;&nbsp;&nbsp;消&nbsp;">
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="footer">南京旅城在线网络科技有限责任公司 版权所有  Copyright 2015-1016 LvOutCity.com All Right Reserved </div>
+
+<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script> 
+<script type="text/javascript" src="static/h-ui/js/H-ui.js"></script> 
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?080836300300be57b7f34f4b3e97d911";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F080836300300be57b7f34f4b3e97d911' type='text/javascript'%3E%3C/script%3E"));
+
+function refreshVcode(){
+	var append = '?' + new Date().getTime() + 'a' + Math.random();
+	$('#vcode_img').attr("src",'${basePath!}patchca'+append);
+}
+
+function reset1(){
+	$("#message").text("");
+}
+
+//回车登录
+$(document).keydown(function(e){
+	if(e.keyCode == 13) {
+		//submit();
+		login();
+		console.log(e.keyCode);
+	}
+});
+/* $(function (){
+	console.log('asdfasdfas')
+	$('#submit').on('keyup',function(e){
+		console.log(e.keyCode);
+		if(e.keyCode==13){
+			console.log(e.keyCode);
+			login();
+		}
+	});
+}); */
+
+// 登录
+function login(){
+	$("#message").text("");
+	// 验证账号 不能为空
+	if($.trim($("#userName").val()).length==0){
+		refreshVcode();
+		$("#message").text("").append("<font color='red'>账户不能为空</font>");
+		return;
+	}
+/* 	if($.trim($("#userName").val()).length >= 20){
+		$("#message").text("账户长度不能超过20");
+		return;
+	} */
+	if($.trim($("#password").val()).length==0){
+		refreshVcode();
+		$("#message").text("").append("<font color='red'>密码不能为空</font>");
+		return;
+	}
+	
+	if($.trim($("#validCode").val()).length==0){
+		refreshVcode();
+		$("#message").text("").append("<font color='red'>验证码不能为空</font>");
+		return;
+	}
+	$.ajax({
+		type:"POST",
+		url:"login/login",
+		data:{"userName":$("#userName").val(),"password":$("#password").val(),"validCode":$("#validCode").val()},
+		async: false,
+		success:function(data){
+		if(data.result=="success"){
+				window.location.href="${basePath}";
+			}else{
+				$("#message").text("").append("<font color='red'>"+data.result+"</font>");
+				refreshVcode();
+			}
+		}
+	});
+	
+}
+</script>
+</body>
+</html>

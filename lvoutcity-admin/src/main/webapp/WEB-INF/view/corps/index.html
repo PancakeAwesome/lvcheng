@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<base href="${basePath}" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<script type="text/javascript" src="lib/PIE_IE678.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css"
+	href="lib/Hui-iconfont/1.0.7/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="lib/icheck/icheck.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/skin/blue/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="static/h-ui/css/style.css" />
+<style>
+
+.btn-witdh {
+	width:180px;
+}
+</style>
+
+<!--[if IE 6]>
+<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+</head>
+<body>
+
+			<div class="page-container">
+		<div class="text-c">
+			团期状态：
+			<span class="select-box" style="width: 150px"> <select
+				class="select" id="status" name="status" size="1">
+					<option value=""></option>
+					<option value="0">待提交</option>
+					<option value="1">待审核</option>
+					<option value="2">已上架</option>
+					<option value="3">已下架</option>
+			</select>
+			</span>
+			<button type="submit" class="btn btn-success radius" id="search_button" name="">
+						<i class="Hui-iconfont">&#xe665;</i> 查询
+			</button>
+		</div>
+		<div class="cl pd-5 bg-1 bk-gray mt-20">
+					<span class="l"> 
+						<!-- <a class="btn btn-success radius" onclick = "add()" href="javascript:;">
+							<i class="Hui-iconfont"></i> 
+								新增
+						</a> 
+						<a	href="javascript:;" onclick="view()"
+						class="btn btn-primary radius"><i class="Hui-iconfont">&#xe695;</i>
+							查看</a>
+							<a	href="javascript:;" onclick="edit()"
+						class="btn btn-secondary radius"><i class="Hui-iconfont">&#xe6df;</i>
+							编辑</a>
+						<a	href="javascript:;" onclick="deletes()"
+						class="btn btn-danger radius"><i class="Hui-iconfont"></i>
+							删除</a>
+						<span class="pipe">|</span>
+						<a	href="javascript:;" onclick="submit()"
+						class="btn btn-success radius"><i class="Hui-iconfont">&#xe603;</i>
+							提交</a>
+						<a	href="javascript:;" onclick="revoke()"
+						class="btn btn-success radius"><i class="Hui-iconfont">&#xe66b;</i>
+							撤销</a>
+						<a	href="javascript:;" onclick="verify()"
+						class="btn btn-warning radius"><i class="Hui-iconfont">&#xe6e1;</i>
+							审核通过</a>
+						<a	href="javascript:;" onclick="refuse()"
+						class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6dd;</i>
+							审核驳回</a>
+						<a	href="javascript:;" onclick="on_shelf()"
+						class="btn btn-primary  radius"><i class="Hui-iconfont">&#xe6dc;</i>
+							上架</a>
+						<a	href="javascript:;" onclick="off_shelf()"
+						class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6de;</i>
+							下架</a>
+							 -->
+						${functBtn!}
+					</span>
+				</div>
+				<div class="mt-20">
+					<table id="corps" width="100%"
+						class="table table-border table-bordered table-hover table-bg table-striped">
+						<thead>
+							<tr class="text-c">
+								<th width="25"><input type="checkbox" name="" value=""></th>
+								<th>团期</th>
+								<th>状态</th>
+								<th>原价</th>
+								<th>现价</th>
+								<th>儿童价</th>
+								<th>领队</th>
+								<th>人数上限</th>
+								<th>报名开始</th>
+								<th>报名截止</th>
+								<th>订单数</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+					</table>
+				</div>
+			</div>
+	
+	<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/layer/2.1/layer.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.admin.js"></script>
+
+	<script type="text/javascript"
+		src="lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+	<script type="text/javascript">
+		var dataTable = null;
+		$(function(){
+			// 加载layer扩展方法，可以使用prompt
+			layer.config({
+			  extend: 'extend/layer.ext.js'
+			});   
+			
+			dataTable = $("#corps").DataTable({
+				"processing" : true,
+				"serverSide" : true,
+				"ordering": false,
+				'searching' : false,
+				"ajax" : {
+					"url" : "corps/corps",
+					"type" : "POST",
+				    "data": function(d){
+				    	d['route_id']="${route_id?if_exists}";
+				    	d['status']=$('#status').val();
+				    	}
+				},
+				//"order" : [ [ 0, "asc" ] ],
+				//"orderMulti" : false,
+				"columnDefs" : [ {
+					"data" : "id",
+					"targets" : 0,
+					"render": function (data,type,row ) {
+                        return '<div style="text-align:center;"><input type="checkbox" id="'+data+'" name="checkbox" status='+row.status+' /></div>';
+                        },
+        				"class": "text-c"
+				},{
+					"data" : "mission_time",
+					 "searchable": true, 
+					"targets" : 1,
+					render : function(data,type,row){
+						return '<a onclick=\'openPopup(1,"团期查看","corps/edit?id='+row.id+'&");\'>'+data+'</a>';
+					},
+					"class": "text-c"
+				}, {
+					"data" : "status",
+					"targets" : 2,
+					"defaultContent" : '',
+					render : function(data, type, row){
+						switch(data){
+						case '0': 
+							if(!!row.verify_user){
+								return  "<a style = 'color:red;' onclick='layer.alert(\""+row.refuse_reason+"\", {title:\"驳回理由\",icon: 2});'>待提交(驳回)</a>";
+							}else
+								return  "<span style='color:red;'>待提交</span>";
+						case '1': return  "<span style='color:orange;'>待审核</span>";
+						case '2': return  "<span style='color:green;'>已上架</span>";
+						case '3': return  "<span style='color:red;'>已下架</span>";
+						}
+					},
+					"class": "text-c"
+				}, {
+					"data" : "original_price",
+					"targets" : 3,
+					"defaultContent" : '',
+					"class": "text-c"
+				}, {
+					"data" : "now_the_price",
+					"targets" : 4,
+					"defaultContent" : '',
+					"class": "text-c"
+				}, {
+					"data" : "child_price",
+					"targets" : 5,
+					"defaultContent" : '',
+					"class": "text-c"
+				}, {
+					"data" : "leader_names",
+					"targets" : 6,
+					"defaultContent" : '',
+					render:function(data,type,row){
+						return '<div class="text-overflow" style="width:100px;"><a onclick="showLeader(\''+data+'\')">'+data+'</a></div>';
+					},
+					"class": "text-c"
+				}, {
+					"data" : "stock",
+					"targets" : 7,
+					"defaultContent" : '',
+					"class": "text-c"
+				}, {
+					"data" : "start_time",
+					"targets" : 8,
+					"defaultContent" : '',
+					"class": "text-c"
+				}, {
+					"data" : "end_time",
+					"targets" : 9,
+					"defaultContent" : '',
+					"class": "text-c"
+				}, {
+					"data" : "order_num",
+					"targets" : 10,
+					"defaultContent" : '0',
+					"class": "text-c"
+				}, {
+					"data" : "id",
+					"targets" : 11,
+					"defaultContent" : '0',
+					'class':"text-c btn-witdh",
+					render:function(data, type, row){
+						var orderBtn = '<input class="btn radius btn-warning size-MINI " type="button" value="订单" onclick="orders(\''+row.mission_time+'\');">';
+						var memberBtn = '<input class="btn radius btn-primary size-MINI ml-10" type="button" value="成员" onclick="members(\''+row.id+'\');">';
+						var chatExportBtn = '<input class="btn radius btn-success size-MINI ml-10" type="button" value="聊天导出" onclick="corpsMgr(\''+row.id+'\',\''+row.clubId+'\')">';
+						var articleBtn = '<input class="btn radius btn-success size-MINI ml-10" type="button" value="游记编辑" onclick="editArticle(\''+row.id+'\',\''+row.clubId+'\')">';
+						//var revokeBtn = '<input class="btn radius btn-danger size-MINI ml-10" type="button" value="撤销" onclick="corpsMgr(\''+row.id+'\',\''+row.clubId+'\')">';
+						var btn = '';
+						/* if(row.status!='0'&&row.order_num!=null){// 非待提交状态，且无订单的可以撤销
+							btn=btn+revokeBtn;
+						}  */
+						if(row.order_num!=null){// 只有有订单的才需要这些按钮
+							btn=btn+orderBtn+memberBtn+articleBtn//+chatExportBtn;
+						}
+						return btn;
+					}
+				} ],
+				"language" : {
+					"sProcessing" : "处理中...",
+					"sLengthMenu" : "显示 _MENU_ 项结果",
+					"sZeroRecords" : "没有匹配结果",
+					"sInfo" : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+					"sInfoEmpty" : "显示第 0 至 0 项结果，共 0 项",
+					"sInfoFiltered" : "(由 _MAX_ 项结果过滤)",
+					"sInfoPostFix" : "",
+					"sSearch" : "搜索:",
+					"sUrl" : "",
+					"sEmptyTable" : "表中数据为空",
+					"sLoadingRecords" : "载入中...",
+					"sInfoThousands" : ",",
+					"oPaginate" : {
+						"sFirst" : "首页",
+						"sPrevious" : "上页",
+						"sNext" : "下页",
+						"sLast" : "末页"
+					},
+					"oAria" : {
+						"sSortAscending" : ": 以升序排列此列",
+						"sSortDescending" : ": 以降序排列此列"
+					}
+				},
+			});
+		});
+		window.dataTable = dataTable;
+		// 根据条件查询
+		$("#search_button").click(function(){
+			dataTable.ajax.reload();
+		});
+		
+		
+		// type: 0 edit, 1 view, 2 copy, 3 new
+		function add() {
+			openPopup(3,"新增团期","corps/add?")
+		}
+		function edit(){
+			var selected = getCheck();
+			if(selected.length == 0 )
+				layer.msg('请选择线路！', {icon: 2,time:2000});
+			else if(selected.length > 1)
+				layer.msg('只能选择一条团期编辑！', {icon: 2,time:2000});
+			else if($('#'+selected).attr("status") == 2||$('#'+selected).attr("status") == 1)
+				layer.msg('当前状态不可编辑！', {icon: 2,time:2000});
+			else{
+				openPopup(0,"团期编辑","corps/edit?id="+selected[0]+"&")
+			}
+		}
+		
+		
+		function openPopup(type,title,url){
+			var index = layer.open({
+				type : 2,
+				title : title,
+				zindex:2000,
+				//area:['900px','500px'],
+				content : url+"route_id=${route_id}"+"&club_id=${club_id}"+"&type="+type
+			});
+			layer.full(index);
+		}
+
+
+
+		function getCheck(){
+			 var checkList= new Array() ;
+			 $("input[name=checkbox]").each(function(i,d){
+							 if(d.checked){
+								 checkList.push(d.id);
+							 }
+				})
+			return checkList;
+		}
+		
+		function view(){
+			var selected = getCheck();
+			if(selected.length == 0 )
+				layer.msg('请选择团期！', {icon: 2,time:2000});
+			else if(selected.length > 1)
+				layer.msg('只能选择一条团期查看！', {icon: 2,time:2000});
+			else{
+				openPopup(1,"团期查看","corps/edit?id="+selected[0]+"&")
+			}
+		}
+	
+		function submit(){
+			operation("submit");
+		}
+		function refuse(){
+			layer.prompt({
+				  title: '填写驳回理由'
+				}, function(val,index){
+					operation("refuse",val);
+					layer.close(index);
+			});
+			
+		}
+		function deletes(){
+			operation("delete");
+		}
+		function verify(){
+			operation("verify");
+		}
+		function on_shelf(){
+			operation("onShelf");
+		}
+		function off_shelf(){
+			operation("offShelf");
+		}
+		function revoke(){
+			operation("revoke");
+		}
+		function operation(o,reason){
+			var ids = getCheck();
+			if(ids.length==0){
+				layer.msg('未选择团期！', {icon: 2,time:2000});
+				return;
+			}
+			if(!!reason)
+				o = o+"?reason="+reason;
+			$.ajax({
+				type:'POST',
+				url:"corps/"+o,
+				data : {ids:ids.join(",")},
+				beforeSend: function(){
+					layer.load(2,{zindex:1200});
+				},
+				success:function(r){
+					layer.closeAll('loading');
+					if(r.result=="success"){
+						parent.layer.msg(r.count+'个对象操作成功！', {icon: 1,time:2000});
+						dataTable.ajax.reload();
+					}else{
+						layer.msg('操作失败！', {icon: 2,time:2000});
+					}
+				}
+			});
+		}
+		function orders(mission_time) {
+			parent.creatIframe("orderManager/index?mission_time=" + mission_time + "&route_no=" + "${route_no}","订单查看");
+		}
+		
+		function members(id){
+			var index = layer.open({
+				type : 2,
+				title : "成员管理",
+				zindex:2000,
+				//area:['900px','500px'],
+				content : "corps/members?id="+id
+			});
+			layer.full(index);
+		}
+		function showLeader(data){
+			layer.alert(data, {title:"领队名单",icon: 1});
+		}
+		
+		function editArticle(id,club_id){
+				var index = layer.open({
+					type : 2,
+					title : "游记编辑",
+					content : "corps/travelogue?id=" + id,
+					area : [ '800px', '500px' ]
+				});
+		}
+	</script>
+	
+</body>
+</html>

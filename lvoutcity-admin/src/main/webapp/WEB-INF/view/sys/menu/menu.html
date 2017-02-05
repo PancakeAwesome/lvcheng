@@ -1,0 +1,256 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<base href="${basePath}"/>
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<script type="text/javascript" src="lib/PIE_IE678.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css"
+	href="lib/Hui-iconfont/1.0.7/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="lib/icheck/icheck.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="static/h-ui/css/style.css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>攻略管理</title>
+</head>
+<body>
+	<div class="pd-20" style="padding: 10px;margin-top: -10px;">
+		<div class="cl pd-5 bg-1 bk-gray mt-20">
+			<span class="l">
+				<a href="javascript:;" onclick="deleteData();" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i>删除</a> 
+				<a href="javascript:void(location.replace(location.href));" onclick="reload();" class="btn btn-success radius"><i class="Hui-iconfont">&#xe68f;</i>刷新</a>
+				<a data-title ="新增"  onclick="openWindowGuide('添加攻略','sys/menu/addMenuBtn')" href="javascript:;"	class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i>添加</a>
+				<a data-title ="详情"  onclick="openWindowEidt(1)" href="javascript:;"	class="btn btn-secondary radius"><i class="Hui-iconfont">&#xe695;</i>详情</a>
+				<a data-title ="修改"  onclick="openWindowEidt()" href="javascript:;"class="btn btn-warning radius"><i class="Hui-iconfont">&#xe60c;</i>修改</a>
+				<a href="javascript:;" onclick="openBtnWindows()" class="btn btn-default radius"><i class="Hui-iconfont">&#xe64b;</i>按钮操作</a>
+			</span>
+		</div>
+		<div class="mt-20">
+			<table id="selectClub"
+				class="table table-border table-bordered table-hover table-bg table-sort">
+				<thead>
+					<tr class="text-c">
+						<th width="25"><input type="checkbox" name="" value=""></th>
+						<th width="100">菜单名称</th>
+						<th width="120">菜单URL</th>
+						<th width="100">时间</th>
+						<th width="40">创建人</th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+	</div>
+	<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/layer/2.1/layer.js"></script>
+	<script type="text/javascript" src="lib/laypage/1.2/laypage.js"></script>
+	<script type="text/javascript" src="lib/My97DatePicker/WdatePicker.js"></script>
+	<script type="text/javascript"
+		src="lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+	<script type="text/javascript"
+		src="lib/public.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.admin.js"></script>
+	<script type="text/javascript">
+	var dataTable = null;
+	var checkList= null;
+	var dataId = null;
+	var typeId = '${superId!}';
+	$(function(){
+		
+		dataTable = $("#selectClub").DataTable({
+			"processing" : true,
+			"bProcessing": true,
+			"ordering" : false,
+			"bFilter": false, //过滤功能
+			"serverSide" : true,
+			"bAutoWidth": true,//自动宽度
+			"sLoadingRecords": "正在加载数据...",
+			"fnDrawCallback": function () {
+			     // first radio button list selection is not rendered, so needs to be re-drawn
+			     $('.radioButtonToCheck input').attr("checked", "checked");
+			},
+			//'iDisplayLength':13, //每页显示10条记录
+			"ajax" : {
+				"url" : "sys/menu/menuList?superId="+typeId,
+			    "type": "POST",
+			    "data":function(d){
+			    	d['clubNo']=$('#club-no').val();
+			    	d['clubName']=$('#club-name').val();
+			    	d['legalPerson']=$('#club-person').val();
+			    	//return JSON.stringify(d);
+			    	}
+			},
+			//"order" : [ [ 1, "asc" ] ],
+			"bDeferRender":false,
+			"orderMulti":false,
+			"columnDefs" : [ {
+				"data" : "id",
+				"targets":0,
+				"orderable":false,
+				 "render": function (data,type,row ) {
+                     return '<div style="text-align:center;"><input type="checkbox" id="'+row.id+'" name="checkbox" /></div>';
+				 }
+			}, {
+				"data" : "name",
+				"targets":1,
+				"sClass": "center",
+				"sDefaultContent":'',
+                "sClass":"text-c" 
+			},{
+				"data":"menuUrl",
+				"targets":2,
+				"sClass": "center",
+				"sDefaultContent":'',
+                "sClass":"text-c" 
+			},
+			{
+				"data":"createTime",
+				"targets":3,
+				"sDefaultContent":'',
+                "sClass":"text-c" 
+			},
+			{
+				"data":"createUser",
+				"targets":4,
+				"sDefaultContent":'',
+                "sClass":"text-c" 
+			}
+			 ],
+			"language" : {
+				"sProcessing" : "处理中...",
+				"sLengthMenu" : "显示 _MENU_ 项结果",
+				"sZeroRecords" : "没有匹配结果",
+				"sInfo" : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+				"sInfoEmpty" : "显示第 0 至 0 项结果，共 0 项",
+				"sInfoFiltered" : "(由 _MAX_ 项结果过滤)",
+				"sInfoPostFix" : "",
+				"sSearch" : "搜索:",
+				"sUrl" : "",
+				"sEmptyTable" : "表中数据为空",
+				"sLoadingRecords" : "载入中...",
+				"sInfoThousands" : ",",
+				"oPaginate" : {
+					"sFirst" : "首页",
+					"sPrevious" : "上页",
+					"sNext" : "下页",
+					"sLast" : "末页"
+				},
+			},
+			"sZeroRecords": "没有检索到数据",
+			/* "aoColumnDefs": [
+			           	  //{"bVisible": false, "aTargets": [ 3 ]} //控制列的隐藏显示
+			           	  {"orderable":false,"aTargets":[0,8]}// 制定列不参与排序
+			           	], */
+		});
+		//初始化获取信息
+		initRowDataTable();
+	});
+	
+	function initRowDataTable(){
+		$('#selectClub tbody').on( 'click', 'tr', function () {
+			console.log( dataTable.row( this ).data() );
+			dataId = dataTable.row( this ).data();
+		});
+	}
+	
+	//添加数据字典
+	function openWindowData(){
+		var d = parent.dataId;
+		console.log(d);
+		dataId = d;
+		if(isNull(dataId)){
+			layer.msg('请选择左侧栏中一条数据!进行操作!', {
+				icon : 1
+			});
+			return;
+		}
+		openWindowGuide('添加', 'sys/menu/addValue?superId='+dataId);
+	}
+	
+	function openWindowEidt(view){
+		
+		if(isNull(dataId)){
+			layer.msg('请选择一个要查询的数据!', {
+				icon : 5
+			});
+			return;
+		}
+		if(isNull(view)){
+			openWindowGuide('修改', 'sys/menu/editMenuBit?id='+dataId.id);
+			return;
+		}
+		openWindowGuide('详情', 'sys/menu/editMenuBit?view=1&id='+dataId.id);
+	}
+	
+	//展示菜单列表
+	function openBtnWindows(){
+		if(isNull(dataId)){
+			layer.msg('请选择一个要操作的数据!', {
+				icon : 5
+			});
+			return;			
+		}
+		var superId = dataId.id;
+		openWindowGuide('详情', 'sys/menu/indexMenuBtn?superId='+superId);
+	}
+	
+	//删除
+	function deleteData() {
+		if (isNull(dataId)) {
+			layer.alert("请选择一条进行删除！");
+			return;
+		}
+		//询问框
+		layer.confirm('确定要删除？', {
+			btn : [ '确定', '取消' ]
+		//按钮
+		}, function() {
+			// 数据库删除
+			$.ajax({
+			    cache: true,
+			    type: "POST",
+			    url:"guide/delete?id="+dataId.id,
+				async: false,
+				error: function(request) {
+				layer.alert("删除失败！");
+				},
+				success: function(data) {
+					layer.msg('删除成功!', {
+						icon : 1
+					});
+					setTimeout(function(){
+						location.replace(location.href);
+					}, 1300);
+			 	 }
+			});
+		});	
+	}
+
+		//打开攻略添加页面
+	function openWindowGuide(title, url) {
+		var index = layer.open({
+			type : 2,
+			title : title,
+			content : url
+		});
+		layer.full(index);
+	}
+	</script>
+</body>
+</html>

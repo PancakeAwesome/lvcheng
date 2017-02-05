@@ -1,0 +1,205 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<base href="${basePath}"/>
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<script type="text/javascript" src="lib/PIE_IE678.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css"
+	href="lib/Hui-iconfont/1.0.7/iconfont.css" />
+	<link rel="stylesheet" href="lib/zTree/v3/css/zTreeStyle/zTreeStyle.css" type="text/css">
+<link rel="stylesheet" type="text/css" href="lib/icheck/icheck.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/skin/default/skin.css" id="skin" />
+<!--[if IE 6]>
+<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>数据字典管理</title>
+</head>
+<body>
+	<nav class="breadcrumb">
+		<i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span>数据字典 <span class="c-gray en"></span> 
+	</nav>
+	<table class="table">
+		<tr>
+			<td width="300" class="va-t">
+			<div class="cl pd-5 bg-1 bk-gray mt-20">
+				<!-- <a href="javascript:;" onclick="deleteData();" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i>删除</a>  -->
+				<a href="javascript:;" onclick="reload();" class="btn btn-success radius"><i class="Hui-iconfont">&#xe68f;</i>刷新</a>
+				<a data-title ="新增"  onclick="openWindowType('添加','sys/menu/add')" href="javascript:;"	class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i>添加</a>
+				<a data-title ="详情"  onclick="openWindowTypeEidt('详情','sys/menu/edit?view=1')" href="javascript:;"	class="btn btn-secondary radius"><i class="Hui-iconfont">&#xe695;</i>详情</a>
+				<a data-title ="修改"  onclick="openWindowTypeEidt('修改','sys/menu/edit?view=0')" href="javascript:;"class="btn btn-warning radius"><i class="Hui-iconfont">&#xe60c;</i>修改</a>
+			</div>
+			<div class="cl pd-5 bg-1 bk-gray mt-20">
+				<ul id="menuTree" class="ztree"></ul>
+			</div>
+			</td>
+			<td class="va-t">
+				<IFRAME ID="testIframe" Name="testIframe" FRAMEBORDER=0 SCROLLING=AUTO width=100%  height=750px SRC="sys/menu/menu"></IFRAME>
+			</td>
+		</tr>
+	</table>
+	<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/layer/2.1/layer.js"></script>
+	<script type="text/javascript" src="lib/laypage/1.2/laypage.js"></script>
+	<script type="text/javascript" src="lib/zTree/v3/js/jquery.ztree.all-3.5.min.js"></script> 
+	<script type="text/javascript" src="lib/My97DatePicker/WdatePicker.js"></script>
+	<script type="text/javascript"
+		src="lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" src="lib/public.js"></script>
+	<script type="text/javascript" src="lib/zTree/v3/js/jquery.ztree.all-3.5.min.js"></script> 
+	<script type="text/javascript" src="static/h-ui/js/H-ui.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.admin.js"></script>
+	<script type="text/javascript">
+
+	var demoIframe = null;
+	var dataId = null;
+	var zTreeObj = null;
+	var setting = {  
+	            async: {  
+	                enable: true,//异步处理  
+	  
+	                //contentType: "application/json",//提交参数方式，这里 JSON 格式，默认form格式  
+	                  
+	                url: 'sys/menu/list'
+	                //,//异步获取json格式数据的路径  
+	  
+	       //         autoParam: ["id","name"]//异步加载时需要提交的参数，多个用逗号分隔  
+	                              
+	            },  
+	            callback: {//回调函数，在这里可做一些回调处理  
+	                //beforeAsync: zTreeBeforeAsync  
+	                beforeClick: function(treeId, treeNode) {
+						var zTree = $.fn.zTree.getZTreeObj("tree");
+						if (treeNode.isParent) {
+							zTree.expandNode(treeNode);
+							return false;
+						} else {
+							//dataIdd = treeNode.id;
+							
+							return true;
+						}
+					},
+					onClick:function(treeId, treeNode){
+						
+						dataId = zTreeObj.getSelectedNodes()[0].id;
+						demoIframe.attr("src","sys/menu/menu?superId="+dataId);
+					}
+	            },  
+	            check: {//设置 zTree 的节点上是否显示 checkbox / radio ,默认为false  
+	                enable: false  
+	            },  
+	            data: {  
+	                simpleData: {  
+	                    /**  
+	                    如果设置为 true，请务必设置 setting.data.simpleData 内的其他参数: idKey / pIdKey / rootPId  
+	                    并且让数据满足父子关系。*/                    
+	                    enable: true,//true / false 分别表示 使用 / 不使用 简单数据模式  
+	                    idKey: "id",  
+	                    pIdKey: "superId",  
+	                    rootPId: 0                            
+	                }  
+	          }  
+	};  
+	
+	var zNodes =[];//树节点，json格式，异步加载可设置为null或[]
+	$(function(){
+		zTreeObj = $.fn.zTree.init($("#menuTree"), setting, zNodes);//实例化后直接返
+	});
+	
+	
+	function initRowDataTable(){
+		/* $('#selectClub tbody').on( 'click', 'tr', function () {
+			console.log( dataTable.row( this ).data() );
+			dataId = dataTable.row( this ).data();
+		}); */
+	}
+	
+	function openWindowTypeEidt(view){
+		console.log('asdfsdf'+dataId);
+		
+		if(isNull(dataId)){
+			layer.msg('请选择数据进行操作!', {
+				icon : 5
+			});
+			return;
+		}
+		if(isNull(view)){
+			openWindowUrl('修改', 'sys/menu/edit?id='+dataId);
+			return;
+		}
+		openWindowUrl('详情', 'sys/menu/edit?view=1&id='+dataId);
+	}
+	
+	function openWindowUrl(title,url){
+		layer_show(title,url,'',350);
+	}
+	
+	//删除
+	function deleteData() {
+		if (isNull(dataId)) {
+			layer.alert("请选择一条进行删除！");
+			return;
+		}
+		//询问框
+		layer.confirm('确定要删除？', {
+			btn : [ '确定', '取消' ]
+		//按钮
+		}, function() {
+			// 数据库删除
+			$.ajax({
+			    cache: true,
+			    type: "POST",
+			    url:"sys/menu/delete?id="+dataId,
+				async: false,
+				error: function(request) {
+				layer.alert("删除失败！");
+				},
+				success: function(data) {
+					layer.msg('删除成功!', {
+						icon : 1
+					});
+					setTimeout(function(){
+						location.replace(location.href);
+					}, 1300);
+			 	 }
+			});
+		});	
+	}
+	
+	// 刷新页面
+	function reload(){
+		location.replace(location.href);
+	}
+
+		//打开攻略添加页面
+	function openWindowType(title, url) {
+			
+		var h = $("#container").outerHeight(true);
+    	var w = $("#container").outerWidth(true);
+    	if(!isNull(dataId)){
+    		url = url+'?superId='+dataId;
+    	}
+    	//?latitude='+latitude+'&longitude='+longitude
+    	layer_show(title,url,'',350);
+	}
+	
+	$(function(){
+		demoIframe = $("#testIframe");
+	});
+	</script>
+</body>
+</html>

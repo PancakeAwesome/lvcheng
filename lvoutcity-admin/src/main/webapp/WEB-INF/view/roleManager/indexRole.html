@@ -1,0 +1,397 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="renderer" content="webkit|ie-comp|ie-stand">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport"
+		  content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+	<base href="${basePath}" />
+	<meta http-equiv="Cache-Control" content="no-siteapp" />
+	<!--[if lt IE 9]>
+	<script type="text/javascript" src="lib/html5.js"></script>
+	<script type="text/javascript" src="lib/respond.min.js"></script>
+	<script type="text/javascript" src="lib/PIE_IE678.js"></script>
+	<![endif]-->
+	<link rel="stylesheet" type="text/css"
+		  href="static/h-ui/css/H-ui.min.css" />
+	<link rel="stylesheet" type="text/css"
+		  href="static/h-ui/css/H-ui.admin.css" />
+	<link rel="stylesheet" type="text/css"
+		  href="lib/Hui-iconfont/1.0.7/iconfont.css" />
+	<link rel="stylesheet" type="text/css" href="lib/icheck/icheck.css" />
+	<link rel="stylesheet" type="text/css"
+		  href="static/h-ui/skin/default/skin.css" id="skin" />
+	<link rel="stylesheet" type="text/css" href="static/h-ui/css/style.css" />
+	<!--[if IE 6]>
+	<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+	<script>DD_belatedPNG.fix('*');</script>
+	<![endif]-->
+	<title>俱乐部管理</title>
+</head>
+<body>
+<nav class="breadcrumb">
+	<i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span>
+	平台管理 <span class="c-gray en">&gt;</span> 角色管理 <a
+		class="btn btn-success radius r"
+		style="line-height: 1.6em; margin-top: 3px"
+		href="javascript:location.replace(location.href);" title="刷新"><i
+		class="Hui-iconfont">&#xe68f;</i></a>
+</nav>
+<div class="page-container">
+	<div class="text-c">
+		<input type="text" class="input-text" style="width: 120px" placeholder="角色编号" id="roleCode" name="roleCode">
+		<input type="text" class="input-text" style="width: 120px" placeholder="角色名称"   id="roleName" name="roleName">
+		<button type="submit" class="btn btn-success radius" id="searchRole" name="">
+			<i class="Hui-iconfont">&#xe665;</i> 查询
+		</button>
+	</div>
+	<div class="cl pd-5 bg-1 bk-gray mt-20">
+		<span class="l">
+			<a  data-title="添加角色" onclick="role_add('添加角色','roleManager/roleAdd')" href="javascript:;"class="btn btn-warning radius"><i class="Hui-iconfont">&#xe600;</i>新增	</a>
+		 	<a href="javascript:;"	onclick="role_show()" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe695;</i> 查看</a>
+		 	<a href="javascript:;"	onclick="role_delete()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i>删除</a>
+		 	<a href="javascript:;"	onclick="role_menu()" class="btn btn-default radius"><i class="Hui-iconfont">&#xe61d;</i> 权限分配</a>
+		 </span>
+	</div>
+	<div class="mt-20">
+		<table id="roleShow" class="table table-border table-bordered table-hover table-bg table-striped">
+			<thead>
+			<tr class="text-c">
+				<th width="25" style=""><input type="checkbox" name="" value=""></th>
+				<th width="80">角色编号</th>
+				<th width="100">所属</th>
+				<th width="60">角色名称</th>
+				<th width="60">状态</th>
+				<th width="100">备注</th>
+				<th width="50">操作</th>
+			</tr>
+			</thead>
+
+		</table>
+	</div>
+</div>
+<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="lib/layer/2.1/layer.js"></script>
+<script type="text/javascript" src="lib/laypage/1.2/laypage.js"></script>
+<script type="text/javascript" src="lib/public.js?id=asdf"></script>
+<script type="text/javascript" src="lib/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="static/h-ui/js/H-ui.js"></script>
+<script type="text/javascript" src="static/h-ui/js/H-ui.admin.js"></script>
+<script type="text/javascript">
+	var dataTable = null;
+	var checkList= null;
+	var dataIdList = new Array();
+	/* 获取checkbox点击td */
+	function getCheckData(){
+		 var checkList= new Array() ;
+		 
+		 $("input[name=checkbox]").each(function(i,d){
+						 if(d.checked){
+							 console.log(dataTable.row( $(this).parents('tr') ).data());
+							 data = dataTable.row( $(this).parents('tr') ).data(); 
+							 checkList.push(data);
+						 }
+			})
+		return checkList;
+	}
+	$(function() {
+		$('.table-sort tbody').on( 'click', 'tr', function () {
+			if ( $(this).hasClass('selected') ) {
+				$(this).removeClass('selected');
+			}
+			else {
+				table.$('tr.selected').removeClass('selected');
+				$(this).addClass('selected');
+			}
+		});
+		dataTable = $("#roleShow").DataTable({
+			"processing" : true,
+			"serverSide" : true,
+			"searching": false,
+			"ajax" : {
+				"url" : "roleManager/selectRole",
+				"type": "POST",
+				"data":function(d){
+					d['roleCode']=$("#roleCode").val();
+					d['roleName']=$('#roleName').val();
+				}
+			},
+			"ordering":false,
+			"orderMulti":false,
+			/*"order" : [ [ 1, "asc" ] ],
+			"orderMulti":false,*/
+			"columnDefs" : [ {
+				"data" : "id",
+				"targets":0,
+				"orderable":false,
+				"render": function (data,type,row ) {
+					return '<div style="text-align:center;"><input type="checkbox" id="'+row.id+'" name="checkbox" /></div>';
+				},
+				"class": "text-c"
+			},{
+				"data" : "role_code",
+				"targets":1,
+				"sDefaultContent":'',
+				"class": "text-c"
+			},{
+				"data":"belongs",
+				"targets":2,
+				"sDefaultContent":'',
+				"class": "text-c",
+				"render":function(data,type,row){
+					if(isNull(row.belongs)){
+						return '';
+					}
+					else if(row.belongs == 1){
+						return "俱乐部";
+					}else{
+						return "旅城";
+					}
+				}
+			},{
+				"data":"role_name",
+				"targets":3,
+				"sDefaultContent":'',
+				"class": "text-c"
+			},{
+				"data":"status",
+				"targets":4,
+				"sDefaultContent":'',
+				"render":function(data,type,row){
+					if(isNull(row.status)){
+						return '';
+					}
+					else if(row.status == 1){
+						return "<span class=\"label label-success radius\">已启用</span>";
+					}else{
+						return "<span class=\"label label-defaunt radius\">已停用</span>";
+					}
+				},
+				"class": "text-c td-status"
+			},{
+				"data":"remark",
+				"targets":5,
+				"sDefaultContent":'',
+				"class": "text-c"
+			},{
+				"data":"handler",
+				"targets":6,
+				"render":function(data,type,row){
+					if(isNull(row.status)){
+						return '';
+					}
+					else if(row.status == 1){
+						return "<a style=\"text-decoration:none\" class=\"btn btn-danger radius ml-5 size-MINI\" onClick=\"member_stop(this,'"+row.id+"')\" href=\"javascript:;\" title=\"停用\"><i class=\"Hui-iconfont\">&#xe631;</i>停用</a> "
+						+
+						"<a title=\"编辑\" href=\"javascript:;\" class=\"btn btn-primary radius ml-5 size-MINI\" onclick=\"role_edit('编辑','roleManager/roleEdit?id="+row.id+"')\" class=\"ml-5\" style=\"text-decoration:none\"><i class=\"Hui-iconfont\">&#xe6df;</i>编辑</a>"
+						;
+					}else{
+						return "<a style=\"text-decoration:none\" class=\"btn btn-success radius ml-5 size-MINI\" onClick=\"member_start(this,'"+row.id+"')\" href=\"javascript:;\" title=\"启用\"><i class=\"Hui-iconfont\">&#xe6e1;</i>启用</a> "
+						+
+						"<a title=\"编辑\" href=\"javascript:;\" class=\"btn btn-primary radius ml-5 size-MINI\" onclick=\"role_edit('编辑','roleManager/roleEdit?id="+row.id+"')\" class=\"ml-5\" style=\"text-decoration:none\"><i class=\"Hui-iconfont\">&#xe6df;</i>编辑</a>"
+						;
+					}
+				},
+				"class": "text-c td-manage"
+			}],
+			"language" : {
+				"sProcessing" : "处理中...",
+				"sLengthMenu" : "显示 _MENU_ 项结果",
+				"sZeroRecords" : "没有匹配结果",
+				"sInfo" : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+				"sInfoEmpty" : "显示第 0 至 0 项结果，共 0 项",
+				"sInfoFiltered" : "(由 _MAX_ 项结果过滤)",
+				"sInfoPostFix" : "",
+				//"sSearch" : "搜索:",
+				"sUrl" : "",
+				"sEmptyTable" : "表中数据为空",
+				"sLoadingRecords" : "载入中...",
+				"sInfoThousands" : ",",
+				"oPaginate" : {
+					"sFirst" : "首页",
+					"sPrevious" : "上页",
+					"sNext" : "下页",
+					"sLast" : "末页"
+				},
+				"oAria" : {
+					"sSortAscending" : ": 以升序排列此列",
+					"sSortDescending" : ": 以降序排列此列"
+				}
+			},
+		});
+	});
+
+	
+	/*用户-停用*/
+	function member_stop(obj,id){
+		console.log('asdfasdf；'+id)
+		layer.confirm('确认要停用吗？',function(index){
+			ajaxStatusUpdate(id,0);
+			$(obj).parents("tr").find(".td-manage").prepend('<a style="text-decoration:none" class=\"btn btn-danger radius ml-5 size-MINI\" onClick="member_start(this,\''+id+'\')" href="javascript:;" title="启用"><i class="Hui-iconfont">&#xe6e1;</i>启用</a>');
+			$(obj).parents("tr").find(".td-status").html('<span class="label label-defaunt radius">已停用</span>');
+			$(obj).remove();
+			layer.msg('已停用!',{icon: 5,time:1000});
+		});
+	}
+	
+	
+	/*用户-启用*/
+	function member_start(obj,id){
+		layer.confirm('确认要启用吗？',function(index){
+			ajaxStatusUpdate(id,1);
+			$(obj).parents("tr").find(".td-manage").prepend('<a style="text-decoration:none" class=\"btn btn-danger radius ml-5 size-MINI\" onClick="member_stop(this,\''+id+'\')" href="javascript:;" title="停用"><i class="Hui-iconfont">&#xe631;</i>停用</a>');
+			$(obj).parents("tr").find(".td-status").html('<span class="label label-success radius">已启用</span>');
+			$(obj).remove();
+			layer.msg('已启用!',{icon: 6,time:1000});
+		});
+	}
+	
+	
+	/*按照条件-查找*/
+	$("#searchRole").click(function () {
+		dataTable.ajax.reload();
+	});
+
+
+
+	/*角色-添加*/
+	function role_add(title, url, w, h) {
+		var index = layer.open({
+			type : 2,
+			title : title,
+			content : url
+		});
+		layer.full(index);
+		//layer_show(title,url,w,h);
+	}
+
+	/*角色-查看*/
+	function role_show() {
+		getCheck();
+		if(isNull(checkList)){
+			console.log('a')
+			layer.msg('请选择角色！', {icon: 2,time:2000});
+			return;
+		}
+		if(checkList.length==0){
+			console.log('b')
+			layer.msg('请选择角色！', {icon: 2,time:2000});
+		}else if(checkList.length>1){
+			layer.msg('只能选择一个角色！', {icon: 2,time:2000});
+		}else{
+			console.log(checkList[0]);
+			var index = layer.open({
+				type : 2,
+				title : "角色查看",
+				content : "roleManager/roleShow?view=1&id="+checkList[0]
+			});
+			layer.full(index);
+		}
+	}
+	var checkList = null;
+	
+	function getCheck(){
+		 checkList= new Array() ;
+		 $("input[name=checkbox]").each(function(i,d){
+			if(d.checked){
+				checkList.push(d.id);
+			 }
+		}) 
+	}
+	
+	function role_edit(title,url){
+		var index = layer.open({
+			type : 2,
+			title : "角色编辑",
+			content : url
+		});
+		layer.full(index);
+	}
+	
+	
+	/*角色-启用   || 禁用*/
+	function ajaxStatusUpdate(id,isDelete){
+		$.ajax({
+			cache: true,
+			type: "POST",
+			url:"roleManager/saveOrUpdate",
+			data:{"id":id,"status":isDelete},
+			async: false,
+			error: function(request) {
+				layer.msg("禁用失败！");
+			},
+			success: function(data) {
+				if(isNotNull(data.error)){
+					layer.msg(data.error,{icon: 5,time:1000});
+						return;
+				}
+			}
+		});
+	}
+	
+	
+	/*角色-   || 删除*/
+	function role_delete(id,isDelete){
+		getCheck();
+		console.log(checkList);
+		if(isNull(checkList)){
+			console.log('a')
+			layer.msg('请选择角色！', {icon: 2,time:2000});
+			return;
+		}
+		if(checkList.length==0){
+			console.log('b')
+			layer.msg('请选择角色！', {icon: 2,time:2000});
+		}else{
+			layer.confirm('确认要删除吗？',function(index){
+				$.ajax({
+					cache: true,
+					type: "POST",
+					url:"roleManager/delUser",
+					data:{"id":checkList},
+					async: false,
+					error: function(request) {
+						layer.msg("禁用失败！");
+					},
+					success: function(data) {
+						if(isNotNull(data.result)){
+							layer.msg(data.result,{icon: 5,time:1000});
+							location.replace(location.href);
+						}else{
+							layer.msg(data.error,{icon: 5,time:1000});
+						}
+					}
+				});
+			});
+		}
+	}
+	
+	
+	//查询用户
+	function role_menu(){
+		getCheck();
+		if(isNull(checkList)){
+			console.log('a')
+			layer.msg('请选择角色！', {icon: 2,time:2000});
+			return;
+		}
+		if(checkList.length==0){
+			console.log('b')
+			layer.msg('请选择角色！', {icon: 2,time:2000});
+		}else if(checkList.length>1){
+			layer.msg('只能选择一个角色！', {icon: 2,time:2000});
+		}else{
+			console.log(checkList[0]);
+			var h = $("body").outerHeight(true);
+         	var w = $("body").outerWidth(true);
+			
+         	layer_show('权限分配',"roleManager/getRolePermissionJsp?roleId="+checkList[0],'',h/1.5);
+		}
+	}
+
+
+</script>
+</body>
+</html>

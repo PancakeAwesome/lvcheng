@@ -1,0 +1,190 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<base href="${basePath}" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<script type="text/javascript" src="lib/PIE_IE678.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css"
+	href="lib/Hui-iconfont/1.0.7/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="lib/icheck/icheck.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="static/h-ui/css/style.css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<link href="lib/lightbox2/2.8.1/css/lightbox.css" rel="stylesheet"
+	type="text/css">
+<title>图片展示</title>
+</head>
+<body>
+	<!-- <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 图片管理 <span class="c-gray en">&gt;</span> 图片展示 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+ -->
+	<div class="page-container">
+		<div class="cl pd-5 bg-1 bk-gray mt-20">
+			<span class="l"> <a href="javascript:;" onclick="add()"
+				class="btn btn-primary radius"><i class="Hui-iconfont">&#xe6df;</i>本地上传</a>
+				<a href="javascript:;" onclick="datadel()"
+				class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i>
+					删除</a>
+			</span> <span class="r">共有数据：${cc} 条
+			</span>
+		</div>
+		<div class="portfolio-content">
+			<ul class="cl portfolio-area">
+				<#list pctList as lst >
+				<li class="item">
+					<div class="portfoliobox">
+						<input name="checkbox" class="checkbox" id="${lst.key!}"
+							type="checkbox" value="${lst.key!}">
+						<div class="picbox">
+							<a href="${lst.imgUrl!}" data-lightbox="gallery"
+								data-title="${lst.imgName!}"><img src="${lst.imgUrl!}"></a>
+						</div>
+						<div class="textbox">${lst.imgName!}</div>
+					</div>
+				</li> </#list>
+
+			</ul>
+		</div>
+	</div>
+
+	<div class="page-container" hidden="true" id="div-hide">
+		<form action="picture/pictureUpLoad" method="post"
+			enctype="multipart/form-data" id="form-picture">
+
+			<div class="row cl">
+				<label>背景图片：</label>
+				<div style="float: right;" class="formControls col-xs-8 col-sm-9">
+					<input type="button" class="btn btn-primary radius"
+						id="sub_picture" value="本地上传"></input>
+					<div hidden="true">
+						<input type="file" id="file2" name="file2" class=" file-picture">
+					</div>
+					<input type="hidden" id="groupId" name="groupId"
+						value="${groupId!}" /> <input type="hidden" id="clubId"
+						name="clubId" value="${clubId!}" />
+				</div>
+			</div>
+		</form>
+	</div>
+	<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/layer/2.1/layer.js"></script>
+	<script type="text/javascript"
+		src="lib/lightbox2/2.8.1/js/lightbox-plus-jquery.min.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.admin.js"></script>
+	<script type="text/javascript" src="lib/jquery/1.9.1/jquery-form.js"></script>
+	<script type="text/javascript"
+		src="http://gosspublic.alicdn.com/aliyun-oss-sdk.min.js"></script>
+
+	<script type="text/javascript">
+	
+var checkList= null;
+$(function(){
+	$.Huihover(".portfolio-area li");
+});
+/*
+ * 新增图片
+ */
+function add(){
+	$("#file2").click();
+}
+// 图片上传
+$(document).on("change",".file-picture",function(){
+	var name = $("#file2").val();
+	var type = name.substr(name.lastIndexOf(".")).toLowerCase();
+	if(name.length>=128){
+		layer.msg("上传图片名称长度不要超过128!",{icon:2,time:2000});
+		return;
+	}
+	if(type==".jpg"||type==".jpeg"||type==".png"||type==".bmp"){
+		var index = layer.load(4,{shade : [0.6,'#FFFAFA'],content:"上传中..."});
+		$("#form-picture").ajaxSubmit({
+	        url: "picture/pictureUpLoad",
+	        type: "post",
+	        dataType: "json",
+	        timeout: 600000,
+	        success: function(data) {
+	        	layer.close(index);
+	        	if(data.code=="999"){
+            		layer.alert(data.msg);
+            	}else{
+	        	if(data.success=="true"){
+	        		layer.msg("上传成功",{icon:1,time:2000},function(){
+	        			location.replace(location.href);
+	        		})
+	        		
+	        	}
+            	}
+	        },
+	        error: function(data, status, e) {
+	        	layer.close(index);
+	        	layer.msg("上传失败，错误信息：" + e,{icon:2,time:2000});
+	            //alert("上传失败，错误信息：" + e);
+	        }
+	    });	
+	}else{
+		layer.alert("请选择格式为jpg，jpeg,png,bmp格式的图片！" );
+	}
+	
+});
+function getCheck(){
+	 checkList= new Array() ;
+	 $("input[name=checkbox]").each(function(i,d){
+					 if(d.checked){
+						 checkList.push(d.id);
+					 }
+		}) 
+}
+
+function datadel(){
+	getCheck();
+	if(checkList!=null && checkList.length >0){
+		layer.confirm('确认要删除这'+checkList.length+'条图片？', function(index) {
+			// 数据库删除
+			$.ajax({
+	            cache: true,
+	            type: "POST",
+	            url:"picture/deletePicture",
+	            data:{"idList":JSON.stringify(checkList)},
+	            async: false,
+	            error: function(request) {
+	                layer.msg("删除失败！",{icon:2,time:2000});
+	            },
+	            success: function(data) {
+	            	if(data.code=="999"){
+	            		layer.alert(data.msg);
+	            	}else
+	                layer.msg("删除成功！",{icon:1,time:2000}, function(index){
+	                	  //do something
+	                	  /* dataTable.ajax.reload();
+	                	  layer.close(index); */
+	                	location.replace(location.href);
+	                	});
+	                    
+	            }
+	        });
+		});
+	}else{
+		// 请选择要删除的记录
+		 layer.msg("请选择要删除的记录！",{icon:2,time:2000});
+	}
+}
+</script>
+</body>
+</html>

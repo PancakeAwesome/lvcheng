@@ -1,0 +1,241 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<base href="${basePath}"/>
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<script type="text/javascript" src="lib/PIE_IE678.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css"
+	href="lib/Hui-iconfont/1.0.7/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="lib/icheck/icheck.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="static/h-ui/css/style.css" />
+<link rel="stylesheet" type="text/css" href="lib/bootstrap-Switch/bootstrapSwitch.css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>俱乐部管理</title>
+</head>
+<body>
+	<div class="page-container">
+		<div class="text-c">
+			<input type="text" class="input-text" style="width: 120px"
+						placeholder="手机号" id="phone" name="phone"> 
+			<span class="select-box" style="width: 150px"> <select
+				class="select" id="tourist_type" name="tourist_type" size="1">
+					<option value="">类别</option>
+					<option value="1">成人</option>
+					<option value="2">儿童</option>
+			</select>
+			</span>
+			<button type="submit" class="btn btn-success radius" id="search_button" name="">
+						<i class="Hui-iconfont">&#xe665;</i> 查询
+			</button>
+		</div>
+		<div class="cl pd-5 bg-1 bk-gray mt-20">
+					<span class="l"> 
+						<a	href="javascript:;" onclick="exportData()" class="btn btn-primary radius">
+							<i class="Hui-iconfont">&#xe644;</i>导出
+						</a>
+					</span>
+		</div>
+		<div class="mt-20">
+			<table id="dtable"
+				class="table table-border table-bordered table-hover table-bg table-striped">
+				<thead>
+					<tr class="text-c">
+						<th width="60">成员编号</th>
+						<th width="60">真实姓名</th>
+					 	<th width="60">类别</th>
+						<th width="80">身份证</th>
+						<th width="80">手机号</th>
+						<th width="100">订单支付人</th>
+						<th width="100">支付人联系方式</th>
+						<th width="100">订单状态</th>
+						<th width="100">是否在群</th>
+						<th width="100">操作</th>
+					</tr>
+				</thead>
+				
+			</table>
+		</div>
+	<script type="text/javascript" src="static/common/orderStatus.js"></script>
+	<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/layer/2.1/layer.js"></script>
+	<script type="text/javascript" src="lib/laypage/1.2/laypage.js"></script>
+	<script type="text/javascript" src="lib/My97DatePicker/WdatePicker.js"></script>
+	<script type="text/javascript" src="lib/bootstrap-Switch/bootstrapSwitch.js"></script>
+	<script type="text/javascript"
+		src="lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.admin.js"></script>
+	<script type="text/javascript">
+		var dataTable = null;
+		var checkList= null;
+		var tokens = [];//userIds
+		var id_ =null;
+		var phone_ =null;
+		var tourist_type_ =null;
+		$(function() {
+			<#if im_result??>
+				<#if im_result.code=200>
+					<#list im_result.users as user>
+						tokens.push("${user.id}");
+					</#list>
+				</#if>
+			</#if>
+			
+			// 俱乐部查询
+			dataTable = $("#dtable").DataTable({
+				"processing" : true,
+				"serverSide" : true,
+				ordering:false,
+				searching:false,
+				"ajax" : {
+					"url" : "corps/members",
+				    "type": "POST",
+				    "data":function(d){
+				    	d['tourist_type']=$("#tourist_type").val();  
+				    	tourist_type_ = $("#tourist_type").val(); 
+				    	d['phone']=$("#phone").val();  
+				    	phone_ = $("#phone").val(); 
+				    	d['id']="${id}";  
+				    	id_ = "${id}";  
+				    	}
+				},
+				"columnDefs" : [  {
+					"data" : "tourist_no",
+					"targets":0,
+					"defaultContent":''
+				},{
+					"data":"real_name",
+					"targets":1,
+					"defaultContent":''
+				},
+				{
+					"data":"tourist_type",
+					"targets":2,
+					"defaultContent":'',
+					render:function(data,type,row){
+						if(data=='2')
+							return "儿童";
+						else
+							return "成人";
+					}
+				},
+				
+				{
+					"data":"id_number",
+					"targets":3,
+					"defaultContent":''
+				},{
+					"data":"phone",
+					"targets":4,
+					"defaultContent":''
+				},{
+					"data":"payer_name",
+					"targets":5,
+					"defaultContent":''
+				},{
+					"data":"payer_phone_number",
+					"targets":6,
+					"defaultContent":''
+				},{
+					"data":"status",
+					"targets":7,
+					"defaultContent":'',
+					render : function(data, type, row){
+ 						return ORDER_STATUS.colorfulRenderer(data);
+					}
+				},{
+					"data":"is_in_group",
+					"targets":8,
+					"defaultContent":'',
+					render:function(data,type,row){
+						if(tokens.includes(row.user_id))
+							return "<div id = '"+row.id+"'>是</div>";
+						else
+							return "<div id = '"+row.id+"'>否</div>";
+						
+					}
+				},{
+					"data":"id",
+					"targets":9,
+					render:function(data,type,row){
+						 var cb =  '<div class="text-c"><button class="btn btn-primary radius size-MINI" onclick="joinGroup(\''+row.user_id+'\')">加群</button></div>';
+						 var cb_disabled =  '<div class="text-c"><button class="btn disabled radius size-MINI" >加群</button></div>';
+						 if(!!row.user_id&&!tokens.includes(row.user_id))
+							return cb;
+						 else 
+							 return cb_disabled;
+					}
+				} ],
+				
+				"language" : {
+					"sProcessing" : "处理中...",
+					"sLengthMenu" : "显示 _MENU_ 项结果",
+					"sZeroRecords" : "没有匹配结果",
+					"sInfo" : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+					"sInfoEmpty" : "显示第 0 至 0 项结果，共 0 项",
+					"sInfoFiltered" : "(由 _MAX_ 项结果过滤)",
+					"sInfoPostFix" : "",
+					"sSearch" : "搜索:",
+					"sUrl" : "",
+					"sEmptyTable" : "表中数据为空",
+					"sLoadingRecords" : "载入中...",
+					"sInfoThousands" : ",",
+					"oPaginate" : {
+						"sFirst" : "首页",
+						"sPrevious" : "上页",
+						"sNext" : "下页",
+						"sLast" : "末页"
+					}
+				}
+			});
+			
+		});
+		// 根据条件查询club
+		$("#search_button").click(function(){
+			dataTable.ajax.reload();
+		});
+		
+		
+		function joinGroup(userId){
+			$.ajax({
+				type:'POST',
+				url:"corps/joinGroup",
+				data : {userId:userId,id:"${id}"},
+				beforeSend: function(){
+					layer.load(2,{zindex:1200});
+				},
+				success:function(r){
+					layer.closeAll('loading');
+					if(r.result=="success"){
+						parent.layer.msg('操作成功！', {icon: 1,time:2000});
+						tokens.push(userId);
+						dataTable.ajax.reload();
+					}else{
+						layer.msg('操作失败！', {icon: 2,time:2000});
+					}
+				}
+			});
+		}
+	function exportData(){
+		 window.location.href="${basePath}corps/export?id="+id_+"&phone="+phone_+"&tourist_type="+tourist_type_;
+	}
+	</script></body>
+</html>

@@ -1,0 +1,10 @@
+jdbc.url=jdbc:mysql://rm-bp1114093a6r2251wo.mysql.rds.aliyuncs.com:3306/lvc_test?characterEncoding=utf-8
+jdbc.user=lvc
+jdbc.password=lvc@123456
+jdbc.driverClassName=com.mysql.jdbc.Driver
+redis.host=120.26.45.246
+redis.password=woshizhanghaidong
+#redis.host=127.0.0.1
+redis.port=6379
+#http.url=http://121.199.15.74:8081
+http.url=http://localhost:8080

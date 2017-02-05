@@ -1,0 +1,166 @@
+<!--_meta 作为公共模版分离出去-->
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<base href="${basePath}" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<script type="text/javascript" src="lib/PIE_IE678.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css"
+	href="lib/Hui-iconfont/1.0.7/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="lib/icheck/icheck.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="static/h-ui/css/style.css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<!--/meta 作为公共模版分离出去-->
+
+<title>新增俱乐部</title>
+<link href="lib/webuploader/0.1.5/webuploader.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<div class="page-container">
+		<form class="form form-horizontal" id="form-club-add">
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-3">旅城号：</label>
+				<div class="formControls col-xs-8 col-sm-6">
+					<input type="text" class="input-text"  value="${user.userNo!}" datatype="" />
+					<input type="hidden" class="input-text"  value="${app.id!}" datatype="" />
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-3">真实姓名：</label>
+				<div class="formControls col-xs-8 col-sm-6">
+					<input type="text" class="input-text" value="${user.realName!}" datatype="" />
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-3">昵称：</label>
+				<div class="formControls col-xs-8 col-sm-6">
+					<input type="text" class="input-text" value="${user.nickName!}" />
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-3">手机：</label>
+				<div class="formControls col-xs-8 col-sm-6">
+					<input type="text" class="input-text" value="${app.contactWay!}" datatype="" />
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-3">确认者：</label>
+				<div class="formControls col-xs-8 col-sm-6">
+					<input type="text" class="input-text" value="${app.confirmUser!}" datatype="" />
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-3">确认时间：</label>
+				<div class="formControls col-xs-8 col-sm-6">
+					<input type="text" class="input-text" value="${app.confirmTime!}" datatype="" />
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-3">问题和意见：</label>
+				<div class="formControls col-xs-8 col-sm-6">
+					<textarea class="textarea" style="width: 100%;" >${app.content!}</textarea>
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-3">问题图片:</label>
+				<div class="formControls col-xs-8 col-sm-6" id="imgsAddId">
+				</div>
+			</div>
+			<div class="row cl text-c">
+				<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+					<button class="btn btn-primary radius" type="button" onclick="submitFromGuide();" id = "guide_add_submit" ><i class="Hui-iconfont">&#xe632;</i> 确认	</button>					
+					<button onClick="layer_close();" class="btn btn-default radius"	type="button"><i class="Hui-iconfont">&#xe6a6;</i>&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+				</div>
+			</div>
+		</form>		
+	</div>
+	<!--_footer 作为公共模版分离出去-->
+	<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/layer/2.1/layer.js"></script>
+	<script type="text/javascript" src="lib/icheck/jquery.icheck.min.js"></script>
+	<script type="text/javascript"
+		src="lib/jquery.validation/1.14.0/jquery.validate.min.js"></script>
+	<script type="text/javascript"
+		src="lib/jquery.validation/1.14.0/validate-methods.js"></script>
+	<script type="text/javascript"
+		src="lib/jquery.validation/1.14.0/messages_zh.min.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.js"></script>
+	<script type="text/javascript" src="lib/public.js?id=asdf"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.admin.js"></script>
+	<!--/_footer /作为公共模版分离出去-->
+
+	<!--请在下方写此页面业务相关的脚本-->
+	<script type="text/javascript"
+		src="lib/webuploader/0.1.5/webuploader.min.js"></script>
+	<script type="text/javascript">
+	// 页面加载时判断页面类型
+	var type = '${type}'
+	var status ='${app.status}';
+	$(document).ready(function(){
+		if( type =="2"){
+			$("#content").attr("disabled",true);
+		}
+		if(isNull(status) || status == 1){
+			$('#guide_add_submit').hide();
+		}
+		initImgsPath();
+	}); 
+	
+	function initImgsPath(){
+		var data = '${app.images!}';
+		if(isNull(data)){
+			return;
+		}
+		var img = strToJson(data);
+		$.each(img,function(i,item){
+			console.log(item.path);
+			$('#imgsAddId').append('<img src="http://'+item.path+'"  class="thumbnail" style="margin: 5px;" />');
+		});
+	}
+	
+	function submitFromGuide(){
+		layer.confirm('确认APP问题反馈？', function(index) {
+			// 数据库更新
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "app/upateEnable",
+				data : {
+					"id" : '${app.id}',
+					"status" : 1
+				},
+				async : false,
+				error : function(request) {
+					layer.alert("确认失败！");
+				},
+				success : function(data) {
+					layer.msg("操作成功！",{icon:1,time:2000});
+						layer_close();
+						parent.dataTable.ajax.reload(); 
+	                	//layer_close();
+					
+				}
+			});
+		});
+	}
+	</script>
+</body>
+</html>

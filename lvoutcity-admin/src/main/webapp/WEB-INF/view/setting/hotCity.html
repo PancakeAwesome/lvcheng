@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<base href="${basePath}" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<script type="text/javascript" src="lib/PIE_IE678.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css"
+	href="lib/Hui-iconfont/1.0.7/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="lib/icheck/icheck.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/skin/blue/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="static/h-ui/css/style.css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+</head>
+<body>
+<div style = "min-height:40px"></div>
+	<div class="page-container">
+				<div class="text-c">
+					<input type="text" class="input-text" style="width: 120px"
+						placeholder="城市名称" id="h_name" name="h_name">
+					<button type="submit" class="btn btn-success radius"
+						id="search_button_hc" name="">
+						<i class="Hui-iconfont">&#xe665;</i> 查询
+					</button>
+				</div>
+				<div class="cl pd-5 bg-1 bk-gray mt-20">
+					<span class="l"> <a class="btn btn-success radius"
+						onclick="addHotCity();" href="javascript:;"><i
+							class="Hui-iconfont"></i> 添加热门城市</a> <a href="javascript:;"
+						onclick="deleteHotCity()" class="btn btn-danger radius"><i
+							class="Hui-iconfont"></i> 删除</a> <a href="javascript:;"
+						onclick="editHotCity()" class="btn btn-primary radius"><i
+							class="Hui-iconfont">&#xe6df;</i> 编辑</a>
+					</span>
+				</div>
+				<div class="mt-20">
+					<table id="hotcity" width="100%"
+						class="table table-border table-bordered table-hover table-bg">
+						<thead>
+							<tr class="text-c">
+								<th width="25"><input type="checkbox" id = "checkall" name="" value=""></th>
+								<th>城市编号</th>
+								<th>城市名称</th>
+								<th>是否热门城市</th>
+							</tr>
+						</thead>
+					</table>
+				</div>
+			</div>
+
+	<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/layer/2.1/layer.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.admin.js"></script>
+	<script type="text/javascript" src="lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" src="lib/jquery.validation/1.14.0/jquery.validate.min.js"></script>
+	<script type="text/javascript" src="lib/jquery.validation/1.14.0/validate-methods.js"></script>
+	<script type="text/javascript" src="lib/jquery.validation/1.14.0/messages_zh.min.js"></script>
+	<script type="text/javascript">
+		var dataTable_hc = null;
+		
+		$(function() {
+			dataTable_hc = $("#hotcity")
+					.DataTable(
+							{
+								"processing" : true,
+								"serverSide" : true,
+								"ordering" : false,
+								"searching" : false,
+								"ajax" : {
+									"url" : "setting/hotCity",
+									"type" : "POST",
+									data : function(d) {
+										d['h_name'] = $('#h_name').val();
+									},
+									beforeSend:function(r){
+										$('#checkall').removeAttr("checked");
+									}
+								},
+								"orderMulti" : false,
+								"columnDefs" : [
+										{
+											"data" : "id",
+											"name" : "id",
+											"targets" : 0,
+											render : function(data, type, row) {
+												return '<div style="text-align:center;"><input type="checkbox" id="'+data+'" name="checkbox"  /></div>';
+											}
+										}, {
+											"name" : "h_code",
+											"data" : "hCode",
+											"targets" : 1,
+											"class": "text-c"
+										}, {
+											"name" : "h_name",
+											"data" : "hName",
+											"targets" : 2,
+											"class": "text-c"
+										}, {
+											"name" : "is_hot",
+											"data" : "isHot",
+											"targets" : 3,
+											render : function(data, type, row) {
+												if (data == '1')
+													return "是";
+												else
+													return "否";
+											}
+										} ],
+								"language" : {
+									"sProcessing" : "处理中...",
+									"sLengthMenu" : "显示 _MENU_ 项结果",
+									"sZeroRecords" : "没有匹配结果",
+									"sInfo" : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+									"sInfoEmpty" : "显示第 0 至 0 项结果，共 0 项",
+									"sInfoFiltered" : "(由 _MAX_ 项结果过滤)",
+									"sInfoPostFix" : "",
+									"sSearch" : "搜索:",
+									"sUrl" : "",
+									"sEmptyTable" : "表中数据为空",
+									"sLoadingRecords" : "载入中...",
+									"sInfoThousands" : ",",
+									"oPaginate" : {
+										"sFirst" : "首页",
+										"sPrevious" : "上页",
+										"sNext" : "下页",
+										"sLast" : "末页"
+									},
+									"oAria" : {
+										"sSortAscending" : ": 以升序排列此列",
+										"sSortDescending" : ": 以降序排列此列"
+									}
+								},
+							});
+			// 根据条件查询
+			$("#search_button_hc").click(function() {
+				dataTable_hc.ajax.reload();
+			});
+		});
+
+		function openWindow(title, url, area) {
+			var index = layer.open({
+				type : 2,
+				title : title,
+				content : url,
+				area : area
+			});
+			if (!!!area)
+				layer.full(index);
+		}
+		function getCheck() {
+			var checkList = new Array();
+			$("input[name=checkbox]").each(function(i, d) {
+				if (d.checked) {
+					checkList.push(d.id);
+				}
+			})
+			return checkList;
+		}
+		function addHotCity() {
+			openWindow('热门城市-添加', 'setting/hotCityAdd?type=0', [ "800px",
+					"500px" ])
+		}
+
+		function editHotCity() {
+			var selected = getCheck();
+			if (selected.length == 0)
+				layer.msg('请选择记录！', {
+					icon : 2,
+					time : 2000
+				});
+			else if (selected.length > 1)
+				layer.msg('只能选择一条记录查看！', {
+					icon : 2,
+					time : 2000
+				});
+			else {
+				openWindow('热门城市-编辑', 'setting/hotCityAdd?type=1&id='
+						+ selected[0], [ "800px", "500px" ])
+			}
+		}
+
+		function deleteHotCity() {
+			var selected = getCheck();
+			if (selected.length == 0)
+				layer.msg('请选择记录！', {
+					icon : 2,
+					time : 2000
+				});
+			else {
+				layer.confirm('确认删除?', {
+					icon : 3,
+					title : '提示'
+				}, function(index) {
+					$.ajax({
+						type : "post",
+						url : "setting/deleteHotCity",
+						data : {
+							ids : selected.join(",")
+						},
+						beforeSend : function() {
+							layer.load(2, {
+								zindex : 1200
+							});
+						},
+						success : function(r) {
+							layer.closeAll('loading');
+							if (r.result == "success") {
+								dataTable_hc.ajax.reload();
+								parent.layer.msg('操作成功！', {
+									icon : 1,
+									time : 2000
+								});
+								layer_close();
+							} else {
+								layer.msg('操作失败！', {
+									icon : 2,
+									time : 2000
+								});
+							}
+						}
+					});
+					layer.close(index);
+				});
+			}
+		}
+	</script>
+</body>
+</html>

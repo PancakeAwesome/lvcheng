@@ -1,0 +1,387 @@
+<!--_meta 作为公共模版分离出去-->
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<base href="${basePath}" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<LINK rel="Bookmark" href="/favicon.ico">
+<LINK rel="Shortcut Icon" href="/favicon.ico" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<script type="text/javascript" src="lib/PIE_IE678.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css"
+	href="lib/Hui-iconfont/1.0.7/iconfont.css" />
+	<link rel="stylesheet" type="text/css" href="lib/icheck/icheck.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="static/h-ui/css/style.css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<!--/meta 作为公共模版分离出去-->
+
+<title>新增俱乐部</title>
+
+</head>
+<body>
+		<form class="form form-horizontal"  action="club/clubLogo" id="form-club-logo"  method="post" enctype="multipart/form-data" >
+			
+			<div class="row cl" >
+				<label class="form-label col-xs-4 col-sm-2">俱乐部logo：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+				<span class=" form-group">
+				<input type="button" class="btn btn-primary radius" id="sub_logo" value="本地上传" ></input>
+				<input type="button" class="btn btn-primary radius" id="logo_select" value="从图库选择" ></input>
+				<div hidden="true"><input type="file"  id="file1" name="file1" class=" file-logo"></div>
+				
+				<input type="hidden" id ="clubLogo" name="clubLogo" value="${club.id!}" />
+				</span>					
+				</div>
+			</div>
+			<div class="row cl" >
+			<label class="form-label col-xs-4 col-sm-2"></label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<img id= "logo-img" style="width:100px;height:100px;" alt="" src="">
+				</div>
+			</div>
+			</form>
+			<form class="form form-horizontal" action="club/clubPicture"   method="post" enctype="multipart/form-data" id="form-club-picture">
+			
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2">背景图片：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<div class="uploader-thum-container"> 
+						<input type="button" class="btn btn-primary radius" id ="sub_picture" value="本地上传" ></input>
+						<input  type="button" class="btn btn-primary radius" id="picture_select" value="从图库选择">
+						<div hidden="true"><input type="file"  id="file2" name="file2" class=" file-picture"></div>
+						
+						<input type="hidden" id ="clubPicture" name="clubPicture" value="${club.id!}" />
+						
+							
+					</div>				
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2"></label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<div >
+						<img id= "picture-img" style="width:400px;height:300px;" alt="" src="">
+					</div>
+				</div>
+			</div>
+			</form>
+			
+			<form class="form form-horizontal" action="">
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2">俱乐部简介：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<input type="hidden" class="input-text" value="" placeholder=""
+						id="id" name="id">
+					<textarea name="intro" id ="intro" cols="" rows="" class="textarea"  
+				datatype="*10-100" dragonfly="true" nullmsg="备注不能为空！" 
+				 >${club.intro!}</textarea>
+				</div>
+			</div>
+		
+			<div class="row cl">
+				<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+					<button 
+						class="btn btn-primary radius" type="button" id = "club-detail-submit" >
+						<i class="Hui-iconfont">&#xe632;</i> 保存
+					</button>					
+					
+				</div>
+			</div>
+		</form>
+		<input type="hidden" id ="picture-or-logo" value="1"></input>
+	<div hidden="true" id ="div-group-and-list" style="overflow-x:hidden;overflow-y:hidden;">
+		<div>
+		<table class="table table-border table-bordered" >
+		<tr><td width="150" class="va-t">分组</td>
+		<td class="va-t">图片</td>
+		</tr>
+			<tr>
+				<td width="150" class="va-t">
+				<div style="height:20px;"></div>
+				<div class="portfolio-content ">
+					<table id="selectGroup"	class="table table-border table-bordered table-hover table-bg table-sort">
+						<tbody>
+							<#list ppList as pp >
+								<tr class="text-c">
+									<td ><a data-title =""
+				  onclick="reloadPicture('${pp.id!}')" href="javascript:;">
+					${pp.groupName!}</a</td>
+								</tr>		
+							</#list>
+						</tbody>
+					</table>
+				</div>
+				</td>
+				
+				<td class="va-t">
+				<iframe id="testIframe" name="testIframe"  width="100%" height="250px"   src=""></iframe>
+					
+				</td>
+			</tr>
+			<tr>
+			<td colspan='2' style="text-align:center;" >
+					<button 
+						class="btn btn-primary radius"  id = "open-add-submit"  onClick="select_picture();">
+						<i class="Hui-iconfont">&#xe632;</i> 保存
+					</button>
+					&nbsp;	&nbsp;				
+					<button onClick="open_close();" class="btn btn-default radius"
+						type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+				</td>
+			</tr>
+		</table></div>
+	</div>
+  
+	<!--_footer 作为公共模版分离出去-->
+	<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/jquery/1.9.1/jquery-form.js"></script>
+	<script type="text/javascript" src="lib/layer/2.1/layer.js"></script>
+	<script type="text/javascript" src="lib/icheck/jquery.icheck.min.js"></script>
+	<script type="text/javascript"
+		src="lib/jquery.validation/1.14.0/jquery.validate.min.js"></script>
+	<script type="text/javascript"
+		src="lib/jquery.validation/1.14.0/validate-methods.js"></script>
+	<script type="text/javascript"
+		src="lib/jquery.validation/1.14.0/messages_zh.min.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.admin.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/comment.js"></script>
+	<!--/_footer /作为公共模版分离出去-->
+
+	<!--请在下方写此页面业务相关的脚本-->
+	<script type="text/javascript" src="http://gosspublic.alicdn.com/aliyun-oss-sdk.min.js"></script>
+	<script type="text/javascript">
+	var dataTable= null;
+	var checkList= null;
+
+	$(function(){
+		
+		$("#sub_logo").click(function(){
+			$("#file1").click();
+		});
+		$("#sub_picture").click(function(){
+			$("#file2").click();
+		});
+		$("#club-detail-submit").click(function(){
+			// 看空
+			if($.trim($('#logo-img').attr("src")).length<1){
+				layer.msg("俱乐部Logo不能为空！",{icon:2,time:1000});
+				return;
+			}
+			if($.trim($('#picture-img').attr("src")).length<1){
+				layer.msg("背景图片不能为空！",{icon:2,time:1000});
+				return;
+			}
+			if($.trim($("#intro").val()).length==0){
+				layer.msg("俱乐部简介不能为空！",{icon:2,time:1000});
+				return;
+			}
+			//获取userid
+			$.ajax({
+				type:"POST",
+				url:"club/updateDetail",
+				data:{"id":$('#clubLogo').val(),"intro":$('#intro').val(),"avatar":$('#logo-img').attr("src"),"bgImg":$('#picture-img').attr("src")},
+				success:function(data){
+					if(data.code=="999"){
+	            		layer.alert(data.msg);
+	            	}else
+					  layer.msg("保存成功！",{icon:1,time:2000}, function(index){
+	                	  //do something
+	                	 // dataTable.ajax.reload();
+	                	//layer.close(index);
+	                	location.replace(location.href);
+	                	});
+				}
+				
+			})
+		})
+		$("#picture_select").click(function(){
+			// 设置为 背景图片
+			$("#picture-or-logo").attr("value","2");
+			layer.open({
+				  type: 1, 
+				  area: ['800px', '406px'],
+				  title:"图库",
+				  content: $("#div-group-and-list") 
+				}); 
+		});
+		$("#logo_select").click(function(){
+			// 设置为 logo图片
+			$("#picture-or-logo").attr("value","1");
+			layer.open({
+				  type: 1, 
+				  area: ['800px', '406px'],
+				  title:"图库",
+				  content: $("#div-group-and-list") 
+				}); 
+		});
+	});
+		 /*上传logo*/
+	    $(document).on("change",".file-logo",function(){
+	    	var name = $("#file1").val();
+	    	var type = name.substr(name.lastIndexOf(".")).toLowerCase();
+	    	if(type==".jpg"||type==".jpeg"||type==".png"||type==".bmp"){
+		    	var index = layer.load(4,{shade : [0.6,'#FFFAFA'],content:"上传中..."});
+		    	$("#form-club-logo").ajaxSubmit({
+		            url: "club/clubLogo",
+		            type: "post",
+		            dataType: "json",
+		            timeout: 600000,
+		            success: function(data) {
+		            	layer.close(index)
+		            	if(data.code=="999"){
+		            		layer.alert(data.msg);
+		            	}else
+		            	layer.msg("上传成功",{icon:1,time:1000},function(){
+		            		layer.close(index);
+			                // 显示logo              
+						      $("#logo-img").attr("src",data.url);
+		            	});
+		            	
+		            },
+		            error: function(data, status, e) {
+		            	layer.close(index);
+		                layer.msg("上传失败，错误信息：" + e,{icon:2,time:2000});
+		            }
+		        });	
+	    	}else{
+	    		layer.alert("请选择格式为jpg，jpeg,png,bmp格式的图片！" );
+	    	}
+	    });
+		 
+	    $(document).on("change",".file-picture",function(){
+	    	var name = $("#file2").val();
+	    	var type = name.substr(name.lastIndexOf(".")).toLowerCase();
+	    	if(type==".jpg"||type==".jpeg"||type==".png"||type==".bmp"){
+		    	var index = layer.load(4,{shade : [0.6,'#FFFAFA'],content:"上传中..."});
+		    	$("#form-club-picture").ajaxSubmit({
+		            url: "club/clubPicture",
+		            type: "post",
+		            dataType: "json",
+		            timeout: 600000,
+		            success: function(data) {
+		            	layer.close(index)
+		            	if(data.code=="999"){
+		            		layer.alert(data.msg);
+		            	}else
+		            	layer.msg("上传成功",{icon:1,time:1000},function(){
+		            		layer.close(index);
+			                // 显示logo
+						      $("#picture-img").attr("src",data.url);
+		            	})
+		            	
+		            },
+		            error: function(data, status, e) {
+		            	layer.close(index);
+		            	layer.msg("上传失败，错误信息：" + e,{icon:2,time:2000});
+		            }
+		        });	
+	    }else{
+	    	layer.alert("请选择格式为jpg，jpeg,png,bmp格式的图片！" );
+	    }
+	    
+	});
+	
+	
+	
+	$(document).ready(function(){
+		var logo = "${club.avatar!}"
+		if(logo!=''){
+			$("#logo-img").attr("src",logo);
+		}
+		var picture = "${club.bgImg!}"
+		if(picture!=''){
+			$("#picture-img").attr("src",picture);
+		}
+		});
+	function reloadPicture(groupId){
+		　$('#testIframe').attr('src', 'club/groupAndList/'+groupId);
+	}
+	// 关闭窗口
+	function open_close(){
+		layer.closeAll();
+	}
+	// 获取选择图片的id
+	function select_picture(){
+		getCheck();
+		if(checkList.length==1){
+		
+			// 查询信息，并修改图片路径
+			$.ajax({
+				type:"POST",
+				url:"club/updateClubPicture",
+				data:{"id":checkList[0],"clubId":"${club.id!}"},
+				success:function(data){
+					if(data.code=="999"){
+	            		layer.alert(data.msg);
+	            	}else{
+						layer.closeAll();
+						//location.replace(location.href);	
+						if($("#picture-or-logo").val()=='1'){
+							$("#logo-img").attr("src",data.url);
+						}else{
+							$("#picture-img").attr("src",data.url);
+						}
+	            	}
+				}
+			});
+		}else{
+			layer.msg("请选择一张图片，不要多选或少选！",{icon:2,time:2000});
+		}
+		
+	}
+	
+	 function getCheck(){
+		 checkList= new Array() ;
+		 var obj=document.getElementById("testIframe").contentWindow;
+		 var obji1=obj.document.getElementsByName("checkbox_");
+		 for(var i =0;i<obji1.length;i++){
+			  if(obji1[i].checked== true){
+				  checkList.push(obji1[i].id);
+			 } 
+		 }
+		// var val=eval(obji1).value;
+		 //$("#testIframe").
+		/*  obji1.each(function(i,d){
+						 if(d.checked){
+							 checkList.push(d.id);
+						 }
+			})  */
+		/*  if(document.frames("testIframe").document.all.length){
+
+	           for(var i=0;i<document.all.length;i++){
+
+	              if(document.frames("testIframe").document.all(i).type == 'checkbox' && document.frames("testIframe").document.all(i).checked== true) {
+
+	                     File_NAME=document.frames("myFrame").document.all(i).value;
+
+	                     alert(File_NAME);
+
+	                     count++;
+
+	              }
+
+	           }
+
+	       } */
+	} 
+	</script>
+</body>
+</html>

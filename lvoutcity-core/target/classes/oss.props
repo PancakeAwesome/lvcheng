@@ -1,0 +1,13 @@
+oss.endpoint=oss-cn-hangzhou.aliyuncs.com
+oss.internalEndpoint=oss-cn-hangzhou-internal.aliyuncs.com
+oss.accessKeyId=ex5C8l1gz2Q90mua
+oss.accessKeySecret=lDp0CvklKDKg3pf0UnmtY2syuMEUjk
+oss.bucket=lvc998
+oss.imgProcessEndPoint=img-cn-hangzhou.aliyuncs.com
+
+#oss.endpoint=oss-cn-hangzhou.aliyuncs.com
+#oss.internalEndpoint=oss-cn-hangzhou-internal.aliyuncs.com
+#oss.accessKeyId=1ZnC902Uo76vSmpR
+#oss.accessKeySecret=THcwwg71o7V3ABjxIlQ8MUMTNIlj4S
+#oss.bucket=lvc866
+#oss.imgProcessEndPoint=img-cn-hangzhou.aliyuncs.com

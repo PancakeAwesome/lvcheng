@@ -1,0 +1,212 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<base href="${basePath}"/>
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<script type="text/javascript" src="lib/PIE_IE678.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css" href="static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="static/h-ui/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="lib/Hui-iconfont/1.0.7/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="lib/icheck/icheck.css" />
+<link rel="stylesheet" type="text/css" href="static/h-ui/skin/blue/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="static/h-ui/css/style.css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+</head>
+<body>
+<header class="navbar-wrapper">
+	<div class="navbar navbar-fixed-top">
+		<div class="container-fluid cl"> <a class="logo navbar-logo f-l mr-10 hidden-xs" >旅城在线后台管理系统</a><a aria-hidden="false" class="nav-toggle Hui-iconfont visible-xs" href="javascript:;">&#xe667;</a>
+			<nav id="Hui-userbar" class="nav navbar-nav navbar-userbar hidden-xs">
+				<ul class="cl">
+					<li class="dropDown dropDown_hover"> <a  class="dropDown_A">${session["club_name"]} &nbsp; - &nbsp; ${session["user_back"].user_name} <i class="Hui-iconfont">&#xe6d5;</i></a>
+						<ul class="dropDown-menu menu radius box-shadow">
+							<li><a  data-title="密码重置" onclick="editPass()">密码修改</a></li>
+							<li><a onclick="loginOut()">退出</a></li>
+						</ul>
+					</li>
+					<!-- <li id="Hui-msg"> <a href="#" title="消息"><span class="badge badge-danger">1</span><i class="Hui-iconfont" style="font-size:18px">&#xe68a;</i></a> </li> -->
+					<li id="Hui-skin" class="dropDown right dropDown_hover"> <a href="javascript:;" class="dropDown_A" title="换肤"><i class="Hui-iconfont" style="font-size:18px">&#xe62a;</i></a>
+						<ul class="dropDown-menu menu radius box-shadow">
+							<li><a href="javascript:;" data-val="default" title="默认（黑色）">默认（黑色）</a></li>
+							<li><a href="javascript:;" data-val="blue" title="蓝色">蓝色</a></li>
+							<li><a href="javascript:;" data-val="green" title="绿色">绿色</a></li>
+							<li><a href="javascript:;" data-val="red" title="红色">红色</a></li>
+							<li><a href="javascript:;" data-val="yellow" title="黄色">黄色</a></li>
+							<li><a href="javascript:;" data-val="orange" title="绿色">橙色</a></li>
+						</ul>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</header>
+<aside class="Hui-aside">
+	<input runat="server" id="divScrollValue" type="hidden" value="" />
+	${menu}
+</aside>
+<div class="dislpayArrow hidden-xs"><a class="pngfix" href="javascript:void(0);" onClick="displaynavbar(this)"></a></div>
+<section class="Hui-article-box">
+	<div id="Hui-tabNav" class="Hui-tabNav hidden-xs">
+		<div class="Hui-tabNav-wp">
+			<ul id="min_title_list" class="acrossTab cl">
+				<li class="active"><span title="我的桌面" data-href="welcome">首页</span><em></em></li>
+			</ul>
+		</div>
+		<div class="Hui-tabNav-more btn-group"><a id="js-tabNav-prev" class="btn radius btn-default size-S" href="javascript:;"><i class="Hui-iconfont">&#xe6d4;</i></a><a id="js-tabNav-next" class="btn radius btn-default size-S" href="javascript:;"><i class="Hui-iconfont">&#xe6d7;</i></a></div>
+	</div>
+	<div id="iframe_box" class="Hui-article">
+		<div class="show_iframe">
+			<div style="display:none" class="loading"></div>
+			<iframe scrolling="yes" frameborder="0" src="welcome"></iframe>
+		</div>
+	</div>
+</section>
+
+<div class="page-container" hidden="true" id="div-bind" >
+			<div class="row cl">
+				<label >旧密码：</label>
+				<div style="float:right;" class="formControls col-xs-8 col-sm-9">
+					<input type="password"  class="input-text" value=""  id="old_pass"
+						name="old_pass"    >
+					<input type="hidden" id="userId" name="userId" value="${session.current_user_id}">	
+				</div>
+			</div>	
+			<div class="row cl">
+				<label ></label>
+				<div style="height:10px;" class="formControls col-xs-8 col-sm-9">						
+				</div>
+			</div>	
+			<div class="row cl">
+				<label >新密码：</label>
+				<div style="float:right;" class="formControls col-xs-8 col-sm-9">
+					<input type="password"  class="input-text" value=""  id="new_pass"
+						name="new_pass"    >
+						
+				</div>
+			</div>	
+			<div class="row cl">
+				<label ></label>
+				<div style="height:10px;" class="formControls col-xs-8 col-sm-9">						
+				</div>
+			</div>	
+			<div class="row cl">
+				<label >确认密码：</label>
+				<div style="float:right;" class="formControls col-xs-8 col-sm-9">
+					<input type="password"  class="input-text" value=""  id="new_pass_again"
+						name="new_pass_again"    >
+						
+				</div>
+			</div>		
+			<div class="row cl">
+				<label ></label>
+				<div style="height:10px;" class="formControls col-xs-8 col-sm-9">						
+				</div>
+			</div>	
+			<div class="row cl">
+				<label ></label>
+				<div style="float:right;" class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+					<button 
+						class="btn btn-primary radius" type="button" id = "open-add-submit"  onClick="savePass();">
+						<i class="Hui-iconfont">&#xe632;</i> 保存
+					</button>
+					&nbsp;	&nbsp;				
+					<button onClick="open_close();" class="btn btn-default radius"
+						type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+				</div>
+			</div>
+	</div>
+
+
+<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script> 
+<script type="text/javascript" src="lib/layer/2.1/layer.js"></script> 
+<script type="text/javascript" src="static/h-ui/js/H-ui.js"></script> 
+<script type="text/javascript" src="static/h-ui/js/H-ui.admin.js"></script> 
+<script type="text/javascript">
+function editPass(){
+	// 清空缓存
+	$("#old_pass").val("");
+	$("#new_pass").val("");
+	$("#new_pass_again").val("");
+	layer.open({
+		  type: 1, 
+		  area: ['500px', '300px'],
+		  title:"密码修改",
+		  content: $("#div-bind") //这里content是一个普通的String
+		});
+}
+//保存密码
+function savePass(){
+	if($.trim($("#old_pass").val()).length==0){
+		layer.msg("旧密码不能为空！",{icon:2,time:2000});
+		return;
+	}
+	if($.trim($("#new_pass").val()).length==0){
+		layer.msg("新密码不能为空！",{icon:2,time:2000});
+		return;
+	}
+	if($.trim($("#new_pass_again").val()).length==0){
+		layer.msg("确认密码不能为空！",{icon:2,time:2000});
+		return;
+	}
+	if($("#new_pass_again").val()!=$("#new_pass").val()){
+		layer.msg("两次密码不一致！",{icon:2,time:2000});
+		return;
+	}
+	
+	$.ajax({
+		type:"POST",
+		url:"common/updatePass",
+		data:{"id":$("#userId").val(),
+			"old_pass":$("#old_pass").val(),
+			"new_pass":$("#new_pass").val(),
+			"new_pass_again":$("#new_pass_again").val()},
+		success:function(data){
+			if(data.code=="999"){
+        		layer.alert(data.msg);
+        	}else{
+        		if(data.result =="error"){
+        			layer.msg("旧密码不正确！",{icon:2,time:2000},function(){
+        			});
+        		}else{
+        			layer.msg("修改成功！",{icon:1,time:2000},function(){
+        				layer.closeAll();
+        				loginOut();
+        			});
+        		}
+        	}
+			
+			
+			//parent.dataTable.reload();
+		}
+	});
+}
+
+//关闭当前弹窗
+function open_close(){
+	
+	layer.closeAll();
+}
+function loginOut(){
+	$.ajax({
+		type:"POST",
+		url:"login/loginOut",
+		async: false,
+		success:function(data){
+			window.location.href="${basePath}";
+		}
+	});
+}
+</script>
+</body>
+</html>

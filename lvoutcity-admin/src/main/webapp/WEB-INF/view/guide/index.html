@@ -1,0 +1,440 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<base href="${basePath}"/>
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<script type="text/javascript" src="lib/PIE_IE678.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css"
+	href="lib/Hui-iconfont/1.0.7/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="lib/icheck/icheck.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="static/h-ui/css/style.css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>攻略管理</title>
+</head>
+<body>
+	<nav class="breadcrumb">
+		<i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span>
+		攻略路线管理 <span class="c-gray en">&gt;</span>攻略管理 <a
+			class="btn btn-success radius r"
+			style="line-height: 1.6em; margin-top: 3px"
+			href="javascript:location.replace(location.href);" title="刷新"><i
+			class="Hui-iconfont">&#xe68f;</i></a>
+	</nav>
+	<div class="page-container">
+		<div class="text-c">
+		<span id="is_club_hide" >
+				<select name="clubId" id ="clubId" class="select-box" style="width:120px;height:30px"></select>
+			</span>
+			<input type="text" class="input-text" style="width: 120px"
+				placeholder="攻略编号" id="guideNo" name="guideNo"> <!-- <input type="text"
+				class="input-text" style="width: 120px" placeholder="俱乐部名称" id="name"
+				name="name"> --> <input type="text" class="input-text"
+				style="width: 120px" placeholder="攻略名称" id="name" name="name">
+				<select name="enabled" id ="enabled" class="select-box" style="width:120px;height:30px">
+					<option value="">-请选择-</option>
+					<option value="999">待上架</option>
+					<option value="1">已上架</option>
+					<option value="0">已下架</option>
+				</select>
+				
+			<button type="button" class="btn btn-success radius" id="select-club-condition" name="select-club-condition">
+				<i class="Hui-iconfont">&#xe665;</i> 查询
+			</button>
+		</div>
+		<div class="cl pd-5 bg-1 bk-gray mt-20">
+			<span class="l">
+				${functBtn!}
+				<!-- <a data-title ="新增"  onclick="openWindosAdd()" href="javascript:;"	class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i>攻略添加</a> -->
+			<!-- <a data-title ="详情"  onclick="openWindowEidt(1)" href="javascript:;"	class="btn btn-secondary radius"><i class="Hui-iconfont">&#xe700;</i>攻略详情</a>
+				<a href="javascript:;" onclick="deleteData();" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i>删除攻略</a> 
+				<a data-title ="修改"  onclick="openWindowEidt()" href="javascript:;"class="btn btn-warning radius"><i class="Hui-iconfont">&#xe6e1;</i>攻略修改</a> -->
+			<!-- <a href="javascript:;" onclick="updateEnabled(1);" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i>上攻略</a> 
+			<a href="javascript:;" onclick="updateEnabled(0);" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i>下攻略</a>  -->
+			</span>
+			
+		</div>
+		<div class="mt-20">
+			<table id="selectClub"
+				class="table table-border table-bordered table-hover table-bg table-sort">
+				<thead>
+					<tr class="text-c">
+						<th width="25"><input type="checkbox" name="" value=""></th>
+						<th width="80">攻略编号</th>
+						<th width="100">攻略名称</th>
+						<th width="80">状态</th>
+						<th width="100">时间</th>
+						<th width="40">创建人</th>
+						<th width="100">俱乐部</th>
+						<th width="100">创建时间</th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+	</div>
+	<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/layer/2.1/layer.js"></script>
+	<script type="text/javascript" src="lib/laypage/1.2/laypage.js"></script>
+	<script type="text/javascript" src="lib/My97DatePicker/WdatePicker.js"></script>
+	<script type="text/javascript"
+		src="lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+	<script type="text/javascript"
+		src="lib/public.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.admin.js"></script>
+	<script type="text/javascript" src="static/common/club.js"></script>
+	<script type="text/javascript">
+	var dataTable = null;
+	var checkList= null;
+	var dataId = null;
+	var dataIdList = new Array();
+	/* 获取checkbox点击td */
+	function getCheckData(){
+		 var checkList= new Array() ;
+		 
+		 $("input[name=checkbox]").each(function(i,d){
+						 if(d.checked){
+							 console.log(dataTable.row( $(this).parents('tr') ).data());
+							 data = dataTable.row( $(this).parents('tr') ).data(); 
+							 checkList.push(data);
+						 }
+			})
+		return checkList;
+	}
+	$(function(){
+		
+		dataTable = $("#selectClub").DataTable({
+			"processing" : true,
+			"bProcessing": true,
+			"bFilter": false, //过滤功能
+			"serverSide" : true,
+			searching:false,
+			"ordering": false,
+			"bAutoWidth": true,//自动宽度
+			"sLoadingRecords": "正在加载数据...",
+			"fnDrawCallback": function () {
+			     // first radio button list selection is not rendered, so needs to be re-drawn
+			     $('.radioButtonToCheck input').attr("checked", "checked");
+			},
+			//'iDisplayLength':13, //每页显示10条记录
+			"ajax" : {
+				"url" : "guide/getGuideList",
+			    "type": "POST",
+			    "data":function(d){
+			    	//d['clubNo']=$('#club-no').val();
+			    	d['guideNo']=$('#guideNo').val();
+			    	d['enabled']=$('#enabled option:selected').val();
+			    	d['name']=$('#name').val();
+			    	d['clubId']=$('#clubId').val();
+			    	//return JSON.stringify(d);
+			    	}
+			},
+			//"order" : [ [ 1, "asc" ] ],
+			"bDeferRender":false,
+			"orderMulti":false,
+			"columnDefs" : [ {
+				"data" : "id",
+				"targets":0,
+				"orderable":false,
+				 "render": function (data,type,row ) {
+                     return '<div style="text-align:center;"><input type="checkbox" id="'+row.id+'" name="checkbox" /></div>';
+                     }
+                  
+			}, {
+				"data" : "guideNo",
+				"targets":1,
+				"sDefaultContent":'',
+				"class": "text-c"
+			},{
+				"data":"name",
+				"targets":2,
+				"sDefaultContent":'',
+				"class": "text-c"
+			},
+			{
+				"data":"enabled",
+				"targets":3,
+				"sDefaultContent":'',
+				"render":function(data,type,row){
+					if(isNull(row.enabled)){
+						return '<span style="color:red;">待上架</span>';
+					}
+					
+					if(row.enabled == 0){
+						return '<span style="color:red;">已下架</span>';
+					}else{
+						return '<span style="color:green;">已上架</span>';
+					}
+				},
+				"class": "text-c"
+			},
+			{
+				"data":"aa",
+				"targets":4,
+				"render":function(data,type,row){
+					var str = '';
+					if(isNull(row.duration)){
+						str = '0  天';
+					}else{
+						str = row.duration+' 天';
+					}
+					if(isNull(row.night)){
+						str += '0 夜';
+					}else{
+						str += row.night+'夜';
+					}
+					return str;
+					//return data.duration'&nbsp;天'+data.night+'&nbsp;夜';
+				},
+				"sDefaultContent":'',
+				"class": "text-c"
+			},
+			{
+				"data":"createUser",
+				"targets":5,
+				"sDefaultContent":'',
+				"class": "text-c"
+			},{
+				"data":"clubName",
+				"targets":6,
+				"sDefaultContent":'',
+				"class": "text-c"
+			},{
+				"data":"createTime",
+				"targets":7,
+				"sDefaultContent":'',
+				"class": "text-c"
+			} ],
+			"language" : {
+				"sProcessing" : "处理中...",
+				"sLengthMenu" : "显示 _MENU_ 项结果",
+				"sZeroRecords" : "没有匹配结果",
+				"sInfo" : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+				"sInfoEmpty" : "显示第 0 至 0 项结果，共 0 项",
+				"sInfoFiltered" : "(由 _MAX_ 项结果过滤)",
+				"sInfoPostFix" : "",
+				"sSearch" : "搜索:",
+				"sUrl" : "",
+				"sEmptyTable" : "表中数据为空",
+				"sLoadingRecords" : "载入中...",
+				"sInfoThousands" : ",",
+				"oPaginate" : {
+					"sFirst" : "首页",
+					"sPrevious" : "上页",
+					"sNext" : "下页",
+					"sLast" : "末页"
+				},
+			},
+			"sZeroRecords": "没有检索到数据"
+		});
+		//初始化获取信息
+		initRowDataTable();
+	});
+	
+	// 根据条件查询club
+	$("#select-club-condition").click(function(){
+		dataTable.ajax.reload();
+	});
+	
+	/* 初始化页面上的checkbox按钮  */
+	/* $(function(){ 
+		　 $('td input').checked = false;
+	}); */ 
+	
+	
+	var idList = new Array();
+	var dataList = new Array();
+	function initRowDataTable(){
+		$('#selectClub tbody').on( 'click', 'tr', function () {
+			console.log( dataTable.row( this ).data() ); 
+			dataId = dataTable.row( this ).data();
+			idList = getCheck();
+		});
+		$('#selectClub thead').on( 'click', 'tr', function () {
+			idList = getCheck();
+			console.log( idList );
+		});
+	}
+	
+	function openWindowEidt(view){
+		/* console.log('asdfsdf'+dataId); */
+		/* console.log(idList); */
+		dataList = getCheckData();
+		if(idList.length != 1){
+			layer.msg('请选择一个攻略!', {
+				icon : 5
+			});
+			return;
+		}
+		if(isNull(view)){
+			$.ajax({
+				url:'guide/isRelated',
+				data:{id:dataList[0].id},
+				method:"POST",
+				success:function(r){
+					if(!!r.error){
+						layer.msg(r.error, {icon : 2});
+					}else{
+						openWindowGuide('攻略修改  攻略名称为<font style="color: blue;">"'+dataList[0].name+'"</font>', 'guide/edit?id='+dataList[0].id);
+					}
+				}
+				
+			});
+			
+		}else{
+			openWindowGuide('攻略详情', 'guide/edit?view=1&id='+dataList[0].id);
+		} 
+	}
+	
+	//修改上架或下架
+	function updateEnabled(isDele){
+		if (idList.length == 0) {
+			layer.alert("请选择数据!");
+			return;
+		}else if (idList.length > 1) {
+			layer.alert("只能选择一条数据!");
+			return;
+		}
+		
+		var title = '下架';
+		isDele == 1 ? title = '上架': title = '下架';
+		//询问框
+		layer.confirm('确定要修改为'+title+'?', {
+			btn : [ '确定', '取消' ]
+		//按钮
+		}, function() {
+			$.ajax({
+			    cache: true,
+			    type: "POST",
+			    url:"guide/updateEnabled",
+				data:{'idList':idList,'enabled':isDele},
+				error: function(request) {
+				layer.alert("失败！");
+				},
+				success: function(data) {
+					if(data.success){
+						layer.msg('修改成功!', {
+							icon : 1
+						});
+						dataTable.ajax.reload();
+					}else{
+						layer.msg(data.error, {
+							icon : 2,
+							time:2000
+						});
+					}
+			 	 }
+			});
+		});	
+	}
+	
+	function getCheck(){
+		 var checkList= new Array() ;
+		 $("input[name=checkbox]").each(function(i,d){
+						 if(d.checked){
+							 checkList.push(d.id);
+						 }
+			})
+		return checkList;
+	}
+	
+	function getCheckData(){
+		 var checkList= new Array() ;
+		 
+		 $("input[name=checkbox]").each(function(i,d){
+						 if(d.checked){
+							 console.log(dataTable.row( $(this).parents('tr') ).data());
+							 data = dataTable.row( $(this).parents('tr') ).data(); 
+							 checkList.push(data);
+						 }
+			})
+		return checkList;
+	}
+	
+	function copy(){
+		var selected = getCheck();
+		if(selected.length == 0 )
+			layer.msg('请选择攻略！', {icon: 2,time:2000});
+		else if(selected.length > 1)
+			layer.msg('只能选择一条攻略复制！', {icon: 2,time:2000});
+		else{
+			openWindowGuide("攻略复制","guide/edit?view=2&id="+selected[0]);
+			//addRouteWin(selected[0],"攻略复制",2)
+		}
+	}
+	
+	
+	//删除
+	function deleteData() {
+		dataIdList = getCheck();
+		if (isNull(dataId)) {
+			layer.alert("请选择一条进行删除！");
+			return;
+		}
+		//询问框
+		layer.confirm('确定要删除？', {
+			btn : [ '确定', '取消' ]
+		//按钮
+		}, function() {
+			// 数据库删除
+			$.ajax({
+			    cache: true,
+			    type: "POST",
+			    url:"guide/delete",
+			    data:{'idList':idList},
+				async: false,
+				error: function(request) {
+				layer.alert("删除失败！");
+				},
+				success: function(data) {
+					layer.msg('删除成功!', {
+						icon : 1
+					});
+					setTimeout(function(){
+						location.replace(location.href);
+					}, 1300);
+			 	 }
+			});
+		});	
+	}
+
+		//打开攻略添加页面
+	function openWindowGuide(title, url) {
+		var index = layer.open({
+			type : 2,
+			title : title,
+			content : url,
+			end:function(){
+				$("input[type=checkbox]").each(function(i,d){
+					 if(d.checked){
+						d.checked = false;
+					 }
+				})
+			}
+		});
+		layer.full(index);
+	}
+		
+	function openWindosAdd(){
+		openWindowGuide('添加攻略','guide/add');
+	}
+	</script>
+</body>
+</html>

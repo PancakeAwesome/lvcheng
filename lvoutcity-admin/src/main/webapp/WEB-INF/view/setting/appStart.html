@@ -1,0 +1,223 @@
+<!--_meta 作为公共模版分离出去-->
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<base href="${basePath}" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<LINK rel="Bookmark" href="/favicon.ico">
+<LINK rel="Shortcut Icon" href="/favicon.ico" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<script type="text/javascript" src="lib/PIE_IE678.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css"
+	href="lib/Hui-iconfont/1.0.7/iconfont.css" />
+	<link rel="stylesheet" type="text/css" href="lib/icheck/icheck.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="static/h-ui/css/style.css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<!--/meta 作为公共模版分离出去-->
+<style>
+#picture-img {
+	margin:20px;
+	cursor:pointer;
+	width:200px;
+	transition: opacity 0.5s;
+	-moz-transition: opacity 0.5s;	/* Firefox 4 */
+	-webkit-transition: opacity 0.5s;	/* Safari 和 Chrome */
+	-o-transition: opacity 0.5s;
+}
+#picture-img:hover {
+ opacity:0.5;
+}
+li {
+	float:left;
+	list-style-type:none;
+}
+</style>
+</head>
+<body>
+<div class="page-container" style="margin-bottom:50px;">
+		<div style = "min-height:40px"></div>
+			<form class="form form-horizontal"   method="post" enctype="multipart/form-data" id="pictures" >
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2">图片持续时间：</label>秒
+				<div class="formControls col-xs-8 col-sm-2">
+					<input  class="input-text" value="${img_last_time?if_exists}" placeholder=""
+						id="last_time" name="last_time" required>
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2">安卓加载图片：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<span class="btn-upload form-group"> 
+					<a href="javascript:void();" class="btn btn-primary radius">
+					<i class="iconfont">&#xf0020;</i>
+							本地上传</a>
+					 <input style="width:200px;" type="file" multiple name="file_0" class="input-file" id="file" picSize="720*1280" appType="0">
+					</span>
+					（要求尺寸720*1280）
+			</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2"></label>
+				<div id="picviews_0" class="formControls col-xs-8 col-sm-9">
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2">ios加载图片：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<span class="btn-upload form-group"> 
+					<a href="javascript:void();" class="btn btn-primary radius">
+					<i class="iconfont">&#xf0020;</i>
+							本地上传</a>
+					 <input style="width:200px;" type="file" multiple name="file_0" class="input-file" id="file" picSize="1242*2208" appType="1">
+					</span>
+					（要求尺寸1242*2208）
+			</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2"></label>
+				<div id="picviews_1" class="formControls col-xs-8 col-sm-9">
+				</div>
+			</div>
+
+	</form>
+	</div>
+	<footer class="footer  pos-f" style="bottom: 0; z-index: 20; width: 100%; background-color:#F8F8F8;">
+			<div class="row cl">
+				<button onclick="save();" class="btn btn-primary radius"	type="button">
+					<i class="Hui-iconfont">&#xe632;</i> 保存
+				</button>
+			</div>
+	</footer>
+  
+	<!--_footer 作为公共模版分离出去-->
+	<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/jquery.SuperSlide/2.1.1/jquery.SuperSlide.min.js"></script>
+	
+	<script type="text/javascript" src="lib/jquery/1.9.1/jquery-form.js"></script>
+	<script type="text/javascript" src="lib/layer/2.1/layer.js"></script>
+	<script type="text/javascript" src="lib/icheck/jquery.icheck.min.js"></script>
+	<script type="text/javascript"
+		src="lib/jquery.validation/1.14.0/jquery.validate.min.js"></script>
+	<script type="text/javascript"
+		src="lib/jquery.validation/1.14.0/validate-methods.js"></script>
+	<script type="text/javascript"
+		src="lib/jquery.validation/1.14.0/messages_zh.min.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.admin.js"></script>
+	<!--/_footer /作为公共模版分离出去-->
+
+	<!--请在下方写此页面业务相关的脚本-->
+	<script type="text/javascript">
+	$(function() {
+		<#if img_list??>		
+			<#list img_list as img>
+		    	 $("#picviews_${img.appType}").append('<li><img id= "picture-img" class="picture-img" onclick="imgClick(this)" alt="" src="${img.url}" appType="${img.appType}" picSize="${img.size}"></img></li>');
+			</#list>
+		</#if>
+	});
+	
+	function save(){
+		if($('#pictures').validate({rules:{last_time:"digits"}}).element('#last_time')){
+			var imgs = $('.picture-img');
+			console.dir(imgs)
+			var il = []
+			for(var i=0;i<imgs.length;i++){
+				var o = {
+					url:$(imgs[i]).attr("src"),
+					appType:$(imgs[i]).attr("appType"),
+					size:$(imgs[i]).attr("picSize")
+				};
+				il.push(o);
+			}
+// 			console.dir(il)
+			$.ajax({
+				type:"post",
+				url:"setting/saveAppStart",
+				data:{img_last_time:$('#last_time').val(),  img_list:il , length:imgs.length },
+				dataType: "json",
+	            timeout: 600000,
+	            beforeSend : function() {
+					layer.load(2, {
+						zindex : 1200
+					});
+				},
+	            success: function(data) {
+	            	layer.closeAll('loading');
+	            	if(data.code=="999"){
+	            		layer.alert(data.msg);
+	            	}else
+	            	layer.msg("操作成功！",{icon:1,time:1000});
+	            },
+	            error: function(data, status, e) {
+	            	layer.closeAll('loading');
+	            	layer.msg("操作失败！",{icon:2,time:1000});
+	            }
+			}) 
+		}
+		 
+	}
+	
+	$('.input-file').change(function(){
+		var name = $(this).val();
+		var picSize = $(this).attr("picSize");
+		var appType = $(this).attr("appType");
+		 var type = name.substr(name.lastIndexOf(".")).toLowerCase();
+    	if(type==".jpg"||type==".jpeg"||type==".png"||type==".bmp"){
+	    	$("#pictures").ajaxSubmit({
+	            url: "common/uploadSizeLimitedPics?size="+picSize,
+	            type: "post",
+	            dataType: "json",
+	            timeout: 600000,
+	            beforeSend : function() {
+					layer.load(2, {
+						zindex : 1200
+					});
+				},
+	            success: function(data) {
+	            	layer.closeAll('loading');
+	            	if(data.code=="999"){
+	            		layer.alert(data.msg);
+	            	}else if (!!data.url){
+		            	layer.msg("上传成功",{icon:1,time:1000});
+					    $("#picviews_"+appType).append('<li><img id= "picture-img" class="picture-img" onclick="imgClick(this)" picSize="'+picSize+'" appType="'+appType+'" alt="" src="'+data.url+'"></img></li>');
+	            	}else{
+		            	layer.msg(data.result,{icon:2,time:2000});
+	            	}
+	            },
+	            error: function(data, status, e) {
+	            	layer.closeAll('loading');
+	                layer.msg("上传失败，错误信息：" + e,{icon:2,time:2000});
+	            }
+	        });	
+    	}else{
+    		layer.alert("请选择格式为jpg，jpeg,png,bmp格式的图片！" );
+    	}		
+	})
+	
+	function imgClick(e){
+		layer.confirm('移除图片', {icon: 3, title:'提示'}, function(index){
+				$(e).remove();
+			  layer.close(index);
+			});
+	}
+	
+	</script>
+</body>
+</html>

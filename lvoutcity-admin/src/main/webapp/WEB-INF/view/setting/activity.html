@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<base href="${basePath}" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<script type="text/javascript" src="lib/PIE_IE678.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css"	href="static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css"	href="static/h-ui/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css"	href="lib/Hui-iconfont/1.0.7/iconfont.css" />
+<link rel="stylesheet" type="text/css"	href="static/h-ui/skin/blue/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css"  href="static/h-ui/css/style.css" />
+<link rel="stylesheet" type="text/css"
+	href="lib/MultiDatesPicker/1.6.3/css/jquery-ui.css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+</head>
+<body>
+			<div style = "min-height:40px"></div>
+			<div class="page-container" style='margin-bottom:60px;' >
+			
+				<form class="form form-horizontal" id="inv_form">
+				<legend>推荐人活动</legend>
+					<div class="row cl">
+						<label class="form-label col-sm-2">是否启用：</label>
+						<div class="formControls col-sm-2">
+							<input type="checkbox" id="inv_act_enable" name="enable"
+								onclick = "setEnableValue(this);" value = "${inv_act.enable!}" <#if (inv_act.enable='1')>checked</#if> >
+						</div>
+					</div>
+					<div class="row cl">
+						<label class="form-label col-sm-2">开始日期：</label>
+						<div class="formControls col-sm-2">
+							<input type="text" id="inv_act_startDate" name="startDate"
+								class="input-text radius size-M" value="${(inv_act.startDate?string('yyyy-MM-dd'))!}">
+						</div>
+					</div>
+					<div class="row cl">
+						<label class="form-label col-sm-2">结束日期：</label>
+						<div class="formControls col-sm-2">
+							<input type="text" id="inv_act_endDate" name="endDate"
+								class="input-text radius size-M" value="${(inv_act.endDate?string('yyyy-MM-dd'))!}">
+						</div>
+					</div>
+					<div class="row cl">
+						<label class="form-label col-sm-2">名额：</label>
+						<div class="formControls col-sm-2">
+									<input type="text" id="inv_act_quota" name="quota"
+										class="input-text radius size-M" value="${inv_act.quota!}">
+						</div>
+						<span class='va-m c-999'>为0时不做名额限制</span>
+					</div>
+					<div class="row cl">
+						<label class="form-label col-sm-2">注册时：</label>
+						<label class="form-label col-sm-1">送金币：</label>
+						<div class="formControls col-sm-1">
+									<input type="text" id="inv_act_gold_reg" name="goldReg"
+										class="input-text radius size-M" value="${inv_act.goldReg!}">
+						</div>
+						<label class="form-label col-sm-1">送积分：</label>
+						<div class="formControls col-sm-1">
+									<input type="text" id="inv_act_point_reg" name="pointReg"
+										class="input-text radius size-M" value="${inv_act.pointReg!}">
+						</div>
+					</div>
+					<div class="row cl">
+						<label class="form-label col-sm-2">登陆时：</label>
+						<label class="form-label col-sm-1">送金币：</label>
+						<div class="formControls col-sm-1">
+									<input type="text" id="inv_act_gold_login" name="goldLogin"
+										class="input-text radius size-M" value="${inv_act.goldLogin!}">
+						</div>
+						<label class="form-label col-sm-1">送积分：</label>
+						<div class="formControls col-sm-1">
+									<input type="text" id="inv_act_point_login" name="pointLogin"
+										class="input-text radius size-M" value="${inv_act.pointLogin!}">
+						</div>
+					</div>
+					</form>
+					<form class="form form-horizontal" id="reg_form">
+					<legend>注册人活动</legend>
+					<div class="row cl">
+						<label class="form-label col-sm-2">是否启用：</label>
+						<div class="formControls col-sm-2">
+							<input type="checkbox" id="reg_act_enable" name="enable"
+								onclick = "setEnableValue(this);" value = "${reg_act.enable!}" <#if (reg_act.enable='1')>checked</#if> >
+						</div>
+					</div>
+					<div class="row cl">
+						<label class="form-label col-sm-2">开始日期：</label>
+						<div class="formControls col-sm-2">
+							<input type="text" id="reg_act_startDate" name="startDate"
+								class="input-text radius size-M" value="${(reg_act.startDate?string('yyyy-MM-dd'))!}">
+						</div>
+					</div>
+					<div class="row cl">
+						<label class="form-label col-sm-2">结束日期：</label>
+						<div class="formControls col-sm-2">
+							<input type="text" id="reg_act_endDate" name="endDate"
+								class="input-text radius size-M" value="${(reg_act.endDate?string('yyyy-MM-dd'))!}">
+						</div>
+					</div>
+					<div class="row cl">
+						<label class="form-label col-sm-2">名额：</label>
+						<div class="formControls col-sm-2">
+									<input type="text" id="reg_act_quota" name="quota"
+										class="input-text radius size-M" value="${reg_act.quota!}">
+						</div>
+						<span class='va-m c-999'>为0时不做名额限制</span>
+					</div>
+					<div class="row cl">
+						<label class="form-label col-sm-2">注册时：</label>
+						<label class="form-label col-sm-1">送金币：</label>
+						<div class="formControls col-sm-1">
+									<input type="text" id="reg_act_gold_reg" name="goldReg"
+										class="input-text radius size-M" value="${reg_act.goldReg!}">
+						</div>
+						<label class="form-label col-sm-1">送积分：</label>
+						<div class="formControls col-sm-1">
+									<input type="text" id="reg_act_point_reg" name="pointReg"
+										class="input-text radius size-M" value="${reg_act.pointReg!}">
+						</div>
+					</div>
+					<div class="row cl">
+						<label class="form-label col-sm-2">登陆时：</label>
+						<label class="form-label col-sm-1">送金币：</label>
+						<div class="formControls col-sm-1">
+									<input type="text" id="reg_act_gold_login" name="goldLogin"
+										class="input-text radius size-M" value="${reg_act.goldLogin!}">
+						</div>
+						<label class="form-label col-sm-1">送积分：</label>
+						<div class="formControls col-sm-1">
+									<input type="text" id="reg_act_point_login" name="pointLogin"
+										class="input-text radius size-M" value="${reg_act.pointLogin!}">
+						</div>
+					</div>
+				</form>
+				
+			</div>
+			<div class="footer  pos-f"
+						style="bottom: 0; z-index: 20; width: 100%; background-color:#fff;">
+						<div class="row cl" id="buttons">
+							<button onClick="save();"
+								class="btn btn-primary radius" type="button">
+								<i class="Hui-iconfont">&#xe632;</i> 保存
+							</button>
+						</div>
+			</div>
+	<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/layer/2.1/layer.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.admin.js"></script>
+	<script type="text/javascript" src="lib/jquery.validation/1.14.0/jquery.validate.min.js"></script>
+	<script type="text/javascript" src="lib/jquery.validation/1.14.0/validate-methods.js"></script>
+	<script type="text/javascript" src="lib/jquery.validation/1.14.0/messages_zh.min.js"></script>
+	<script type="text/javascript"
+		src="lib/MultiDatesPicker/1.6.3/js/jquery-ui-1.11.1.js"></script>
+	<script type="text/javascript">
+	$.datepicker.regional.zh = {
+			closeText : "关闭", // Display text for close link
+			prevText : "<<", // Display text for previous month link
+			nextText: ">>", // Display text for next month link
+			monthNames : [ '一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月',
+					'九月', '十月', '十－月', '十二月' ], // Names of months for drop-down and formatting
+			monthNamesShort : [ "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+					"Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ], // For formatting
+			dayNames : [ '日', '一', '二', '三', '四', '五', '六' ], // For formatting
+			dayNamesShort : [ '日', '一', '二', '三', '四', '五', '六' ], // For formatting
+			dayNamesMin : [ '日', '一', '二', '三', '四', '五', '六' ], // Column headings for days starting at Sunday
+			weekHeader : "周", // Column header for week of the year
+			dateFormat : "yy-mm-dd", // See format options on parseDate
+			isRTL : false, // True if right-to-left language, false if left-to-right
+			showMonthAfterYear : false, // True if the year select precedes month, false for month then year
+			yearSuffix : "" // Additional text to append to the year in the month headers
+		}
+	
+	// 时间控件
+	 $( "#inv_act_startDate" ).datepicker($.datepicker.regional.zh);
+	 $( "#inv_act_endDate" ).datepicker($.datepicker.regional.zh);
+	 $( "#reg_act_startDate" ).datepicker($.datepicker.regional.zh);
+	 $( "#reg_act_endDate" ).datepicker($.datepicker.regional.zh);
+		
+	 
+	 function save(){
+		 var tar = ['inv','reg'];
+		 var valid = true;
+		 for(var i=0,l=tar.length;i<l;i++){
+			 if($("#"+tar[i]+"_act_enable").val()==1){
+				 if(!$('#'+tar[i]+'_form').validate({ignore: ".ignore",
+						rules: {
+							startDate: "required",
+							endDate:"required",
+							quota:{digits:true,required:true},
+							goldReg:{digits:true,required:true},
+							goldLogin:{digits:true,required:true},
+							pointReg:{digits:true,required:true},
+							pointLogin:{digits:true,required:true}
+					  }}).form()){
+					 	valid = false;
+						break;
+					}
+			 }else{
+				$('#'+tar[i]+'_form').validate().resetForm();
+			 }
+		 }
+		 if(!valid)
+			 return;
+		 
+		 var data = [];
+		 for(var i=0,l=tar.length;i<l;i++){
+
+			var d = {
+					enable : $('#' + tar[i] + '_act_enable').val(),
+					startDate : $('#' + tar[i] + '_act_startDate').val(),
+					endDate : $('#' + tar[i] + '_act_endDate').val(),
+					quota : $('#' + tar[i] + '_act_quota').val(),
+					goldReg : $('#' + tar[i] + '_act_gold_reg').val(),
+					goldLogin : $('#' + tar[i] + '_act_gold_login').val(),
+					pointReg : $('#' + tar[i] + '_act_point_reg').val(),
+					pointLogin : $('#' + tar[i] + '_act_point_login').val(),
+					target  : tar[i]
+				} ;
+			data.push(d);
+
+			}
+			$.ajax({
+				url : "setting/saveActivity",
+				method : "POST",
+				data : {data:data},
+				beforeSend : function() {
+					layer.load(2, {
+						zindex : 1200
+					});
+				},
+				success : function(r) {
+					layer.closeAll('loading');
+					if (r.result == "success") {
+						parent.layer.msg('操作成功！', {
+							icon : 1,
+							time : 2000
+						});
+					} else if (r.code == 999) {
+						layer.msg(r.msg, {
+							icon : 2,
+							time : 2000
+						});
+					} else {
+						layer.msg(r.result, {
+							icon : 2,
+							time : 2000
+						});
+					}
+				}
+			});
+		}
+
+		function setEnableValue(t) {
+			$(t).val(Math.abs($(t).val() - 1));
+		}
+	</script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+jdbc.url=jdbc:mysql://120.27.178.90:3306/dl_tourism?characterEncoding=utf-8
+jdbc.user=t_dl
+jdbc.password=123456
+jdbc.driverClassName=com.mysql.jdbc.Driver
+#redis.host=120.26.45.246
+redis.host=127.0.0.1
+redis.port=6379
+#http.url=http://121.199.15.74:8081
+http.url=http://localhost:8080

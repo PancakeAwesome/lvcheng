@@ -1,0 +1,273 @@
+<!--_meta 作为公共模版分离出去-->
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<base href="${basePath}" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<LINK rel="Bookmark" href="/favicon.ico">
+<LINK rel="Shortcut Icon" href="/favicon.ico" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<script type="text/javascript" src="lib/PIE_IE678.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css"
+	href="lib/Hui-iconfont/1.0.7/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="lib/icheck/icheck.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="static/h-ui/css/style.css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<!--/meta 作为公共模版分离出去-->
+
+<title>新增俱乐部</title>
+<link href="lib/webuploader/0.1.5/webuploader.css" rel="stylesheet"
+	type="text/css" />
+</head>
+<body>
+	<div class="page-container">
+		<form class="form form-horizontal"  action="guide/saveOrUpdateMap" method ="post" id="formAttrGuideId">
+			<input type="hidden" class="input-text" value="${mapBean.id!}" placeholder="" id="id"
+						name="id">
+			<input type="hidden" class="input-text" value="${mapBean.guideId!}" placeholder="" id="guideId"
+						name="guideId">
+			<input type="hidden" class="input-text" value="${mapBean.attrId!}" placeholder="" id="attrId"
+						name="attrId">
+			<input type="hidden" class="input-text" value="${mapBean.lat!}" placeholder="" id="lat"
+						name="lat">
+			<input type="hidden" class="input-text" value="${mapBean.lng!}" placeholder="" id="lng"
+						name="lng">	
+			<input type="hidden" class="input-text" value="${mapBean.superMapId!}" id="superIdAdd"	name="superMapId">				
+			<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">名称：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<input type="text" class="input-text" value="${mapBean.name!}"  placeholder="" id="name"
+						name="name">
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2">类型：</label>
+				<div class="formControls col-xs-8 col-sm-9 skin-minimal">
+					<span class="select-box">
+					<select class="select" onchange="selectDayVaild(this.options[this.options.selectedIndex].value)" size="1" name="demo1">
+					    ${chcke!}
+					  </select>
+					</span>
+				</div>
+			</div>
+			<div class="row cl">
+				<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+					 <#if ("${mapBean.guideId!}" != "null" && "${mapBean.guideId!}" != "")>
+						<button 
+							class="btn btn-primary radius" type="submit" onclick="submitFromGuideAttr();"  id = "saveGuide_submit" >
+							<i class="Hui-iconfont">&#xe632;</i> 保存
+						</button>					
+					</#if>
+					<button onClick="layer_close();" class="btn btn-default radius"
+							type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+				</div>
+			</div>
+		</form>
+	</div>
+
+	<!--_footer 作为公共模版分离出去-->
+	<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/layer/2.1/layer.js"></script>
+	<script type="text/javascript" src="lib/laypage/1.2/laypage.js"></script>
+	<script type="text/javascript" src="lib/icheck/jquery.icheck.min.js"></script>
+	<script type="text/javascript"
+		src="lib/jquery.validation/1.14.0/jquery.validate.min.js"></script>
+	<script type="text/javascript" src="lib/public.js?id=1aaa13"></script>
+	<script type="text/javascript"
+		src="lib/jquery.validation/1.14.0/validate-methods.js"></script>
+	<script type="text/javascript"
+		src="lib/jquery.validation/1.14.0/messages_zh.min.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.admin.js"></script>
+	<!--/_footer /作为公共模版分离出去-->
+
+	<!--请在下方写此页面业务相关的脚本-->
+	<script type="text/javascript"
+		src="lib/webuploader/0.1.5/webuploader.min.js"></script>
+	<script type="text/javascript">
+	var type = '${mapBean.type!}'
+	console.log(type);
+	$(function(){
+		clickDistance();
+		
+		$('#selectAddTypeId').val(type);
+		
+		if(type == -1){
+			$('#name').removeAttr('readonly');
+		}else{
+			$('#name').attr('readonly','readonly');
+		}
+		
+		if(type == 3 || type == 5){
+			$('#distanceAddId').val(-1)
+			$('#distanceAddId').show();
+		}else{
+			$('#distanceAddId').hide();
+		}
+		
+		
+		if(type == 5){
+			$('#selectAddTypeId').attr("disabled","disabled"); 
+		}else{
+			$('#selectAddTypeId').removeAttr("disabled"); 
+		}
+		
+	}); 
+	
+	
+/* 	$("#saveGuide_submit").click(function(){
+		
+		layer_close();
+	}); */
+	function submitFromGuideAttr(){
+		//
+		$("#formAttrGuideId").validate({
+				rules:{
+					name:{
+						required:true,
+						minlength:2,
+						maxlength:16
+					}
+				},
+				onkeyup:false,
+				focusCleanup:true,
+				success:"valid",
+				submitHandler:function(form){
+					layer.msg('加载中', {icon: 16});
+					
+					$('#selectAddTypeId').removeAttr("disabled");
+					//加载层-风格4
+					
+					$.ajax({
+				        cache: true,
+				        type: "POST",
+				        url:"guide/saveOrUpdateMap",
+				        data:$('#formAttrGuideId').serialize(),// 你的formid
+				        async: false,
+				        error: function(request) {
+				            layer.msg("操作失败！", {
+								icon :2
+							});
+				        },
+				        success: function(data) {
+				        	if(isNotNull(data.error)){
+					        	 layer.msg(data.error, {
+										icon :1
+									});
+					        	 return;
+				        	}
+				        	 layer_close();
+				        }
+				    });
+				}
+		});
+	}
+	
+	function selectType(item){
+		console.log('asdfasdfasdf'+item.value);
+		if(item.value != 4){
+			$('#distanceAddId').val(-1);
+			$('#distanceAddId').hide();
+		}else{
+			$('#distanceAddId').show();
+		}
+		
+	}
+	
+	function selectDayVaild(value){
+		$('#saveGuide_submit').show();
+		console.log(value)
+		if(isNotNull(value) && value != -1){
+			 $.ajax({
+			        cache: true,
+			        type: "POST",
+			        url:"guide/getAttractionsVaild",
+			        data:{
+			        	 guideId:$('#guideId').val(),
+			        	 attrId:$('#attrId').val()
+			        	
+			        },// 你的formid
+			        async: false,
+			        error: function(request) {
+			        	console.log(request.error)
+			            layer.msg(request.error, {
+							icon :2
+						});
+			            $('#saveGuide_submit').hide();
+			        },
+			        success: function(data) {
+			        	 /* layer.msg("操作失败！", {
+								icon :1
+							});
+			        	 layer_close(); */
+			        	 console.log(data.success);
+			        	 if(data.success == 1){
+			        		 console.log(data.success);
+				        	 $('#superIdAdd').val(value);
+			        	 }else{
+			        		 layer.msg(data.error, {
+									icon :1
+								});
+			        	 }
+			        }
+			    });
+		}
+	}
+	
+	
+	function clickDistance(d){
+		/* var d = $("input[name='allowPush']:checked").val();
+		console.log('adsadada'+d);
+		if(d == 0){
+			$('#distanceAddId').hide();
+		}else{
+			$('#distanceAddId').show();
+		} */
+	}
+	
+	
+	/* 	var index = parent.layer.getFrameIndex(window.name);
+	parent.$('.btn-refresh').click();
+	parent.layer.close(index); */
+	
+	
+	
+	/* $.ajax({
+        cache: true,
+        type: "POST",
+        url:"guide/saveOrUpdateMap",
+        data:$('#formAttrGuideId').serialize(),// 你的formid
+        async: false,
+        error: function(request) {
+            layer.msg("操作失败！", {
+				icon :2
+			});
+        },
+        success: function(data) {
+        	alert('asdfasdf')
+        	 layer.msg("操作失败！", {
+					icon :1
+				});
+        	 layer_close();
+        }
+    }); */
+	</script>
+</body>
+</html>

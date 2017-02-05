@@ -1,0 +1,320 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="renderer" content="webkit|ie-comp|ie-stand">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport"
+		  content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+	<base href="${basePath}" />
+	<meta http-equiv="Cache-Control" content="no-siteapp" />
+	<!--[if lt IE 9]>
+	<script type="text/javascript" src="lib/html5.js"></script>
+	<script type="text/javascript" src="lib/respond.min.js"></script>
+	<script type="text/javascript" src="lib/PIE_IE678.js"></script>
+	<![endif]-->
+	<link rel="stylesheet" type="text/css"
+		  href="static/h-ui/css/H-ui.min.css" />
+	<link rel="stylesheet" type="text/css"
+		  href="static/h-ui/css/H-ui.admin.css" />
+	<link rel="stylesheet" type="text/css"
+		  href="lib/Hui-iconfont/1.0.7/iconfont.css" />
+	<link rel="stylesheet" type="text/css" href="lib/icheck/icheck.css" />
+	<link rel="stylesheet" type="text/css"
+		  href="static/h-ui/skin/default/skin.css" id="skin" />
+	<link rel="stylesheet" type="text/css" href="static/h-ui/css/style.css" />
+	<!--[if IE 6]>
+	<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+	<script>DD_belatedPNG.fix('*');</script>
+	<![endif]-->
+</head>
+<body>
+<nav class="breadcrumb">
+	<i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span>
+	财务管理 <span class="c-gray en">&gt;</span> 已出账单 <a
+		class="btn btn-success radius r"
+		style="line-height: 1.6em; margin-top: 3px"
+		href="javascript:location.replace(location.href);" title="刷新"><i
+		class="Hui-iconfont">&#xe68f;</i></a>
+</nav>
+<div class="page-container">
+	<div class="text-c">
+		<span id="is_club_hide" >
+				<select name="clubId" id ="clubId" class="select-box" style="width:120px;height:30px"></select>
+			</span>
+			<span class="select-box" style="width:150px">
+			<select class="select" id="account_status" name="account_status" size="1" >
+			    <option></option>
+				<option value="0">未确认</option>
+				<option value="1">已确认</option>
+				<option value="2">已结算</option>
+			</select>
+		</span>
+		<button type="submit" class="btn btn-success radius" id="searchAccount" name="">
+			<i class="Hui-iconfont">&#xe665;</i> 查询
+		</button>
+	</div>
+	<div class="cl pd-5 bg-1 bk-gray mt-20">
+		<span class="l"> 
+			${functBtn!}
+		</span>
+	</div>
+	<div class="mt-20">
+		<table id="accountTable" class="table table-border table-bordered table-hover table-bg table-striped">
+			<thead>
+				<tr class="text-c">
+						<th width="25"><input type="checkbox" name="" value=""></th>
+						<th>账单编号</th>
+						<th>俱乐部</th>
+						<th>账期</th>
+						<th>出账时间</th>
+						<th>结算方式</th>
+						<th>状态</th>
+						<th>账单金额</th>
+						<th>备注</th>
+						<th>操作</th>
+				</tr>
+			</thead>
+
+		</table>
+	</div>
+</div>
+<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="lib/layer/2.1/layer.js"></script>
+<script type="text/javascript" src="static/h-ui/js/H-ui.js"></script>
+<script type="text/javascript" src="static/h-ui/js/H-ui.admin.js"></script>
+<script type="text/javascript"
+		src="lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+<script type="text/javascript"
+		src="lib/MultiDatesPicker/1.6.3/js/jquery-ui-1.11.1.js"></script>
+<script type="text/javascript" src="static/common/club.js"></script>
+<script type="text/javascript">
+	layer.config({
+	  extend: 'extend/layer.ext.js'
+	});
+	var dataTable = null;
+
+	$(function() {
+
+		$('.table-sort tbody').on( 'click', 'tr', function () {
+			if ( $(this).hasClass('selected') ) {
+				$(this).removeClass('selected');
+			}
+			else {
+				table.$('tr.selected').removeClass('selected');
+				$(this).addClass('selected');
+			}
+		});
+
+		dataTable = $("#accountTable").DataTable({
+			"processing" : true,
+			"serverSide" : true,
+			"searching":false,
+			"ajax" : {
+				"url" : "account/selectAccount",
+				"type": "POST",
+				"data":function(d){
+					//d['club_name']=$("#club_name").val();
+					d['clubId']=$('#clubId option:selected') .val();
+					d['account_status']=$('#account_status').val();
+				}
+			},
+			"ordering":false,
+			"orderMulti":false,
+			"columnDefs" : [ {
+				"data" : "account_id",
+				"targets":0,
+				"orderable":false,
+				"render": function (data,type,row ) {
+					return '<div style="text-align:center;"><input type="checkbox" id="'+row.account_id+'" name="checkbox" /></div>';
+				},
+				"class": "text-c"
+			},{
+				"data":"account_no",
+				"targets":1,
+				"sDefaultContent":'',
+				"class": "text-c"
+			},{
+				"data":"club_name",
+				"targets":2,
+				"sDefaultContent":'',
+				"class": "text-c"
+			},{
+				"data":"account_period",
+				"targets":3,
+				"sDefaultContent":'',
+				"render" : function(data, type, row){
+					return row.start_date+" 至 "+row.end_date;
+				},
+				"class": "text-c"
+			},{
+				"data":"create_date",
+				"targets":4,
+				"sDefaultContent":'',
+				"class": "text-c"
+			},{
+				"data":"payment_mode",
+				"targets":5,
+				"sDefaultContent":'',
+				"render" : function(data, type, row){
+					switch(data){
+						case '0': return  "月初结算";
+					} 
+				},
+				"class": "text-c"
+			},{
+				"data":"account_status",
+				"targets":6,
+				"sDefaultContent":'',
+				"render" : function(data, type, row){
+					switch(data){
+						case '0': return  "未确认";
+						case '1': return  "已确认";
+						case '2': return  "已结算";
+					} 
+				},
+				"class": "text-c"
+			},{
+				"data":"account_amount",
+				"targets":7,
+				"sDefaultContent":'',
+				"class": "text-c"
+			},{
+				"data":"note",
+				"targets":8,
+				"sDefaultContent":'',
+				"class": "text-c"
+			},{
+				"data":"handler",
+				"targets":9,
+				"sDefaultContent":'',
+				"render":function(data,type,row){
+					var b1 = '<button  class="btn btn-warning radius size-MINI" onClick="account_detail(this,\''+row.account_id+'\')" href="javascript:;" title="明细">明细</button>';
+					return b1;
+				},
+				"class": "text-c"
+			} ],
+			"language" : {
+				"sProcessing" : "处理中...",
+				"sLengthMenu" : "显示 _MENU_ 项结果",
+				"sZeroRecords" : "没有匹配结果",
+				"sInfo" : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+				"sInfoEmpty" : "显示第 0 至 0 项结果，共 0 项",
+				"sInfoFiltered" : "(由 _MAX_ 项结果过滤)",
+				"sInfoPostFix" : "",
+				"sSearch" : "搜索:",
+				"sUrl" : "",
+				"sEmptyTable" : "表中数据为空",
+				"sLoadingRecords" : "载入中...",
+				"sInfoThousands" : ",",
+				"oPaginate" : {
+					"sFirst" : "首页",
+					"sPrevious" : "上页",
+					"sNext" : "下页",
+					"sLast" : "末页"
+				},
+				"oAria" : {
+					"sSortAscending" : ": 以升序排列此列",
+					"sSortDescending" : ": 以降序排列此列"
+				}
+			}
+		});
+	});
+
+	/*按照条件-查找*/
+	$("#searchAccount").click(function () {
+		dataTable.ajax.reload();
+	});
+	
+	function getCheck(){
+		 var checkList= new Array() ;
+		 $("input[type=checkbox]").each(function(i,d){
+				if(d.checked){
+					checkList.push(d.id);
+				}
+			})
+		return checkList;
+	}
+	
+	
+	
+	function account_detail(obj, id){
+		var index = layer.open({
+			type : 2,
+			title : "账单明细",
+			content : "account/detail?account_id=" + id
+		});
+		layer.full(index);
+	}
+	
+	
+	function account_confirm(){
+		console.log("asdasdasdasd");
+		var selected = getCheck();
+		if(selected.length == 0 ){
+			layer.msg('请选账单！', {icon: 2,time:2000});
+			return;
+		}
+		else if(selected.length > 1){
+			layer.msg('只能选择一条账单！', {icon: 2,time:2000});
+			return;
+		}
+		updateStatus(selected[0],1);
+	}
+	
+	function updateStatus(id, status, note){
+		layer.confirm(
+				'账单是否正确？',
+				function(index) {
+					// 更新数据库
+					$.ajax({
+						cache: true,
+						type: "POST",
+						url:"account/update",
+						data:{"id":id, "account_status":status},
+						async: false,
+						error: function(request) {
+							layer.msg('操作失败!', {icon: 2,time:2000});
+						},
+						success: function(data) {
+							if(!!data.success){
+								layer.msg('操作成功!', {icon: 1,time:2000});
+								dataTable.ajax.reload();
+							}else if(!!data.error){
+								layer.msg(data.error, {icon: 2,time:2000});
+							}
+
+						}
+					});
+				});
+	}
+	
+	
+	function account_close(){
+		var selected = getCheck();
+		if(selected.length == 0 ){
+			layer.msg('请选账单！', {icon: 2,time:2000});
+			return;	
+		}
+		else if(selected.length > 1){
+			layer.msg('只能选择一条账单！', {icon: 2,time:2000});
+			return;			
+		}
+		
+		layer.prompt({
+			btn:['结算', '取消'],
+			formType: 2,
+			value:'备注',
+			title:'账单结算'
+		}, function(v) {
+			 updateStatus(selected[0], 2, v);
+		});
+		
+	}
+	
+	function account_export(){
+		layer.msg('功能暂未开放!如有需要请联系管理员!', {icon: 2,time:2000});
+	}
+</script>
+</body>
+</html>

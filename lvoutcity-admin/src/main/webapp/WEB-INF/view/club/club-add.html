@@ -1,0 +1,369 @@
+<!--_meta 作为公共模版分离出去-->
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<base href="${basePath}" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<LINK rel="Bookmark" href="/favicon.ico">
+<LINK rel="Shortcut Icon" href="/favicon.ico" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<script type="text/javascript" src="lib/PIE_IE678.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css"
+	href="lib/Hui-iconfont/1.0.7/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="lib/icheck/icheck.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="static/h-ui/css/style.css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<!--/meta 作为公共模版分离出去-->
+
+<title>新增俱乐部</title>
+<link href="lib/webuploader/0.1.5/webuploader.css" rel="stylesheet"
+	type="text/css" />
+</head>
+<body>
+	<div class="page-container">
+		<form class="form form-horizontal"  action="club/saveClub" method ="post" id="form-club-add">
+			<div class="row cl" id="div-club-id">
+				<label class="form-label col-xs-4 col-sm-2"><span
+					class="c-red">*</span>俱乐部编号：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+						<input type="text" class="input-text" value="${cl.clubNo!}" placeholder="" id="clubNo_"
+						name="clubNo_">
+						<input type="hidden" class="input-text" value="${cl.id!}" placeholder="" id="id"
+						name="id">
+						<input type="hidden" class="input-text" value="${cl.clubNo!}" placeholder="" id="clubNo"
+						name="clubNo">
+					
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2"><span
+					class="c-red">*</span>俱乐部名称：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<input type="text" class="input-text" value="${cl.clubName!}" placeholder="" id="clubName"
+						name="clubName"  >
+				</div>
+			</div>
+			
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2"><span
+					class="c-red">*</span>俱乐部短名称：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<input type="text" class="input-text" value="${cl.clubShortName!}" placeholder=""
+						id="clubShortName" name="clubShortName">
+				</div>
+			</div>
+			
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2"><!-- <span
+					class="c-red">*</span> -->法人：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<input type="text" class="input-text" value="${cl.legalPerson!}" placeholder="" id="legalPerson"
+						name="legalPerson">
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2"><!-- <span
+					class="c-red">*</span> -->组织机构代码：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<input type="text" class="input-text" value="${cl.organizationCode!}" placeholder="" id="organizationCode"
+						name="organizationCode">
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2"><!-- <span
+					class="c-red">*</span> -->开户银行：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<input type="text" class="input-text" value="${cl.bankName!}" placeholder=""
+						id="bankName" name="bankName">
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2"><!-- <span
+					class="c-red">*</span> -->银行账户：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<input type="text" class="input-text" value="${cl.bankAccount!}" placeholder=""
+						id="bankAccount" name="bankAccount">
+				</div>
+			</div>
+			
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2"><!-- <span
+					class="c-red">*</span> -->地址：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+				
+					<select name="provinceId" id ="provinceId" class="select" style="width:25%;height:30px" >
+					</select><select name="cityId" id ="cityId" class="select" style="width:25%;height:30px">
+					</select><input type="text" class="input-text" style="width:50%;" value="${cl.address!}" placeholder=""
+						id="address"  name="address">
+				</div>
+			</div>
+			
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2"><!-- <span
+					class="c-red">*</span> -->联系人：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<input type="text" class="input-text" value="${cl.contactPerson!}" placeholder=""
+						id="contactPerson" name="contactPerson">
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2"><!-- <span
+					class="c-red">*</span> -->手机号：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<input type="text" class="input-text" value="${cl.contactPhone!}" placeholder=""
+						id="contactPhone" name="contactPhone">
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2"><span
+					class="c-red">*</span>状态：</label>
+				<div class="formControls col-xs-8 col-sm-9 skin-minimal">
+					<div class="radio-box">
+						<input name="enabled" type="radio" id="enabledOn" value="1"  <#if ("${cl.enabled!''}"== "1"||"${cl.enabled!''}"=="")> checked </#if> />
+						<label for="enabledOn">启用</label>
+					</div>
+					<div class="radio-box">
+						<input type="radio" id="enabledOff" name="enabled" value="0" <#if ("${cl.enabled!}"== "0")> checked </#if> />
+						<label for="enabledOff">禁用</label>
+					</div>
+					
+				</div>
+			</div>
+			<div class="row cl">
+				<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+					<button 
+						class="btn btn-primary radius" type="submit" id = "club-add_submit" >
+						<i class="Hui-iconfont">&#xe632;</i> 保存
+					</button>					
+					<button onClick="layer_close();" class="btn btn-default radius"
+						type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+				</div>
+			</div>
+		</form>
+	</div>
+
+	<!--_footer 作为公共模版分离出去-->
+	<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/layer/2.1/layer.js"></script>
+	<script type="text/javascript" src="lib/icheck/jquery.icheck.min.js"></script>
+	<script type="text/javascript"
+		src="lib/jquery.validation/1.14.0/jquery.validate.min.js"></script>
+	<script type="text/javascript"
+		src="lib/jquery.validation/1.14.0/validate-methods.js"></script>
+	<script type="text/javascript"
+		src="lib/jquery.validation/1.14.0/messages_zh.min.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.admin.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/comment.js"></script>
+	<!--/_footer /作为公共模版分离出去-->
+
+	<!--请在下方写此页面业务相关的脚本-->
+	<script type="text/javascript"
+		src="lib/webuploader/0.1.5/webuploader.min.js"></script>
+	<script type="text/javascript">
+	$(function(){
+		   
+  jQuery.validator.addMethod("notnull", function(value,  
+                    element) {  
+	  			var length = value.length;
+                var length_ = $.trim(value).length;        
+                return this.optional(element)||length==length_;  
+            }, $.validator.format("不能包含空格!"));  
+		  
+		$("#club-add_submit").click(function(){
+			
+			 $("#form-club-add").validate({
+					rules:{
+						clubName:{
+							required:true,
+							notnull:true,
+							minlength:1,
+							maxlength:16
+						},
+						clubShortName:{
+							required:true,
+							notnull:true,
+							minlength:1,
+							maxlength:16
+						},
+						/* legalPerson:{
+							required:true,
+							minlength:1,
+							maxlength:16
+						},
+						bankAccount:{
+							required:true,
+							digits:true,
+						 	maxlength:30
+						},organizationCode:{
+							required:true,
+							minlength:1,
+							maxlength:16
+						},contactPerson:{
+							required:true,
+							minlength:1,
+							maxlength:16
+						},contactPhone:{
+							required:true,
+							isMobile:true,
+						},address:{
+							required:true,
+							minlength:1,
+							maxlength:50
+						}, */
+					},
+					onkeyup:false,
+					focusCleanup:true,
+					success:"valid",
+					submitHandler:function(form){
+						//ajax提交
+						var url = "club/saveOrUpdate";
+						if("${type}"=="3"){
+							url = "club/updateClub";
+						}
+						$.ajax({
+				            cache: true,
+				            type: "POST",
+				            url:url,
+				            data:$('#form-club-add').serialize(),// 你的formid
+				            async: false,
+				            beforeSend : function() {
+								layer.load(2);
+							},
+				            error: function(request) {
+				            	layer.closeAll('loading');
+				                layer.msg("操作失败！",{icon:2,time:2000});
+				            },
+				            success: function(data) {
+				            	layer.closeAll('loading');
+				            	if(data.code=="999"){
+				            		layer.alert(data.msg);
+				            	}else{
+				            		parent.layer.msg("操作成功！",{icon:1,time:2000})
+				                	  //do something
+				                	parent.dataTable.ajax.reload(); 
+				                	layer_close();
+				                	/*   var index = parent.layer.getFrameIndex(window.name);
+				                		parent.layer.close(index);
+				                		// add by gdh*/
+				            	}
+				            		
+					                		
+					                		
+				            	
+				                
+				                    
+				            }
+				        });
+					}
+				});
+			
+			
+		});
+		
+		// 加载省市
+		loadAreaControl("provinceId","cityId");
+		
+		 $("#provinceId").change(function(){
+				appendAreaControl(getAreaList($(this).val()),"cityId");
+				$("#name").val($("#cityId").find("option:selected").text());
+			});
+			
+			$("#cityId").change(function(){
+				$("#name").val($(this).find("option:selected").text());
+			});
+			
+			//$("#addForm").validate();
+		
+		function getAreaList(pid){
+			var _data = null;
+			/* $.get("common/areaList/"+pid,function(data){
+				_data = data;
+			},"json"); */
+			$.ajax({
+				cache: true,
+	            type: "POST",
+	            url:"common/areaList/"+pid,
+	            async: false,
+	            success: function(data) {
+	            	_data = data
+	                    
+	            }
+			});
+			return _data;
+		}
+		
+		function appendAreaControl(list,id){
+			$("#"+id).html("");
+			$.each(list,function(i,obj){
+				var province = "${cl.provinceId!}"
+				var city = "${cl.cityId!}"
+				
+    				if(province == obj.id){
+    					$("#"+id).append("<option value='"+obj.id+"' selected='selected' >"+obj.name+"</option>");
+    				}else if(city == obj.id){
+    					$("#"+id).append("<option value='"+obj.id+"' selected='selected' >"+obj.name+"</option>");
+    				}else{
+    					$("#"+id).append("<option value='"+obj.id+"'>"+obj.name+"</option>");
+    				}
+				
+			});
+		}
+		
+		function loadAreaControl(provinceId,cityId){
+			
+			appendAreaControl(getAreaList(1),"provinceId");
+			appendAreaControl(getAreaList($("#provinceId").val()),"cityId");
+			$("#name").val($("#cityId").find("option:selected").text());
+		}
+	})
+	
+	// 页面加载时判断页面类型
+	$(document).ready(function(){
+		var type="${type!}";
+		if(type =="3" || type =="2"){ // 编辑状态, 查看状态
+			$("#clubNo_").attr("disabled",true);
+			//赋值
+		/* 
+			var enable = "${cl.enabled!}"; 
+			if(enable == "1"){
+				$("#enabledOn").attr("checked","checked");
+				$("#enabledOff").attr("checked",false);
+			}else{
+				$("#enabledOn").attr("checked",false);
+				$("#enabledOff").attr("checked","checked");
+			}*/
+			if(type =="2"){
+				$("input").attr("disabled",true);
+				$("select").attr("disabled",true);
+				$("textarea").attr("disabled",true);
+				$("#club-add_submit").hide();
+				
+			}
+			
+		}else{
+			// 新增状态
+			$("#div-club-id").hide();
+			
+		}
+	}); 
+	</script>
+</body>
+</html>

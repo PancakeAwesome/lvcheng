@@ -1,0 +1,450 @@
+<!--_meta 作为公共模版分离出去-->
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<base href="${basePath}" />
+<LINK rel="Bookmark" href="/favicon.ico">
+<LINK rel="Shortcut Icon" href="/favicon.ico" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<script type="text/javascript" src="lib/PIE_IE678.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css"
+	href="lib/Hui-iconfont/1.0.7/iconfont.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="static/h-ui/css/style.css" />
+<link rel="stylesheet" type="text/css" href="lib/wangEditor-2.1.10/dist/css/wangEditor.min.css" />
+
+<!--[if IE 6]>
+<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<!--/meta 作为公共模版分离出去-->
+</head>
+<body>
+	<article class="page-container">
+		<form class="form form-horizontal" id="form_1">
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2"><span
+					class="c-red">*</span>标题：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<input type="text" id="title" class="input-text dis"
+						placeholder=""  name="title" value="${pub.title!}">
+						<input type="hidden" id="mg_id" class="input-text dis"
+						placeholder=""  name="mg_id" value="${pub.id!}">
+				</div>
+			</div>
+		</form>
+		<form class="form form-horizontal" action="club/clubLogo"
+			id="form-club-logo" method="post" enctype="multipart/form-data">
+
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2">封面：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<span> <input type="button"
+						class="btn btn-primary radius dis " id="sub_logo" value="本地上传"></input>
+						<input type="button" class="btn btn-primary radius dis "
+						id="logo_select" value="从图库选择"></input>
+						<div hidden="true">
+							<input type="file" id="file1" name="file1" class=" file-logo">
+						</div> <input type="hidden" id="clubLogo" name="clubLogo" value="${clubId}" />
+					</span>
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2"></label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<img id="title-img" style="width: 100px; height: 100px;" alt=""
+						src="${pub.titleImg!}">
+				</div>
+			</div>
+		</form>
+		<form class="form form-horizontal" id="form_2" >
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2">内容：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+				<div id="editor" type="text/plain" class="dis"
+						style="width: 100%; height: 300px;">
+						${pub.content?if_exists}</div>
+					
+				</div>
+			</div>
+
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2">摘要：</label>
+				<div class="formControls col-xs-8 col-sm-9 dis" >
+					<textarea name="zhai" id="zhai" cols="" rows="" class="textarea dis"
+						 dragonfly="true"
+						nullmsg="备注不能为空！" onKeyUp="textarealength(this,200)">${pub.zhaiYao!}</textarea>
+					<p class="textarea-numberbar">
+						<em class="textarea-length">0</em>/200
+					</p>
+				</div>
+			</div>
+
+			<div class="row cl">
+				<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+					<button onClick="article_save_submit();"
+						class="btn btn-primary radius dis " type="button">
+						<i class="Hui-iconfont">&#xe632;</i> 保存
+					</button>
+					<#if ("${pub.status!''}"== "0")>
+						<button onClick="article_send_submit();" 
+						class="btn btn-primary radius dis " type="button">
+						<i class="Hui-iconfont">&#xe632;</i> 群发
+					</button>
+					</#if>
+					
+					<button onClick="layer_close();" class="btn btn-default radius"
+						type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+				</div>
+			</div>
+		</form>
+	</article>
+
+
+<div hidden="true" id ="div-group-and-list" style="overflow-x:hidden;overflow-y:hidden;">
+		<div>
+		<table class="table table-border table-bordered" >
+		<tr><td width="150" class="va-t">分组</td>
+		<td class="va-t">图片</td>
+		</tr>
+			<tr>
+				<td width="150" class="va-t">
+				<div style="height:20px;"></div>
+				<div class="portfolio-content ">
+					<table id="selectGroup"	class="table table-border table-bordered table-hover table-bg table-sort">
+						<tbody>
+							<#list ppList as pp >
+								<tr class="text-c">
+									<td ><a data-title =""
+				  onclick="reloadPicture('${pp.id!}')" href="javascript:;">
+					${pp.groupName!}</a</td>
+								</tr>		
+							</#list>
+						</tbody>
+					</table>
+				</div>
+				</td>
+				
+				<td class="va-t">
+				<iframe id="testIframe" name="testIframe"  width="100%" height="250px"   src=""></iframe>
+					
+				</td>
+			</tr>
+			<tr>
+			<td colspan='2' style="text-align:center;" >
+					<button 
+						class="btn btn-primary radius"  id = "open-add-submit"  onClick="select_picture();">
+						<i class="Hui-iconfont">&#xe632;</i> 保存
+					</button>
+					&nbsp;	&nbsp;				
+					<button onClick="open_close();" class="btn btn-default radius"
+						type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+				</td>
+			</tr>
+		</table></div>
+	</div>
+	
+	
+	<!--_footer 作为公共模版分离出去-->
+	<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/jquery/1.9.1/jquery-form.js"></script>
+	<script type="text/javascript" src="lib/layer/2.1/layer.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.admin.js"></script>
+	<!--/_footer /作为公共模版分离出去-->
+
+	<!--请在下方写此页面业务相关的脚本-->
+	<script type="text/javascript" src="lib/My97DatePicker/WdatePicker.js"></script>
+	<script type="text/javascript"
+		src="lib/jquery.validation/1.14.0/jquery.validate.min.js"></script>	
+	</script>
+	<script type="text/javascript" src="lib/wangEditor-2.1.10/dist/js/wangEditor.min.js"></script>	
+
+
+	<script type="text/javascript">
+		var checkList_ = null;
+		var editor;
+		$(function() {
+			var type="${type}";
+			if(type=="3"){
+				$(".dis").attr("disabled","disabled");
+				$(".btn").removeClass("btn-primary").addClass("btn-default");
+				
+				
+				
+			}
+			editor = new wangEditor('editor');
+			// 自定义菜单
+		    editor.config.menus = [
+		                           'source',
+		                           '|',
+		                           'bold',
+		                           'underline',
+		                           'italic',
+		                           'strikethrough',
+		                           'eraser',
+		                           'forecolor',
+		                           'bgcolor',
+		                           '|',
+		                           'fontfamily',
+		                           'fontsize',
+		                           'head',
+		                           'alignleft',
+		                           'aligncenter',
+		                           'alignright',
+		                           '|',
+		                           'link',
+		                           'unlink',
+		                           'img',
+		                           '|',
+		                           'undo',
+		                           'redo',
+		                           'fullscreen'
+		     ];
+		    editor.config.uploadImgUrl = 'common/uploadPictures?type=w';
+		    editor.config.uploadImgFileName = 'picName';
+		    
+		 	// 配置自定义参数（举例）
+		    editor.config.uploadParams = {
+		    };
+		    editor.create();
+		});
+		
+		function textarea(obj,length){
+			if(obj.value.length > length){
+		        obj.value = obj.value.substring(0,length);
+		    }
+		}
+		$(function(){
+			$("#sub_logo").click(function(){
+				$("#file1").click();
+			});
+			 /*上传logo*/
+		    $(document).on("change",".file-logo",function(){
+		    	var name = $("#file1").val();
+		    	var type = name.substr(name.lastIndexOf(".")).toLowerCase();
+		    	if(type==".jpg"||type==".jpeg"||type==".png"||type==".bmp"){
+		    		var index = layer.load(4,{shade : [0.6,'#FFFAFA'],content:"上传中..."});
+			    	$("#form-club-logo").ajaxSubmit({
+			            url: "club/clubLogo",
+			            type: "post",
+			            dataType: "json",
+			            timeout: 600000,
+			            success: function(data) {
+			            	layer.close(index);
+			            	if(data.code=="999"){
+			            		layer.alert(data.msg);
+			            	}else
+			            	layer.msg("上传成功",{icon:1,time:1000},function(){
+			            		
+				                // 显示logo              
+							      $("#title-img").attr("src",data.url);
+			            	})
+			            	
+			            },
+			            error: function(data, status, e) {
+			            	layer.close(index);
+			            	layer.msg("上传失败，错误信息：" + e,{icon:2,time:2000});
+			            }
+			        });	
+		    	}else{
+		    		layer.alert("请选择格式为jpg，jpeg,png,bmp格式的图片！" );
+		    	}
+		    	
+		    });
+			 
+		    $("#logo_select").click(function(){
+				// 设置为 logo图片
+				//$("#picture-or-logo").attr("value","1");
+				layer.open({
+					  type: 1, 
+					  area: ['800px', '406px'],
+					  title:"图库",
+					  content: $("#div-group-and-list") 
+					}); 
+			});
+		});
+		
+		function article_save_submit() {
+			if($.trim($('#title').val()).length==0){
+				layer.msg("标题不能为空！",{icon:2,time:2000});
+				return false;
+			}	
+			if($('#title').val().length>=50){
+				layer.msg("标题长度不能超过50！",{icon:2,time:2000});
+				return false;
+			}	
+			if($("#title-img").attr("src").length==0){
+				layer.msg("封面不能为空！",{icon:2,time:2000});
+				return false;
+
+			}
+			
+			if($.trim(editor.$txt.text()).length==0){
+				layer.msg("内容不能为空！",{icon:2,time:2000});
+				return false;
+
+			}
+			if($.trim($('#zhai').val()).length==0){
+				layer.msg("摘要不能为空！",{icon:2,time:2000});
+				return false;
+			}	
+			var data = {
+				title : $('#title').val(),
+				titleImg :$("#title-img").attr("src"),
+				content:editor.$txt.html(),
+				zhaiYao:$('#zhai').val(),
+				clubId : '${clubId}',
+				id : $('#mg_id').val(),
+				type:"${type}"
+			}
+			
+			$.ajax({
+				type : 'POST',
+				url : "public/savePublic",
+				data : data,
+				beforeSend : function() {
+					layer.load(2);
+				},
+				success : function(data) {
+					layer.closeAll('loading');
+					if(data.code=="999"){
+	            		layer.alert(data.msg);
+	            	}else{
+					if (data.result == "success") {
+						parent.layer.msg("保存成功!",{icon:1,time:2000});
+						parent.dataTable.ajax.reload(); 
+						layer_close();
+						
+						
+					} else {
+						layer.msg("保存失败!",{icon:2,time:2000});
+					}
+	            	}
+				}
+			})
+
+		}
+		
+		function article_send_submit(){
+			if($.trim($('#title').val()).length==0){
+				layer.msg("标题不能为空！",{icon:2,time:2000});
+				return false;
+			}	
+			if($('#title').val().length>=50){
+				layer.msg("标题长度不能超过50！",{icon:2,time:2000});
+				return false;
+			}	
+			if($("#title-img").attr("src").length==0){
+				layer.msg("封面不能为空！",{icon:2,time:2000});
+				return false;
+
+			}
+			
+			if($.trim(editor.$txt.text()).length==0){
+				layer.msg("内容不能为空！",{icon:2,time:2000});
+				return false;
+
+			}
+			var data = {
+					title : $('#title').val(),
+					titleImg :$("#title-img").attr("src"),
+					content:editor.$txt.html(),
+					zhaiYao:$('#zhai').val(),
+					clubId : '${clubId}',
+					id : $('#mg_id').val(),
+					type:"${type}"
+				}
+				$.ajax({
+					type : 'POST',
+					url : "public/saveAndSendPublic",
+					data : data,
+					beforeSend : function() {
+						layer.load(2);
+					},
+					success : function(data) {
+						layer.closeAll('loading');
+						if(data.code=="999"){
+		            		layer.alert(data.msg);
+		            	}else{
+						if (data.result == "success") {
+							/* layer.msg('发送成功', {
+								icon : 1,
+								time : 1000
+							}); */
+							parent.layer.msg("发送成功!",{icon:1,time:2000});
+								parent.dataTable.ajax.reload();
+								layer_close();
+						} else {
+							layer.msg("发送失败!",{icon:2,time:2000});
+						}
+		            	}
+					}
+				});
+
+			}
+		
+		function reloadPicture(groupId){
+			　$('#testIframe').attr('src', 'club/groupAndList/'+groupId);
+		}
+		// 关闭窗口
+		function open_close(){
+			layer.closeAll();
+		}
+		// 获取选择图片的id
+		function select_picture(){
+			getCheck_();
+			
+			if(checkList_.length==1){
+			
+				// 查询信息，并修改图片路径
+				$.ajax({
+					type:"POST",
+					url:"club/updateClubPicture",
+					data:{"id":checkList_[0],"clubId":"${club.id!}"},
+					success:function(data){
+						if(data.code=="999"){
+		            		layer.alert(data.msg);
+		            	}else{
+						layer.closeAll();
+						//location.replace(location.href);	
+						
+							$("#title-img").attr("src",data.url);
+		            	}
+					}
+				});
+			}else{
+				layer.msg("请选择一张图片，不要多选或少选！",{icon:1,time:2000});
+			}
+			
+		}
+		
+		 function getCheck_(){
+			 checkList_= new Array() ;
+			 var obj=document.getElementById("testIframe").contentWindow;
+			 var obji1=obj.document.getElementsByName("checkbox_");
+			 for(var i =0;i<obji1.length;i++){
+				 //alert(obji1[0].id);
+				  if(obji1[i].checked== true){
+					  checkList_.push(obji1[i].id);
+				 } 
+			 }
+		} 
+	</script>
+	<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

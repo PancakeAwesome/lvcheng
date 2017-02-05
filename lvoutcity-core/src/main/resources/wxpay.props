@@ -1,0 +1,5 @@
+wx.appId=wxfe9c30e52fceff61
+wx.notifyUrl=http://app1.lvoutcity.com/lvc/pay/wxNotify
+wx.mchId=1348147101
+wx.key=6vvB4QzOtU6Ulr4wjhYbwLGQQGryTut1
+wx.unifiedOrderUrl=https://api.mch.weixin.qq.com/pay/unifiedorder

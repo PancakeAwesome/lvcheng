@@ -1,0 +1,163 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<base href="${basePath}"/>
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<script type="text/javascript" src="lib/PIE_IE678.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css"
+	href="lib/Hui-iconfont/1.0.7/iconfont.css" />
+	<link rel="stylesheet" href="lib/zTree/v3/css/zTreeStyle/zTreeStyle.css" type="text/css">
+<link rel="stylesheet" type="text/css" href="lib/icheck/icheck.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/skin/default/skin.css" id="skin" />
+<!--[if IE 6]>
+<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>权限菜单zTree</title>
+</head>
+<body>
+	<table class="table">
+		<tr>
+			<td width="300" class="va-t text-c">
+				<div class="cl pd-5 bg-1 bk-gray mt-20">
+					<ul id="menuTree" class="ztree"></ul>
+				</div>
+				<div class="cl pd-5 bg-1 bk-gray mt-20">
+					<!--   -->
+					<a data-title ="保存"   href="javascript:saveRoleMenu();"	class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i>保存</a>
+					<a href="javascript:void(layer_close());" onclick="" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i>关闭</a>
+				</div>
+			</td>
+		</tr>
+	</table>
+	<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/layer/2.1/layer.js"></script>
+	<script type="text/javascript" src="lib/laypage/1.2/laypage.js"></script>
+	<script type="text/javascript" src="lib/zTree/v3/js/jquery.ztree.all-3.5.min.js"></script> 
+	<script type="text/javascript" src="lib/My97DatePicker/WdatePicker.js"></script>
+	<script type="text/javascript" src="lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" src="lib/public.js"></script>
+	<script type="text/javascript" src="lib/zTree/v3/js/jquery.ztree.all-3.5.min.js"></script> 
+	<script type="text/javascript" src="static/h-ui/js/H-ui.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.admin.js"></script>
+	<script type="text/javascript">
+	var roleId = '${roleId!}';
+	var zTreeObj = null;
+	
+	var setting = {  
+	            async: {  
+	                enable: true,//异步处理  
+	  
+	                //contentType: "application/json",//提交参数方式，这里 JSON 格式，默认form格式  
+	                  
+	                url: 'roleManager/getRoleCompetence?roleId='+roleId
+	                //,//异步获取json格式数据的路径  
+	  
+	       //         autoParam: ["id","name"]//异步加载时需要提交的参数，多个用逗号分隔  
+	                              
+	            },  
+	            callback: {//回调函数，在这里可做一些回调处理  
+	                //beforeAsync: zTreeBeforeAsync  
+	                beforeClick: function(treeId, treeNode) {
+						var zTree = $.fn.zTree.getZTreeObj("tree");
+						if (treeNode.isParent) {
+							zTree.expandNode(treeNode);
+							return false;
+						} else {
+							//dataIdd = treeNode.id;
+							
+							return true;
+						}
+					},
+					onClick:function(treeId, treeNode){
+						
+					},
+					onCheck:function(event,treeId,treeNode){
+						console.log(treeNode.checked);
+					},
+					onAsyncSuccess:function(event, treeId, treeNode, msg){
+						//console.log(msg);
+						/* var json = strToJson(treeNode.children);
+						$.each(json,function(i,itme){
+							if(roleList.contains(this.id)){
+								treeNode.checked = true;
+							}
+						}); */
+						console.log('加载完成!');
+					}
+	            },  
+	            check: {//设置 zTree 的节点上是否显示 checkbox / radio ,默认为false  
+	                enable: true,
+	                chkboxType : { "Y": "ps", "N": "s" }
+	            },  
+	            data: {  
+	                simpleData: {  
+	                    /**  
+	                   		 如果设置为 true，请务必设置 setting.data.simpleData 内的其他参数: idKey / pIdKey / rootPId  
+	                    	并且让数据满足父子关系。*/                    
+	                    enable: true,//true / false 分别表示 使用 / 不使用 简单数据模式  
+	                    idKey: "id",  
+	                    pIdKey: "superId",  
+	                    rootPId: 0                            
+	                },
+	                key:{
+	                	children:'children'
+	                }
+	          }  
+	};  
+	
+	var zNodes =[];//树节点，json格式，异步加载可设置为null或[]
+	
+	$(function(){
+		zTreeObj = $.fn.zTree.init($("#menuTree"), setting, zNodes);//实例化后直接返
+		
+	});
+	
+	function getNodeArray(){
+		var nodes = zTreeObj.getCheckedNodes(true);
+		var roleList = new Array();
+		$.each(nodes,function(){
+			roleList.push(this.id);			
+		console.log('nodes'+this.id);
+		});
+		return roleList.toString();
+	}
+	
+	//
+	function saveRoleMenu(){
+		
+		$.ajax({
+			cache: true,
+			type: "POST",
+			url: "roleManager/saveRoleMenu",
+			data: {'roleId':roleId,'menuArray':getNodeArray()},// 你的formid
+			async: false,
+			error: function (request) {
+			},
+			success: function (data) {
+				console.log("ddd"+data);
+				layer.msg('添加成功!',{icon: 1,time:1300},function(){
+					layer_close();
+				});
+				//zTreeObj = $.fn.zTree.init($("#menuTree"), setting, zNodes);//实例化后直接返
+			}
+		});
+	}
+	
+	</script>
+</body>
+</html>

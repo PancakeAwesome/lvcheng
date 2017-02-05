@@ -1,0 +1,365 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<base href="${basePath}"/>
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<script type="text/javascript" src="lib/PIE_IE678.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css"
+	href="lib/Hui-iconfont/1.0.7/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="lib/icheck/icheck.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="static/h-ui/css/style.css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>俱乐部管理</title>
+</head>
+<body>
+	<nav class="breadcrumb">
+		<i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span>
+		俱乐部管理 <span class="c-gray en">&gt;</span> 公众号管理 <a
+			class="btn btn-success radius r"
+			style="line-height: 1.6em; margin-top: 3px"
+			href="javascript:location.replace(location.href);" title="刷新"><i
+			class="Hui-iconfont">&#xe68f;</i></a>
+	</nav>
+	<div class="page-container">
+		<div class="text-c">
+			<!-- <span id="is_club_hide" >
+				<select name="clubId" id ="clubId" class="select-box" style="width:120px;height:30px"></select>
+			</span> -->
+				 <input type="text"
+				class="input-text" style="width: 120px" placeholder="标题" id="title"
+				name="title"> 
+			<button type="button" class="btn btn-success radius" id="select-club-condition" name="select-club-condition">
+				<i class="Hui-iconfont">&#xe665;</i> 查询
+			</button>
+		</div>
+		<div class="cl pd-5 bg-1 bk-gray mt-20">
+			<span class="l">
+			<!-- <a  onclick="add()"
+				href="javascript:;" class="btn btn-success radius"><i
+					class="Hui-iconfont">&#xe600;</i> 新增</a> -->
+					${functBtn!}
+					<!-- <a href="javascript:;" onclick="show()"
+				class="btn btn-primary radius"><i class="Hui-iconfont">&#xe695;</i>
+					查看</a>
+					<a href="javascript:;" onclick="edit()"
+				class="btn btn-secondary radius"><i class="Hui-iconfont">&#xe6df;</i>
+					编辑</a>
+					<a href="javascript:;" onclick="datadel()"
+				class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i>
+					删除</a> -->
+				</span> 
+			</span>
+		</div>
+		<div class="mt-20">
+			<table id="selectClub"
+				class="table table-border table-bordered table-hover table-bg table-striped">
+				<thead>
+					<tr class="text-c">
+						<th width="25"><input type="checkbox" name="" value=""></th>
+						<th width="300">消息概要</th>
+						<th width="100">发送状态</th>
+						<th width="100">创建时间</th>
+						<th width="100">操作</th>
+					</tr>
+				</thead>
+				
+			</table>
+		</div>
+	</div>
+	<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/layer/2.1/layer.js"></script>
+	<script type="text/javascript" src="lib/laypage/1.2/laypage.js"></script>
+	<script type="text/javascript" src="lib/My97DatePicker/WdatePicker.js"></script>
+	<script type="text/javascript"
+		src="lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.admin.js"></script>
+	<script type="text/javascript" src="static/common/club.js"></script>
+	<script type="text/javascript">
+		var dataTable = null;
+		var checkList= null;
+		$(function() {
+			 
+			$('.table-sort tbody').on( 'click', 'tr', function () {
+				if ( $(this).hasClass('selected') ) {
+					$(this).removeClass('selected');
+				}
+				else {
+					table.$('tr.selected').removeClass('selected');
+					$(this).addClass('selected');
+				}
+			}); 
+			// 俱乐部查询
+			dataTable = $("#selectClub").DataTable({
+				"processing" : true,
+				"serverSide" : true,
+				"searching": false,
+				"ajax" : {
+					"url" : "public/selectPublic",
+				    "type": "POST",
+				    "data":function(d){
+				    	d['title']=$('#title').val();
+				    	//d['clubId']=$('#clubId option:selected') .val();
+				    	//return JSON.stringify(d);
+				    	}
+				},
+				//"order" : [ [ , "asc" ] ],
+				"ordering":false,
+				"orderMulti":false,
+				"columnDefs" : [  {
+					"data" : "id",
+					"targets":0,
+					"orderable":false,
+					 "render": function (data,type,row ) {
+                         return '<div style="text-align:center;"><input type="checkbox" id="'+row.id+'" name="checkbox" /></div>';
+                         }
+                      
+				}, {
+					"data" : "title",
+					"targets":1,
+					 "render": function (data,type,row ) {
+                         return '<div class="portfoliobox">'
+     							+'<div class="picbox"><img style="width:100px;height:100px;" src="'+row.title_img+'"></div><div class="">'+row.title+' </div></div>';
+     					
+                         },
+         				"class": "text-c"
+                      
+				}, {
+					"data" : "status",
+					"targets":2,
+					"sDefaultContent":'',
+					"render":function(v){
+						if(v == '1'){
+							return "已发送";
+						}else{
+							return "未发送";
+						}
+					},
+					"class": "text-c"
+				},{
+					"data":"create_time",
+					"targets":3,
+					"sDefaultContent":'',
+					"class": "text-c"
+				 },
+				{
+					"data":"handler",
+					"targets":4,
+					"render":function(data,type,row){
+						if(row.status=='1'){
+							return " ";
+						}else{
+							return '<div class="text-c"><button  class="btn btn-success radius size-MINI" onClick="send(\''+row.id+'\')" href="javascript:;">发送</button></div>';
+
+						}
+					},
+					"class": "text-c" 
+				} ],
+				"language" : {
+					"sProcessing" : "处理中...",
+					"sLengthMenu" : "显示 _MENU_ 项结果",
+					"sZeroRecords" : "没有匹配结果",
+					"sInfo" : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+					"sInfoEmpty" : "显示第 0 至 0 项结果，共 0 项",
+					"sInfoFiltered" : "(由 _MAX_ 项结果过滤)",
+					"sInfoPostFix" : "",
+					"sSearch" : "搜索:",
+					"sUrl" : "",
+					"sEmptyTable" : "表中数据为空",
+					"sLoadingRecords" : "载入中...",
+					"sInfoThousands" : ",",
+					"oPaginate" : {
+						"sFirst" : "首页",
+						"sPrevious" : "上页",
+						"sNext" : "下页",
+						"sLast" : "末页"
+					},
+					"oAria" : {
+						"sSortAscending" : ": 以升序排列此列",
+						"sSortDescending" : ": 以降序排列此列"
+					}
+				},
+				/* "aoColumnDefs": [
+				           	  //{"bVisible": false, "aTargets": [ 3 ]} //控制列的隐藏显示
+				           	  {"orderable":false,"aTargets":[0,8]}// 制定列不参与排序
+				           	], */
+			});
+		});
+		// 根据条件查询club
+		$("#select-club-condition").click(function(){
+			dataTable.ajax.reload();
+		});
+		
+		// 保存分组
+		function bing_leader(){
+			var url = "picture/saveGroup";
+			if($("#type").val() == 2){
+				url = "picture/updateGroup";
+			}
+			$.ajax({
+				type:"POST",
+				url:url,
+				data:{"id":$("#id_").val(),"clubId":$("#clubId option:selected").val(),"groupName":$("#groupName_").val()},
+				beforeSend : function() {
+					layer.load(2);
+				},
+				success:function(data){
+					layer.closeAll('loading');
+					if(data.code=="999"){
+	            		layer.alert(data.msg);
+	            	}else{
+					layer.closeAll();
+					dataTable.ajax.reload();
+					//parent.dataTable.reload();
+	            	}
+				}
+			});
+		}
+		
+		/*分组-添加*/
+		function add() {
+			var index = layer.open({
+						type : 2,
+						title : "新增",
+						content : "public/messageAdd"
+					});
+					layer.full(index); //这里content是一个普通的String
+					//layer_show(title,url,w,h);
+		}
+		
+		function edit(){
+			getCheck();
+			if(checkList.length == 0){
+				layer.msg("请选择需要编辑的记录!",{icon:2,time:2000});
+			}else if(checkList.length>1){
+				layer.msg("只能选择一条记录!",{icon:2,time:2000});
+			}else {
+				var index = layer.open({
+					type : 2,
+					title : "编辑",
+					content : "public/messageEdit/"+checkList[0],
+				});
+				layer.full(index);
+			}
+		}
+		
+		function show(){
+			getCheck();
+			if(checkList.length ==  0){
+				layer.msg("请选择要查看的记录!",{icon:2,time:2000});
+			}else if(checkList.length >1){
+				layer.msg("只能选择一条记录!",{icon:2,time:2000});
+			}else{
+				var index = layer.open({
+					type : 2,
+					title : "查看",
+					content : "public/messageShow/"+checkList[0],
+				});
+				layer.full(index);
+			}
+		}
+		
+		// 批量删除
+		function datadel(){
+			getCheck();
+			if(checkList!=null && checkList.length >0){
+				layer.confirm('确认要删除这'+checkList.length+'条消息吗？', function(index) {
+					// 数据库删除
+					$.ajax({
+			            cache: true,
+			            type: "POST",
+			            url:"public/deletePublic",
+			            data:{"idList":JSON.stringify(checkList)},
+			            async: false,
+			            error: function(request) {
+			                layer.msg("删除失败！",{icon:2,time:2000});
+			            },
+			            success: function(data) {
+			            	if(data.code=="999"){
+			            		layer.alert(data.msg);
+			            	}else
+			                layer.msg("删除成功！",{icon:1,time:2000}, function(index){
+			                	  //do something
+			                	  dataTable.ajax.reload();
+			                	  layer.close(index);
+			                	//location.replace(location.href);
+			                	});
+			                    
+			            }
+			        });
+				});
+			}else{
+				// 请选择要删除的记录
+				 layer.msg("请选择要删除的记录！",{icon:2,time:2000})
+			}
+			
+		}
+		
+		// 群发信息
+		function send(id){
+			
+				layer.confirm('确认要群发这条消息吗？', function(index) {
+					// 数据库删除
+					$.ajax({
+			            cache: true,
+			            type: "POST",
+			            url:"public/sendPublic",
+			            data:{"id":id},
+			            async: false,
+			            error: function(request) {
+			                layer.msg("发送失败！",{icon:2,time:2000});
+			            },
+			            success: function(data) {
+			            	if(data.code=="999"){
+			            		layer.alert(data.msg);
+			            	}else{
+			            	if(data.result.code=='2'){
+			            		layer.msg("该记录已经发送过不能再次发送！",{icon:2,time:2000});
+			            	}else{
+			            		layer.msg("发送成功！",{icon:1,time:2000}, function(index){
+				                	  //do something
+				                	  dataTable.ajax.reload();
+				                	  layer.close(index);
+				                	//location.replace(location.href);
+				                	});
+			            	}
+			            	}
+			                    
+			            }
+			        });
+				});
+			
+		}
+		
+		function getCheck(){
+			 checkList= new Array() ;
+			 $("input[name=checkbox]").each(function(i,d){
+							 if(d.checked){
+								 checkList.push(d.id);
+							 }
+				}) 
+		}
+		
+		
+		
+	</script>
+</body>
+</html>

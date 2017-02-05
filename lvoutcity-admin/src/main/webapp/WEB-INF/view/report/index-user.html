@@ -1,0 +1,141 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<base href="${basePath}"/>
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<script type="text/javascript" src="lib/PIE_IE678.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css" href="static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="static/h-ui/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="lib/Hui-iconfont/1.0.7/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="lib/icheck/icheck.css" />
+<link rel="stylesheet" type="text/css" href="static/h-ui/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="static/h-ui/css/style.css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title></title>
+</head>
+<body>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 系统统计 <span class="c-gray en">&gt;</span> 每月增长用户统计表</nav>
+
+<div class="page-container">
+<div  style="min-width:700px;">
+	<table>
+	<tr>
+	<td width="40px;" > </td>
+	<td><label>用户总数： 
+	</td>
+	<td><label>新增用户数：</label> 
+	</td>
+	<td align="right" >
+	</td>
+	</tr>
+	<tr>
+	<td width="40px;" > </td>
+	<td > <input type="text" disabled="disabled" class="input-text" style="width: 120px" id="total_all" name="total_all">  
+	</td>
+	<td> <input type="text" disabled="disabled"class="input-text" style="width: 120px" id="total_new" name="total_new">  
+	</td>
+	<td align="right" ><select name="data_month" id ="data_month" class="select-box" onChange="getTotalUser()" style="width:120px;height:30px"></select>
+	</td>
+	</tr>
+	</table>
+	</div>
+	<div id="container" style="min-width:700px;height:400px"></div>
+</div>
+<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script> 
+<script type="text/javascript" src="lib/layer/2.1/layer.js"></script>
+<script type="text/javascript" src="static/h-ui/js/H-ui.js"></script> 
+<script type="text/javascript" src="static/h-ui/js/H-ui.admin.js"></script>
+<script type="text/javascript" src="lib/Highcharts/4.1.7/js/highcharts.js"></script>
+<script type="text/javascript" src="lib/Highcharts/4.1.7/js/modules/exporting.js"></script>
+<script type="text/javascript">
+$(function () {
+	//获取俱乐部下拉框
+	$.ajax({
+		cache: true,
+        type: "POST",
+        url:"report/userMonth",
+        async: false,
+        success: function(data) {
+        	$("#data_month").html("");
+			$.each(data,function(i,obj){
+				if(i==0){
+					$("#data_month").append("<option value='"+obj.month_time+"' selected='selected'>"+obj.month_time+"</option>");
+				}else{
+					$("#data_month").append("<option value='"+obj.month_time+"'>"+obj.month_time+"</option>");
+				}
+			});
+            // 获取下拉框数据    
+			getTotalUser();
+        }
+	}); 
+});
+
+function getTotalUser(){
+	var date = $('#data_month option:selected') .val();
+	// 获取用户和新增用户总数
+	$.ajax({
+		cache: true,
+        type: "POST",
+        url:"report/getToalUser",
+        data:{"month":date},
+        async: false,
+        success: function(data) {
+        	$("#total_new").val(data.total_new);
+        	$("#total_all").val(data.total_all);
+        	 $('#container').highcharts({
+        	        title: {
+        	            text: '每月增长用户数',
+        	            x: -20 //center
+        	        },
+        	        /* subtitle: {
+        	            text: '日期',
+        	            x: -20
+        	        }, */
+        	        xAxis: {
+        	            categories: data.cate
+        	        },
+        	        yAxis: {
+        	            title: {
+        	                text: '用户数'
+        	            },
+        	            plotLines: [{
+        	                value: 0,
+        	                width: 1,
+        	                color: '#808080'
+        	            }]
+        	        },
+        	        tooltip: {
+        	            valueSuffix: ''
+        	        },
+        	        legend: {
+        	            layout: 'vertical',
+        	            align: 'right',
+        	            verticalAlign: 'middle',
+        	            borderWidth: 0
+        	        },
+        	        series: [{
+        	            name: '新增用户',
+        	            data: data.data1
+        	        },
+        	        {
+        	            name: '用户总数',
+        	            data: data.data2
+        	        }]
+        	    });
+        }
+	})
+}
+</script>
+</body>
+</html>

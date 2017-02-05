@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<base href="${basePath}" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<script type="text/javascript" src="lib/PIE_IE678.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css"
+	href="lib/Hui-iconfont/1.0.7/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="lib/icheck/icheck.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/skin/blue/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="static/h-ui/css/style.css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<style>
+.tagdiv {
+	width: 100px;
+	padding: 3px;
+}
+
+.no-padding {
+	padding: 0
+}
+
+#picture-img {
+	margin:20px;
+	cursor:pointer;
+	width:200px;
+	transition: opacity 0.5s;
+	-moz-transition: opacity 0.5s;	/* Firefox 4 */
+	-webkit-transition: opacity 0.5s;	/* Safari 和 Chrome */
+	-o-transition: opacity 0.5s;
+}
+#picture-img:hover {
+ opacity:0.5;
+}
+li {
+	float:left;
+	list-style-type:none;
+}
+</style>
+</head>
+<body>
+	<div id="tab_demo" class="HuiTab" style="margin-bottom: 50px;">
+		<div class="tabBar cl pos-f "
+			style="width: 100%; z-index: 22; background-color: #fff;">
+			<span>基本信息</span><span>行程介绍</span><span>产品特色</span><span>费用须知</span><span>预定须知</span><span>图片设置</span>
+		</div>
+		<div style="min-height: 40px"></div>
+		<!--线路团期-->
+		<!--基本信息-->
+		<div class="tabCon">
+			<div class="page-container">
+				<form class="form form-horizontal" id="base_info">
+					<div class="row cl">
+						<label class="form-label col-sm-2">攻略名称：</label>
+						<div class="formControls col-sm-6">
+							<input type="text" disabled="disabled" id="guide_name"
+								class="input-text radius size-M"<#if
+							(route.guide_name??) > value=${route.guide_name} </#if>>
+						</div>
+					</div>
+					<div class="row cl">
+						<label class="form-label col-sm-2">线路名称：</label>
+						<div class="formControls col-sm-2">
+							<span class="select-box radius" style="width: 150px"> <select
+								class="select" name="festival" id="festival" size="1">
+							</select>
+							</span>
+						</div>
+						<div class="formControls col-sm-4">
+							<input type="text" id="route_name" name="route_name"
+								class="input-text radius size-M"
+								value="${route.route_name?if_exists}" required>
+						</div>
+					</div>
+					<div class="row cl">
+						<label class="form-label col-sm-2">分润费率：</label>%
+						<div class="formControls col-sm-1">
+							<input type="text" id="percentage" name="percentage"
+								class="input-text radius size-M" onblur="validatePer()"
+								value="${route.percentage?if_exists}" required />
+						</div>
+					</div>
+					<div class="row cl">
+						<label class="form-label col-sm-2">金币抵扣上限：</label>%
+						<div class="formControls col-sm-1">
+							<input type="text" id="gold_limit" name="gold_limit"
+								class="input-text radius size-M" 
+								value="${route.gold_limit?if_exists}" required/>
+						</div>
+					</div>
+					<div class="row cl">
+						<label class="form-label col-sm-2">出发地点：</label>
+						<div class="formControls col-sm-6">
+							<input type="text" id="start_location" name="start_location"
+								class="input-text radius size-M"
+								value="${route.start_location?if_exists}" required>
+						</div>
+					</div>
+					<div class="row cl">
+						<label class="form-label col-sm-2">出行方式：</label>
+						<div class="formControls col-sm-6">
+							<input type="text" id="travel_mode" name="travel_mode"
+								class="input-text radius size-M"
+								value="${route.travel_mode?if_exists}" required>
+						</div>
+					</div>
+					<div class="row cl">
+						<label class="form-label col-sm-2">标签：</label>
+						<div class="formControls col-sm-6" id="tag_div"></div>
+						<#if (type??&&type!='1')> <input class="btn btn-primary radius"
+							type="button" value="编辑" onclick="addTagWin('${route.id}')">
+						</#if>
+					</div>
+					<div class="row cl">
+						<label class="form-label col-sm-2">线路摘要：</label>
+						<div class="formControls col-sm-6">
+							<textarea id='summary' rows=10 cols=100 name='summary'
+								class='radius size-M' required>${route.summary?if_exists}</textarea>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<!--行程介绍-->
+		<div class="tabCon">
+			<div class="page-container">
+				<form class="form form-horizontal" id="schedule">
+					<#list itiList as iti>
+					<div class="container" id="${iti.id}" name="${iti.order_by}">
+						<legend>第${iti.order_by}天</legend>
+						<div class="row cl">
+							<label class="form-label col-sm-2">标题：</label>
+							<div class="formControls col-sm-6">
+								<input type="text" id="name" name="iti.name"
+									class="input-text radius size-M" value="${iti.name?if_exists}"
+									required>
+							</div>
+						</div>
+						<div class="row cl">
+							<label class="form-label col-sm-2 ">用餐：</label> <label
+								class="form-label col-sm-1 no-padding">早餐：</label>
+							<div class="formControls col-sm-1 no-padding">
+								<input type="text" id="morning" name="iti.morning"
+									class="input-text radius size-M"
+									value="${iti.morning?if_exists}" required>
+							</div>
+							<label class="form-label col-sm-1 no-padding">午餐：</label>
+							<div class="formControls col-sm-1 no-padding">
+								<input type="text" id="noon" name="iti.noon"
+									class="input-text radius size-M" value="${iti.noon?if_exists}"
+									required>
+							</div>
+							<label class="form-label col-sm-1 no-padding">晚餐：</label>
+							<div class="formControls col-sm-1 no-padding">
+								<input type="text" id="at_night" name="iti.at_night"
+									class="input-text radius size-M"
+									value="${iti.at_night?if_exists}" required>
+							</div>
+						</div>
+						<div class="row cl">
+							<label class="form-label col-sm-2">住宿：</label>
+							<div class="formControls col-sm-6">
+								<input type="text" id="lodging" name="iti.lodging"
+									class="input-text radius size-M"
+									value="${iti.lodging?if_exists}" required>
+							</div>
+						</div>
+						<div class="row cl">
+							<label class="form-label col-sm-2">交通：</label>
+							<div class="formControls col-sm-6">
+								<input type="text" id="traffic" name="iti.traffic"
+									class="input-text radius size-M"
+									value="${iti.traffic?if_exists}" required>
+							</div>
+						</div>
+						<div class="row cl">
+							<label class="form-label col-sm-2"></label>
+							<div class="formControls col-sm-6">
+								<input class="btn btn-primary radius " type="button" value="详情"
+									onclick="detail('${iti.id}','第${iti.order_by}天')">
+							</div>
+						</div>
+					</div>
+					</#list>
+
+				</form>
+			</div>
+		</div>
+		<!--产品特色-->
+		<div class="tabCon">
+			<div class="page-container">
+				<form class="form form-horizontal" id="feature">
+					<div class="row cl">
+						<label class="form-label col-sm-2">产品特色：</label>
+						<div class="formControls col-sm-6">
+							<textarea id='product' rows=10 cols=100 name='product'
+								class='radius size-M' required>${route.product?if_exists}</textarea>
+						</div>
+					</div>
+					<div class="row cl">
+						<label class="form-label col-sm-2">重要提示：</label>
+						<div class="formControls col-sm-6">
+							<textarea id='notice' rows=10 cols=100 name='notice'
+								class='radius size-M' required>${route.notice?if_exists}</textarea>
+						</div>
+					</div>
+					<div class="row cl">
+						<label class="form-label col-sm-2">交通信息：</label>
+						<div class="formControls col-sm-6">
+							<textarea id='traffic_info' rows=10 cols=100 name='traffic_info'
+								class='radius size-M' required>${route.traffic_info?if_exists}</textarea>
+						</div>
+					</div>
+				</form>
+			</div>
+
+		</div>
+		<!--费用须知-->
+		<div class="tabCon">
+			<div class="page-container">
+				<form class="form form-horizontal" id="fee">
+					<div class="row cl">
+						<label class="form-label col-sm-2">费用包含：</label>
+						<div class="formControls col-sm-6">
+							<textarea id='fee_includes' rows=15 cols=100 name='fee_includes'
+								class='radius size-M' required>${route.fee_includes?if_exists}</textarea>
+						</div>
+					</div>
+					<div class="row cl">
+						<label class="form-label col-sm-2">费用不包含：</label>
+						<div class="formControls col-sm-6">
+							<textarea id='not_included' rows=15 cols=100 name='not_included'
+								class='radius size-M' required>${route.not_included?if_exists}</textarea>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<!--预定须知-->
+		<div class="tabCon">
+
+			<div class="page-container">
+				<form class="form form-horizontal" id="reserve">
+					<div class="row cl">
+						<label class="form-label col-sm-2">出行须知：</label>
+						<div class="formControls col-sm-6">
+							<textarea id='travel_notes' rows=10 cols=100 name='travel_notes'
+								class='radius size-M' required>${route.travel_notes?if_exists}</textarea>
+						</div>
+					</div>
+					<div class="row cl">
+						<label class="form-label col-sm-2">信用卡预授权：</label>
+						<div class="formControls col-sm-6">
+							<textarea id='preauthorization' rows=10 cols=100
+								name='preauthorization' class='radius size-M' required>${route.preauthorization?if_exists}</textarea>
+						</div>
+					</div>
+					<div class="row cl">
+						<label class="form-label col-sm-2">病患者、孕妇及行动不便者：</label>
+						<div class="formControls col-sm-6">
+							<textarea id='reduced_mobility' rows=10 cols=100
+								name='reduced_mobility' class='radius size-M' required>${route.reduced_mobility!'1.为了确保旅游顺利出行，防止旅途中发生人身意外伤害事故，请旅游者在出行前做一次必要的身体检查， 如存在下列情况，因服务能力所限无法接待：
+（1）传染性疾病患者，如传染性肝炎、活动期肺结核、伤寒等传染病人；
+（2）心血管疾病患者，如严重高血压、心功能不全、心肌缺氧、心肌梗塞等病人；
+（3）脑血管疾病患者，如脑栓塞、脑出血、脑肿瘤等病人；
+（4）呼吸系统疾病患者，如肺气肿、肺心病等病人；
+（5）精神病患者，如癫痫及各种精神病人；
+（6）严重贫血病患者，如血红蛋白量水平在50克/升以下的病人；
+（7）大中型手术的恢复期病患者；
+（8）孕妇及行动不便者。'}</textarea>
+						</div>
+					</div>
+					<div class="row cl">
+						<label class="form-label col-sm-2">老年人：</label>
+						<div class="formControls col-sm-6">
+							<textarea id='the_aged' rows=10 cols=100 name='the_aged'
+								class='radius size-M' required>${route.the_aged!'1. 70周岁以上老年人预订出游，须与我司签订《健康证明》并有家属或朋友（因服务能力所限无法接待及限制接待的人除外）陪同方可出游。
+2. 因服务能力所限，无法接待80周岁以上的旅游者报名出游，敬请谅解。
+3. 因服务能力所限，不受理65周岁（含65周岁）以上老年人预订云南跟团产品。/升以下的病人；
+4. 因服务能力所限，不受理70周岁（含70周岁）以上老年人预订四川、西藏跟团产品。
+								'}</textarea>
+						</div>
+					</div>
+					<div class="row cl">
+						<label class="form-label col-sm-2">未成年人：</label>
+						<div class="formControls col-sm-6">
+							<textarea id='minor' rows=10 cols=100 name='minor'
+								class='radius size-M' required>${route.minor!'1.未满18周岁的旅游者请由家属（因服务能力所限无法接待及限制接待的人除外）陪同参团。
+2.因服务能力所限，无法接待18周岁以下旅游者单独报名出游，敬请谅解。
+								'}</textarea>
+						</div>
+					</div>
+					<div class="row cl">
+						<label class="form-label col-sm-2">外籍友人：</label>
+						<div class="formControls col-sm-6">
+							<textarea id='foreign_friends' rows=10 cols=100
+								name='foreign_friends' class='radius size-M' required>${route.foreign_friends!'本产品网上报价适用持有大陆居民身份证的游客。如您持有其他国家或地区的护照，请在预订过程中注明。
+								'}</textarea>
+						</div>
+					</div>
+					<div class="row cl">
+						<label class="form-label col-sm-2">安全提示：</label>
+						<div class="formControls col-sm-6">
+							<textarea id='safety_notice' rows=10 cols=100
+								name='safety_notice' class='radius size-M' required>${route.safety_notice?if_exists}</textarea>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<div class="tabCon">
+			<div class="page-container">
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-2">缩略图：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<span class="btn-upload form-group"> <a
+							href="javascript:void();" class="btn btn-primary radius"> <i
+								class="iconfont">&#xf0020;</i> 本地上传
+						</a>
+							<form class="form form-horizontal" id="thumbnail_form">
+								<input style="width: 200px;" type="file" multiple name="file_0"
+									class="input-file" id="file1"
+									onchange="upload('file1','thumbnail_form','thumbnail')">
+							</form>
+						</span> <input type="button" class="btn btn-primary radius"
+							id="logo_select" value="从图库选择"
+							onclick="openPicRepo(false,'thumbnail_url')"></input> <input
+							hidden="true" id="thumbnail_url" name="thumbnail_url"
+							onchange="changePreviewPic(this,'thumbnail')"></input> <span
+							class='va-m c-999'> 推荐尺寸：200*200,请确保长宽比为1:1</span>
+					</div>
+				</div>
+				<div class="row cl" style="min-height: 150px;">
+					<label class="form-label col-xs-4 col-sm-2"></label>
+					<div id="thumbnail" class="formControls col-xs-8 col-sm-9" img-style="@200w_200h_2e">
+						<#if route.thumbnail??>
+						<div class="mt-10">
+							<img id="picture-img" class="picture-img" src="${route.thumbnail}"></img>
+						</div>
+						</#if>
+					</div>
+				</div>
+
+				<div class="row cl mt-20">
+					<label class="form-label col-xs-4 col-sm-2">标题图：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<span class="btn-upload form-group"> <a
+							href="javascript:void();" class="btn btn-primary radius"> <i
+								class="iconfont">&#xf0020;</i> 本地上传
+						</a>
+							<form id="title_img_form">
+								<input style="width: 200px;" type="file" multiple name="file_0"
+									class="input-file" id="file2"
+									onchange="upload('file2','title_img_form','title_img',1)">
+							</form>
+						</span> <input type="button" class="btn btn-primary radius"
+							id="logo_select" value="从图库选择"
+							onclick="openPicRepo(false,'title_img_url')"></input> 
+							<input
+							hidden="true" id="title_img_url" name="title_img_url"
+							onchange="changePreviewPic(this,'title_img',1)"></input> 
+							<span
+							class='va-m c-999'> 推荐尺寸：600*300,请确保长宽比为2:1</span>
+					</div>
+				</div>
+				<div class="row cl" style="min-height: 150px;">
+					<label class="form-label col-xs-4 col-sm-2"></label>
+					<div id="title_img" class="formControls col-xs-8 col-sm-10" img-style="@600w_300h_2e">
+						<#if imgList??>
+						<#list imgList as img>
+						<li><img id="picture-img" class="picture-img" style="width:300px;"	onclick="imgClick(this)" src="${img}"></img></li> </#list>
+						</#if>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+	</div>
+
+	<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/layer/2.1/layer.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.admin.js"></script>
+	<script type="text/javascript" src="lib/jquery/1.9.1/jquery-form.js"></script>
+	<script type="text/javascript"
+		src="lib/jquery.validation/1.14.0/jquery.validate.min.js"></script>
+	<script type="text/javascript"
+		src="lib/jquery.validation/1.14.0/validate-methods.js"></script>
+	<script type="text/javascript"
+		src="lib/jquery.validation/1.14.0/messages_zh.min.js"></script>
+	<script type="text/javascript">
+	
+	
+		$(function(){
+			$('#tag_div').empty();
+			<#list tagList as tag>
+					$('#tag_div').append("<span class='tagdiv radius' style='margin-right:4px;padding:3px;background-color:"+"${tag.t_color}"+";'>"+"${tag.t_name}"+"</span>");
+			</#list>	
+			<#if  (tagList?size=0)>
+			$('#tag_div').append("<span class='va-m c-999'>最多选择3个标签</span>");
+			</#if>
+				
+			
+			// 加载layer扩展方法，可以使用prompt
+			layer.config({
+			  extend: 'extend/layer.ext.js'
+			});   
+		})
+		
+		// #tab_demo 父级id
+		// #tab_demo .tabBar span 控制条
+		// #tab_demo .tabCon 内容区
+		// click 事件 点击切换，可以换成mousemove 移动鼠标切换
+		// 1	默认第2个tab为当前状态（从0开始）
+		$(function(){
+/* 			jQuery.Huitab =function(tabBar,tabCon,class_name,tabEvent,i){
+				var $tab_menu=$(tabBar);
+				  // 初始化操作
+				  $tab_menu.removeClass(class_name);
+				  $(tabBar).eq(i).addClass(class_name);
+				  $(tabCon).hide();
+				  $(tabCon).eq(i).show();
+				  
+				  $tab_menu.bind(tabEvent,function(){
+				  	$tab_menu.removeClass(class_name);
+				      $(this).addClass(class_name);
+				      var index=$tab_menu.index(this);
+				      $(tabCon).hide();
+				      $(tabCon).eq(index).show();
+				      if($(tabCon).eq(index)[0].tagName=='IFRAME'){//为了不再团期页面显示按钮（无法理解
+				    	  $('footer').hide();
+				      }else{
+				    	  $('footer').show();
+				      }
+				  });
+				} */
+			$.Huitab("#tab_demo .tabBar span","#tab_demo .tabCon","current","click","0");
+		});
+
+		// 关闭时刷新父页面
+		window.onunload = function(event) { 
+			$("#search_button",parent.$('iframe[src="routeManager"]')[0].contentDocument).click();
+		}	
+		
+		$(document).ready(function(){
+			
+			// 重写validate方法，使得对相同name的动态生成input进行验证时不会只验证第一个
+			$.validator.prototype.checkForm = function() {
+			    this.prepareForm();
+			    for ( var i = 0, elements = (this.currentElements = this.elements()); elements[i]; i++ ) {
+			        if (this.findByName( elements[i].name ).length != undefined && this.findByName( elements[i].name ).length > 1) {
+			            for (var cnt = 0; cnt < this.findByName( elements[i].name ).length; cnt++) {
+			                    this.check( this.findByName( elements[i].name )[cnt] );
+			            }
+			        } else {
+			            this.check( elements[i] );
+			        }
+			    }
+			    return this.valid();
+			}
+			
+			
+			// 节日
+		$.ajax({
+			url:'common/loadFestival',
+			method:'POST',
+			success:function(r){
+				if(r.code != 999){
+					var data = r.festival;
+					var list = [];
+					for(var i=0;i<data.length;i++){
+						list.push(data[i].name);
+					}
+					$("#festival").html("<option value=''></option>");
+					$.each(list,function(i,obj){
+						var selected = "${route.festival?if_exists}";
+		    				if(selected == obj){
+		    					$("#festival").append("<option value='"+obj+"' selected='selected' >"+obj+"</option>");
+		    				}else{
+		    					$("#festival").append("<option value='"+obj+"'>"+obj+"</option>");
+		    				}
+						
+					});
+				}
+			}
+		});
+			
+		})
+				
+
+		function addTagWin(id) {
+			var index = layer.open({
+				type : 2,
+				title : "添加标签",
+				content : "routeManager/addTag?id=" + id,
+				area : [ '800px', '500px' ]
+			});
+		}
+		
+		function update(status,operation){
+			if($('#gold_limit').val()!=''&&isNaN($('#gold_limit').val())){
+				layer.msg('金币抵扣上限只能为数字！', {icon: 2,time:1000});
+				return;
+			}
+			if($('#gold_limit').val()>100){
+				layer.msg('金币抵扣上限不能大于100！', {icon: 2,time:1000});
+				return;
+			}
+			
+			var thumbnail = $('#thumbnail img').attr('src');
+			var title_img = $('#title_img img');
+			var title_url = [];
+			
+			var data="id=${route.id}";
+			data = data+"&"+$('#base_info').serialize();
+			data =data+"&"+$('#feature').serialize();
+			data =data+"&"+$('#fee').serialize();
+			data =data+"&"+$('#reserve').serialize();
+			data =data+"&"+$('#schedule').serialize();
+			data = data+"&thumbnail="+thumbnail;
+			for(var i=0,length=title_img.length;i<length;i++){
+				data = data+"&title_img[]="+$(title_img[i]).attr('src');
+			}
+			$.ajax({
+				type:'POST',
+				url:"routeManager/update",
+				data : data,
+				beforeSend: function(){
+					layer.load(2,{zindex:1200});
+				},
+				success:function(r){
+					layer.closeAll('loading');
+					if(r.result=="success"){
+						if(!!status)
+							changeStatus(status,operation);
+						layer.msg('操作成功！', {icon: 1,time:1000});
+					}else if(r.code==999){
+						layer.msg(r.msg,{icon: 2,time:2000});
+	            	}else if(!!r.fail){
+	            		layer.msg(r.fail,{icon: 2,time:2000});
+	            	}else{
+	            		layer.msg('操作失败！',{icon: 2,time:2000});
+	            	}
+				}
+			})
+		}
+		
+		function detail(iti_id,title){
+			var index = layer.open({
+				type : 2,
+				title : title+"详情编辑",
+				content : "routeManager/detail?id=" + iti_id+"&type=${type}",
+				area : [ '800px', '500px' ]
+			});
+		}
+		
+		function validatePer(){
+			if(isNaN($('#percentage').val())||$('#percentage').val()<0||$('#percentage').val()>100){
+				layer.msg('请输入1~100的数字', {icon: 2,time:1000});
+				$('#percentage').val('');
+				
+			}
+		}
+		
+		function submit(){
+			$.validator.setDefaults({ 
+				ignore: '',
+				errorPlacement: function (error, element) {	}
+			});
+			if(!$("#base_info").validate().form()){
+				layer.msg('基本信息未填写完整！', {icon: 2,time:1000});
+				return;
+			}
+			if(!$("#schedule").validate().form()){
+				layer.msg('行程介绍未填写完整！', {icon: 2,time:1000});
+				return;
+			}
+			if(!$("#feature").validate().form()){
+				layer.msg('产品特色未填写完整！', {icon: 2,time:1000});
+				return;
+			}
+			if(!$("#fee").validate().form()){
+				layer.msg('费用须知未填写完整！', {icon: 2,time:1000});
+				return;
+			}
+			if(!$("#reserve").validate().form()){
+				layer.msg('预定须知未填写完整！', {icon: 2,time:1000});
+				return;
+			}
+			if(!validatePic()){
+				layer.msg('图片设置未填写完整！', {icon: 2,time:1000});
+				return;
+			}
+			update(1,0);
+		}
+		
+		function validatePic(){
+			if($('#thumbnail img').length==0||$('#title_img img').length==0)
+				return false;
+			else
+				return true;
+		}
+		
+		function changeStatus(status,operation){
+			var o = "updateStatus";
+			switch(operation){
+			case 0: o="submit";go();break;
+			case 1: o="verify";go();break;
+			case 2: 
+				o="refuse";
+				layer.prompt({
+					  title: '填写驳回理由'
+					}, function(val){
+						window.location.href='routeManager/'+o+'?id=${route.id}'+'&reason='+val;
+				});
+				break;
+			case 3: o="revoke";go();break;
+			case 4: o="onShelf";go();break;
+			case 5: o="offShelf";go();break;
+			}
+			
+			function go(){
+				window.location.href='routeManager/'+o+'?id=${route.id}';
+			}
+		}
+		
+		function openPicRepo(multi,bind){
+			var index = layer.open({
+				type : 2,
+				title : "图库",
+				content : "picture/picRepo?multiSelect=false&bind_field="+bind,
+				area : [ '800px', '500px' ]
+			});
+		}
+		
+		function changePreviewPic(t,id,is_multi){
+			var style = $('#'+id).attr("img-style");
+			var url = $(t).val();
+			if(!!style)
+				url = processURL($(t).val(),style);
+			if(!!is_multi){
+        		$("#"+id).append('<li><img id= "picture-img" class="picture-img" onclick="imgClick(this)" src="'+url+'"  style="width:300px;" picSize=""></img></li>');
+        	}else{
+				$("#"+id).html("");
+		    	$("#"+id).append('<div class="mt-10"><img id= "picture-img" class="picture-img"  alt="" src="'+url+'"></img></div>');
+        	}
+        }
+		
+		function upload(field_id,form_id,div_id,is_multi){
+			var name = $("#"+field_id).val();
+	    	var type = name.substr(name.lastIndexOf(".")).toLowerCase();
+	    	var data;
+	    	
+// 	    	if(div_id=='thumbnail')
+// 	    		data={style:"@200w_200h_2e"}
+// 	    	else if(div_id=='title_img')
+// 	    		data={style:"@600w_300h_2e"}
+
+			var style = $('#'+div_id).attr("img-style");
+	    	
+	    	if(type==".jpg"||type==".jpeg"||type==".png"||type==".bmp"){
+		    	$("#"+form_id).ajaxSubmit({
+		            url: "common/uploadPictures",
+		            type: "post",
+		            dataType: "json",
+		            timeout: 600000,
+		            data : data,
+		            beforeSend : function() {
+						layer.load(2, {
+							zindex : 1200
+						});
+					},
+		            success: function(data) {
+		            	layer.closeAll('loading');
+		            	if(data.code==999){
+		            		layer.alert(data.msg);
+		            	}else
+		            	layer.msg("上传成功",{icon:1,time:1000});
+		            	var url = data.url;
+		            	if(!!style)
+		            		url = processURL(data.url,style)
+		            	if(!!is_multi){
+		            		$("#"+div_id).append('<li><img id= "picture-img" class="picture-img" onclick="imgClick(this)" src="'+url+'"  style="width:300px;" picSize=""></img></li>');
+		            	}else{
+					    	$("#"+div_id).html("").append('<div class="mt-10"><img id= "picture-img" class="picture-img" onclick="imgClick(this)" src="'+url+'"></img></div>');
+		            	}
+		            },
+		            error: function(data, status, e) {
+		            	layer.closeAll('loading');
+		                layer.msg("上传失败，错误信息：" + e,{icon:2,time:2000});
+		            }
+		        });	
+	    	}else{
+	    		layer.alert("请选择格式为jpg，jpeg,png,bmp格式的图片！" );
+	    	}
+		}
+		
+		function imgClick(e){
+			layer.confirm('移除图片', {icon: 3, title:'提示'}, function(index){
+					$(e).remove();
+				  layer.close(index);
+				});
+		}
+		
+		function processURL(url,style){
+			url = url.replace("oss-cn", "img-cn");
+			url = url+style;
+			return url;
+		}
+	</script>
+	<footer class="footer  pos-f"
+		style="bottom: 0; z-index: 20; width: 100%; background-color: #F8F8F8;">
+		<div class="row cl" id="buttons">${functBtnOptin!}</div>
+	</footer>
+</body>
+</html>

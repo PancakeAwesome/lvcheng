@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<base href="${basePath}" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<script type="text/javascript" src="lib/PIE_IE678.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css"
+	href="lib/Hui-iconfont/1.0.7/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="lib/icheck/icheck.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/skin/blue/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="static/h-ui/css/style.css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+</head>
+<body>
+<div class="page-container">
+	<form class="form form-horizontal" id="hotCityForm">
+	<#if type='0'>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">城市选择：</label>
+			<div class="formControls col-xs-4 col-sm-4">
+				<span class="select-box">
+				<select id="province" class="select">
+				</select>
+				</span>
+			</div>
+			<div class="formControls col-xs-4 col-sm-4">
+				<span class="select-box">
+				<select id="city" class="select">
+				</select>
+				</span>
+			</div>
+			<input id="id" name = "id" hidden="hidden"></input>
+		</div>
+		</#if> 
+		<#if type='1'> <input hidden='true' name = "id" value = "${hotcity.id}"></input></#if>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2"><span
+					class="c-red">*</span>城市名称：</label>
+				<div class="formControls col-xs-8 col-sm-8">
+					<input type="text" class="input-text" required 	id="h_name" name="hName" 
+					<#if type='1'> value="${hotcity.h_name?if_exists}"  disabled="disabled"</#if> >
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2">城市编号：</label>
+				<div class="formControls col-xs-8 col-sm-8">
+					<input type="text" class="input-text" disabled="disabled" 
+						id="h_code" name="hCode" <#if hotcity??>value="${hotcity.h_code?if_exists}"</#if> >
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2"></span>热门城市：</label>
+				<div class="formControls col-xs-8 col-sm-8">
+					<div class="radio-box">
+						<input name="isHot" type="radio" id="enabledOn" value="1"  <#if hotcity??&&hotcity.is_hot='1'>checked </#if>/>
+						<label for="enabledOn">是</label>
+					</div>
+					<div class="radio-box">
+						<input type="radio" id="enabledOff" name="isHot" value="0" <#if type='0'>checked</#if> <#if hotcity??&&hotcity.is_hot='0'>checked </#if> />
+						<label for="enabledOff">否</label>
+					</div>
+				</div>
+			</div>
+			<div class="row cl">
+			<div  class="footer  pos-f" style = " bottom:0;z-index:20;width:100%;background-color:#F8F8F8;">
+				<div class="row cl" id="buttons">
+				<button onClick="save();" class="btn btn-primary radius" type="button"><i class="Hui-iconfont">&#xe632;</i> 提交</button>
+				<button onClick="layer_close();" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+</div>
+
+	<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/icheck/jquery.icheck.min.js"></script>
+	<script type="text/javascript" src="lib/layer/2.1/layer.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.admin.js"></script>
+	<script type="text/javascript" src="lib/jquery.validation/1.14.0/jquery.validate.min.js"></script>
+	<script type="text/javascript" src="lib/jquery.validation/1.14.0/validate-methods.js"></script>
+	<script type="text/javascript" src="lib/jquery.validation/1.14.0/messages_zh.min.js"></script>
+	<script type="text/javascript">
+	
+		$(function(){
+			//$.ajaxSetup({ async:false });
+			$(function(){
+				$('#is_hot').iCheck({
+					checkboxClass: 'icheckbox-blue',
+					radioClass: 'iradio-blue',
+					increaseArea: '20%'
+				});
+			});
+			<#if type='0'>
+			loadAreaControl("province","city");
+			
+			$("#province").change(function(){
+				appendAreaControl(getAreaList($(this).val()),"city");
+				if($("#city").children().length==0||$("#city").find("option:selected").text()=="市辖区"||$("#city").find("option:selected").text()=="县"){
+					$("#h_name").val($("#province").find("option:selected").text());
+					$("#id").val($("#province").find("option:selected").val());
+				}else{
+					$("#h_name").val($("#city").find("option:selected").text());
+					$("#id").val($("#city").find("option:selected").val());
+				}
+			});
+			
+			$("#city").change(function(){
+				if($("#city").children().length==0||$("#city").find("option:selected").text()=="市辖区"||$("#city").find("option:selected").text()=="县"){
+					$("#h_name").val($("#province").find("option:selected").text());
+					$("#id").val($("#province").find("option:selected").val());
+				}else{
+					$("#h_name").val($("#city").find("option:selected").text());
+					$("#id").val($("#city").find("option:selected").val());
+				}
+			});
+			
+			</#if>
+		})
+		
+		function getAreaList(pid){
+			var _data = null;
+			/* $.get("common/areaList/"+pid,function(data){
+				_data = data;
+			},"json"); */
+			$.ajax({
+				url:"common/areaList/"+pid,
+				async:false,
+				dataType:'json',
+				type:"GET",
+				success:function(data){
+					_data = data;
+				}
+			})
+			return _data;
+		}
+		
+		function appendAreaControl(list,id){
+			$("#"+id).html("");
+			$.each(list,function(i,obj){
+				$("#"+id).append("<option value='"+obj.id+"'>"+obj.name+"</option>");
+			});
+		}
+		
+		function loadAreaControl(provinceId,cityId){
+			appendAreaControl(getAreaList(1),"province");
+			appendAreaControl(getAreaList($("#province").val()),"city");
+			if($("#city").children().length==0||$("#city").find("option:selected").text()=="市辖区"||$("#city").find("option:selected").text()=="县"){
+				$("#h_name").val($("#province").find("option:selected").text());
+				$("#id").val($("#province").find("option:selected").val());
+
+			}else{
+				$("#h_name").val($("#city").find("option:selected").text());
+				$("#id").val($("#city").find("option:selected").val());
+
+			}
+		}
+		
+		
+		function save() {
+			if (!$("#hotCityForm").validate().form())
+				return;
+			$.ajax({
+				type : "POST",
+				async : true,
+				url : 'setting/saveHotCity?type=${type}',
+				data : $('#hotCityForm').serialize(),
+				beforeSend : function() {
+					layer.load(2, {
+						zindex : 1200
+					});
+				},
+				success : function(r) {
+					layer.closeAll('loading');
+					if (r.result == "success") {
+						parent.layer.msg('操作成功！', {
+							icon : 1,
+							time : 2000
+						});
+						$("#search_button_hc",parent.document).click();
+						layer_close();
+					} else if (r.result == "dupilcate") {
+						layer.msg('请勿重复添加城市！', {
+							icon : 2,
+							time : 2000
+						});
+					} else {
+						layer.msg('操作失败！', {
+							icon : 2,
+							time : 2000
+						});
+					}
+				}
+			})
+		}
+	</script>
+</body>
+</html>

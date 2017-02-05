@@ -1,0 +1,322 @@
+<!--_meta 作为公共模版分离出去-->
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <base href="${basePath}" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <LINK rel="Bookmark" href="/favicon.ico">
+    <LINK rel="Shortcut Icon" href="/favicon.ico" />
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="lib/html5.js"></script>
+    <script type="text/javascript" src="lib/respond.min.js"></script>
+    <script type="text/javascript" src="lib/PIE_IE678.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" type="text/css"
+          href="static/h-ui/css/H-ui.min.css" />
+    <link rel="stylesheet" type="text/css"
+          href="static/h-ui/css/H-ui.admin.css" />
+    <link rel="stylesheet" type="text/css"
+          href="lib/Hui-iconfont/1.0.7/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="lib/icheck/icheck.css" />
+    <link rel="stylesheet" type="text/css"
+          href="static/h-ui/skin/default/skin.css" id="skin" />
+    <link rel="stylesheet" type="text/css" href="static/h-ui/css/style.css" />
+    <!--[if IE 6]>
+    <script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+    <script>DD_belatedPNG.fix('*');</script>
+    <![endif]-->
+    <!--/meta 作为公共模版分离出去-->
+
+    <link href="lib/webuploader/0.1.5/webuploader.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<div class="page-container">
+		<form class="form form-horizontal" action="" id="userFormAddId">
+			<div class="row cl" id="div-club-id">
+				<label class="form-label col-xs-4 col-sm-2"> <span
+					class="c-red">*</span>手机号：
+				</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<input type="text" class="input-text" value="${user.phoneNumber!}"
+						placeholder="" id="phoneNumber" maxlength="11" name="phoneNumber"/>
+					<input type="hidden"  class="input-text" value="${user.id!}"
+						placeholder="" id="userAddId" maxlength="11" name="id" />
+				</div>
+			</div>
+			<!-- <div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2"> <span
+					class="c-red">*</span>密码：
+				</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<input type="text"  class="input-text" value="${user.password!}"
+						placeholder="" id="password" name="password">
+				</div>
+			</div> -->
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2"> <span
+					class="c-red">*</span>所属俱乐部：
+				</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<span class="select-box">
+			        <select class="select" id="guibIdSelect" size="1" name="clubId" >
+			          <!-- <option value="-1" selected>请选择</option>
+			          <option value="1">启用</option>
+			          <option value="2">禁用</option> -->
+			        </select>
+			        </span> 
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2"> <span
+					class="c-red">*</span>角色：
+				</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<input type="text" class="input-text" style="width: 75%;" readonly="readonly" value="${user.roleName!}"
+						placeholder="" id="roleName" name="roleName">
+						
+					
+					<input type="hidden" class="input-text" value="${user.roleIds!}"
+						placeholder="" id="roleIds" name="roleIds">
+						
+					<input class="btn btn-default radius" onclick="userRoleQuery();" type="button" value="选择角色" />
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2"> <span
+					class="c-red">*</span>选择状态：
+				</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<span class="select-box">
+			        <select class="select" size="1" name="status" id="selectId" >
+			          <!-- <option value="-1" selected>请选择</option> -->
+			          <option value="1">启用</option>
+			          <option value="0">禁用</option>
+			        </select>
+			        </span> 
+				</div>
+			</div>
+			<div class="row cl">
+				<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+					<button class="btn btn-primary radius" type="submit"  onclick="submitForm();"
+						id="club-add_submit">
+						<i class="Hui-iconfont">&#xe632;</i>确定
+					</button>
+					<button onClick="layer_close();" class="btn btn-default radius"
+						type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+				</div>
+			</div>
+		</form>
+	</div>
+
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="lib/layer/2.1/layer.js"></script>
+<script type="text/javascript" src="lib/public.js?id=12ccc313"></script>
+<script type="text/javascript" src="lib/icheck/jquery.icheck.min.js"></script>
+<script type="text/javascript" src="lib/json2.js"></script>
+<script type="text/javascript" src="lib/jquery.validation/1.14.0/jquery.validate.min.js"></script>
+<script type="text/javascript" src="lib/jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript" src="lib/jquery.validation/1.14.0/messages_zh.min.js"></script>
+<script type="text/javascript" src="static/h-ui/js/H-ui.js"></script>
+<script type="text/javascript" src="static/h-ui/js/H-ui.admin.js"></script>
+<!--/_footer /作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript">
+var list = '${list!}';
+    $(function(){
+    	getPhoneList();
+    	selectGuib();
+    	//selectDictionary({selectId:'selectId',dataVal:'${user.status!}',code:'status'});
+    //编辑情况下禁止修改用户手机号码
+    	if("${type!}" == 3){
+    		$('#phoneNumber').attr('readonly','readonly');
+    	}
+    });
+    var clubOriginal = 	$('#guibIdSelect').val();
+    /* 更新角色列表 */
+    	
+    	var clubId = "";
+    	$('#guibIdSelect').change(function(){
+    		
+    		clubId = $(this).val();
+    		console.log('${LvId!}');
+    		console.log(clubId);
+    		console.log('${user.clubId!}');
+    		console.log('${user.roleName!}');
+    		if(('${user.clubId!}' == '${LvId!}' && clubId!='${LvId!}')//旅程用户选了别的
+    				||('${user.clubId!}' != '${LvId!}' && clubId=='${LvId!}')){//非旅程用户选了旅程的
+    			
+    			$('#roleName').val('');
+    			$('#roleIds').val('');
+    		} 
+    		/* if(clubId == clubOriginal){
+    			$('#roleName').val(club);
+    		} */
+    	})
+
+    
+    //提交方式
+    function submitForm(){
+    	$("#userFormAddId").validate({
+			rules : {
+				phoneNumber : {
+					isNumber : true,
+					required : true,
+					minlength : 11,
+					maxlength : 11
+				},
+				realName : {
+					required : false,
+					minlength : 1,
+					maxlength : 10
+				}
+			},
+			onkeyup : false,
+			focusCleanup : true,
+			success : "valid",
+			submitHandler : function(form) {
+				var d = $('#roleIds').val();
+		    	if(isNull(d)){
+		    		layer.msg("请选择角色!",{icon:5,time:2000}, function(index) {
+					})
+		    		return;
+		    	}
+		    	
+		    	var clud = $('#guibIdSelect').val();
+		    	if(isNull(clud)){
+		    		layer.msg("请选择俱乐部!",{icon:5,time:2000}, function(index) {
+					})
+		    		return;
+		    	}
+				
+				//ajax提交
+				var url = '';
+				$.ajax({
+					cache : true,
+					type : "POST",
+					url : "userManager/saveOrUpdate",
+					data : $('#userFormAddId').serialize(),// 你的formid
+					async : false,
+					beforeSend : function() {
+						layer.load(2);
+					},
+					error : function(request) {
+						layer.closeAll('loading');
+						layer.msg("操作失败！",{icon:2,time:2000});
+					},
+					success : function(data) {
+						layer.closeAll('loading');
+						//console.log(data);
+						if(isNull(data.error)){
+							parent.layer.msg(data.success,{icon:1,time:2000});
+							parent.dataTable.ajax.reload(); 
+			                layer_close();
+						}else{
+							layer.msg(data.error,{icon:2,time:2000}, function(index) {
+							})
+						}
+					}
+				});
+			}
+		});
+    }
+    
+    //
+    function editFalse(){
+    	var type="${type!}";
+		if( type =="2"){ // 编辑状态, 查看状态
+			$("input").attr("disabled",true);
+			$("select").attr("disabled",true);
+			$("textarea").attr("disabled",true);
+			$("#club-add_submit").hide();
+		}else{
+			$("#div-club-id").hide();
+		}
+    }
+    
+    
+    //手机号码校验
+    function getPhoneList(){
+    	$('#phoneNumber').bind("keyup oninput",function(){
+			console.log($('#phoneNumber').val());
+			var d = $('#phoneNumber').val();
+			
+			if(!isNull(d.trim()) && d.length == 11){
+				$.ajax({
+					cache: true,
+		            type: "POST",
+		            url:"userManager/getPhoneValid",
+		            data:{phone:d},
+		            async: false,
+		            success: function(data) {
+						if(!isNull(data.error)){
+							//$('#realName').val(null);
+							layer.msg(data.error,{icon: 5,time:1000});
+						}	else{
+							if(isNull(data.success.realName)){
+								//$('#realName').removeAttr('readonly');
+							}
+							//$('#realName').val(data.success.realName);
+							//$('#userAddId').val(data.success.id);
+						}	            	
+		            }
+				});
+			}
+    	});
+    }
+    
+    
+    function selectGuib(){
+    	 //获取俱乐部下拉框
+		$.ajax({
+			cache: true,
+            type: "POST",
+            url:"common/selectClublistForAdd",
+            async: false,
+            success: function(data) {
+            	$("#guibIdSelect").html("");
+            	// 旅城账号
+            	$("#guibIdSelect").append("<option value=''>--请选择--</option>");
+    			$.each(data,function(i,obj){
+    				if(obj.id == '${user.clubId!}'){
+    					$("#guibIdSelect").append("<option value='"+obj.id+"'  selected='selected'>"+obj.clubShortName+"</option>");
+    				}else{
+	    				$("#guibIdSelect").append("<option value='"+obj.id+"'>"+obj.clubShortName+"</option>");
+    				}
+    				
+    			});
+    			/* updeteRoleByClub(); */
+            }
+		}); 
+    	 
+    }
+    
+    //查询
+    function userRoleQuery(){
+    	var h = $(".page-container").outerHeight(true);
+     	var w = $(".page-container").outerWidth(true);
+		var userId= '${user.id!}';
+     	var selectId = $('#guibIdSelect').val();
+     	if(isNull(selectId)){
+     		layer.msg("请选择俱乐部!",{icon: 2,time:1000});
+     		return;
+     	}
+		var index = layer.open({
+			type : 2,
+			title : "添加",
+			zindex:2000,
+			area:['900px','500px'],
+			content : "roleManager/getRoleUserJsp?cublId="+selectId+'&userId='+userId
+		});
+     	//layer_show('添加',"roleManager/getRolePermissionJsp?userId="+userId,'',h/0.5);
+    }
+   
+</script>
+</body>
+</html>

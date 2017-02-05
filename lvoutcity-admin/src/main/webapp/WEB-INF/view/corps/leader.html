@@ -1,0 +1,178 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<base href="${basePath}"/>
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<script type="text/javascript" src="lib/PIE_IE678.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css"
+	href="lib/Hui-iconfont/1.0.7/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="lib/icheck/icheck.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="static/h-ui/css/style.css" />
+<link rel="stylesheet" type="text/css" href="lib/bootstrap-Switch/bootstrapSwitch.css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>俱乐部管理</title>
+</head>
+<body>
+	<div class="page-container">
+		<#list leaders as l>
+			<input hidden='true' id = 'selected-${l}' />
+		</#list>
+		<div class="mt-20">
+			<table id="selectClub"
+				class="table table-border table-bordered table-hover table-bg table-striped">
+				<thead>
+					<tr class="text-c">
+						<th width="60">旅城号</th>
+						<th width="60">真实姓名</th>
+					 	<th width="60">昵称</th>
+						<th width="80">俱乐部</th>
+						<th width="80">手机号</th>
+						<th width="100">选择</th>
+					</tr>
+				</thead>
+				
+			</table>
+		</div>
+	<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/layer/2.1/layer.js"></script>
+	<script type="text/javascript" src="lib/laypage/1.2/laypage.js"></script>
+	<script type="text/javascript" src="lib/My97DatePicker/WdatePicker.js"></script>
+	<script type="text/javascript" src="lib/bootstrap-Switch/bootstrapSwitch.js"></script>
+	<script type="text/javascript"
+		src="lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.admin.js"></script>
+	<script type="text/javascript">
+		var dataTable = null;
+		var checkList= null;
+		$(function() {
+			// 俱乐部查询
+			dataTable = $("#selectClub").DataTable({
+				"processing" : true,
+				"serverSide" : true,
+				"ordering":true,
+				searching:false,
+				"order" : [ [ 0, "asc" ] ],
+				paging:false,
+				"ajax" : {
+					"url" : "leader/selectLeaderNoPaging",
+				    "type": "POST",
+				    "data":function(d){
+				    	d['clubId']='${club_id}'; //TODO 
+				    	}
+				},
+				"columnDefs" : [  {
+					"data" : "user_no",
+					"targets":0,
+					"defaultContent":''
+				},{
+					"data":"real_name",
+					"targets":1,
+					"defaultContent":''
+				},
+				{
+					"data":"nick_name",
+					"targets":2,
+					"defaultContent":''
+				},
+				
+				{
+					"data":"club_short_name",
+					"targets":3,
+					"defaultContent":''
+				},{
+					"data":"phone_number",
+					"targets":4,
+					"defaultContent":''
+				},{
+					"data":"id",
+					"targets":5,
+					"render":function(data,type,row){
+						var cb =  '<div class="text-c"><input type="checkbox" id = "'+data+'" name="'+row.nick_name+'" ' 
+						if($('#selected-'+data).length>0)
+							cb = cb+'checked="checked"';
+						cb=cb+'></input></div>';
+						return cb;
+					}
+				} ],
+				
+				"language" : {
+					"sProcessing" : "处理中...",
+					"sLengthMenu" : "显示 _MENU_ 项结果",
+					"sZeroRecords" : "没有匹配结果",
+					"sInfo" : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+					"sInfoEmpty" : "显示第 0 至 0 项结果，共 0 项",
+					"sInfoFiltered" : "(由 _MAX_ 项结果过滤)",
+					"sInfoPostFix" : "",
+					"sSearch" : "搜索:",
+					"sUrl" : "",
+					"sEmptyTable" : "表中数据为空",
+					"sLoadingRecords" : "载入中...",
+					"sInfoThousands" : ",",
+					"oPaginate" : {
+						"sFirst" : "首页",
+						"sPrevious" : "上页",
+						"sNext" : "下页",
+						"sLast" : "末页"
+					}
+				}
+			});
+			
+		});
+		// 根据条件查询club
+		$("#select-club-condition").click(function(){
+			dataTable.ajax.reload();
+		});
+	
+		
+		function getCheck(){
+			 var idList= new Array() ;
+			 var nameList= new Array() ;
+			 $("input[type=checkbox]").each(function(i,d){
+							 if(d.checked){
+								 idList.push(d.id);
+								 nameList.push($(d).attr('name'));
+							 }
+				})
+			return [idList,nameList];
+		}
+		
+		function getLeader(){
+			var data = getCheck();
+			$('#leader_id',parent.document).val(data[0].join(','));
+			$('#leader',parent.document).val(data[1].join(','));
+			layer_close();
+		}
+	</script>
+
+		<footer class="footer  pos-f"
+			style="bottom: 0; z-index: 20; width: 100%; background-color: #F8F8F8;">
+			<div class="row cl" id="buttons">
+				<button class="btn btn-success radius" type="submit"
+					id="open-add-submit" hidden="true" onClick="getLeader();">
+					<i class="Hui-iconfont">&#xe632;</i> 确定
+				</button>
+				&nbsp; &nbsp;
+				<button onClick="layer_close();" class="btn btn-default radius"
+					type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+			</div>
+		</footer></body>
+</html>

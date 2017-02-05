@@ -1,0 +1,534 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<base href="${basePath}"/>
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<script type="text/javascript" src="lib/PIE_IE678.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css"
+	href="lib/Hui-iconfont/1.0.7/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="lib/icheck/icheck.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="static/h-ui/css/style.css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>俱乐部管理</title>
+</head>
+<body>
+	<nav class="breadcrumb">
+		<i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span>
+		俱乐部 <span class="c-gray en">&gt;</span> 领队管理 <a
+			class="btn btn-success radius r"
+			style="line-height: 1.6em; margin-top: 3px"
+			href="javascript:location.replace(location.href);" title="刷新"><i
+			class="Hui-iconfont">&#xe68f;</i></a>
+	</nav>
+	<div class="page-container">
+		<div class="text-c">
+			<span id="is_club_hide" >
+				<select name="clubId" id ="clubId" class="select-box" style="width:120px;height:30px"></select>
+			</span>
+			<input type="text" class="input-text" style="width: 120px"
+				placeholder="旅城号" id="userNo" name="userNo"> 
+			<input type="text"
+				class="input-text" style="width: 120px" placeholder="真实姓名" id="realName"
+				name="realName"> 
+			<input type="text" class="input-text"
+				style="width: 120px" placeholder="手机号" id="phoneNumber" name="phoneNumber">
+			<input type="text" class="input-text"
+				style="width: 120px" placeholder="身份证" id="idcard" name="idcard">				
+			<button type="button" class="btn btn-success radius" id="select-club-condition" name="select-club-condition">
+				<i class="Hui-iconfont">&#xe665;</i> 查询
+			</button>
+		</div>
+		<div class="cl pd-5 bg-1 bk-gray mt-20">
+			<span class="l"><!-- <a data-title ="添加俱乐部"
+				  onclick="leader_add('添加领队','leader/leaderAdd')" href="javascript:;"
+				class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i>
+					添加领队</a>  <a href="javascript:;" onclick="leader_bind()"
+				class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i>
+					绑定领队</a></span> <span class="r">共有数据：<strong>88</strong> 条 -->
+					${functBtn!}
+					<!-- <a  onclick="add()"
+				href="javascript:;" class="btn btn-success radius"><i
+					class="Hui-iconfont">&#xe600;</i> 新增</a> -->
+					<!-- <a href="javascript:;" onclick="show()"
+				class="btn btn-primary radius"><i class="Hui-iconfont">&#xe695;</i>
+					查看</a>
+					<a href="javascript:;" onclick="datadel()"
+				class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i>
+					删除</a> -->
+			</span>
+		</div>
+		<div class="mt-20">
+			<table id="selectClub"
+				class="table table-border table-bordered table-hover table-bg table-striped">
+				<thead>
+					<tr class="text-c">
+						 <th width="25"><input type="checkbox" name="" value=""></th>
+						<th width="60">旅城号</th>
+					 	<th width="60">昵称</th>
+						<th width="60">性别</th>
+						<th width="60">状态</th>
+						<th width="80">俱乐部</th>
+						<th width="80">手机号</th>
+						<th width="60">创建者</th>
+						<th width="120">注册时间</th>
+						<th width="100">操作</th>
+					</tr>
+				</thead>
+				
+			</table>
+		</div>
+	</div>
+	<div class="page-container" hidden="true" id="div-bind" >
+			<div class="row cl">
+				<label >手机号码：</label>
+				<div style="float:right;" class="formControls col-xs-8 col-sm-9">
+					<input type="text"  class="input-text" value="" placeholder="" id="phoneNumber_"
+						name="phoneNumber_"  oninput="getPhone()"   >
+						<input type="hidden"  class="input-text" value="" placeholder="" id="id_"
+						name="id_"  >
+				</div>
+			</div>		
+			<div class="row cl">
+				<label ></label>
+				<div id="div-message" style="float:right;height:40px;" class="formControls col-xs-8 col-sm-9">
+					
+					</div>
+			</div>
+			<div class="row cl">
+				<label ></label>
+				<div style="float:right;" class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+					<button 
+						class="btn btn-default radius" type="submit" id = "open-add-submit" hidden ="true" onClick="bing_leader();">
+						<i class="Hui-iconfont">&#xe632;</i> 保存
+					</button>
+					&nbsp;	&nbsp;				
+					<button onClick="open_close();" class="btn btn-default radius"
+						type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+				</div>
+			</div>
+	</div>
+	<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/layer/2.1/layer.js"></script>
+	<script type="text/javascript" src="lib/laypage/1.2/laypage.js"></script>
+	<script type="text/javascript" src="lib/My97DatePicker/WdatePicker.js"></script>
+	<script type="text/javascript"
+		src="lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.admin.js"></script>
+	<script type="text/javascript" src="static/common/club.js"></script>
+	<script type="text/javascript">
+		var dataTable = null;
+		var checkList= null;
+		$(function() {
+			 
+		
+			$('.table-sort tbody').on( 'click', 'tr', function () {
+				if ( $(this).hasClass('selected') ) {
+					$(this).removeClass('selected');
+				}
+				else {
+					table.$('tr.selected').removeClass('selected');
+					$(this).addClass('selected');
+				}
+			}); 
+			// 俱乐部查询
+			dataTable = $("#selectClub").DataTable({
+				"processing" : true,
+				"serverSide" : true,
+				"searching": false,
+				"ajax" : {
+					"url" : "leader/selectLeader",
+				    "type": "POST",
+				    "data":function(d){
+				    	d['userNo']=$('#userNo').val();
+				    	d['realName']=$('#realName').val();
+				    	d['phoneNumber']=$('#phoneNumber').val();
+				    	d['idcard']=$('#idcard').val();
+				    	d['clubId']=$('#clubId option:selected') .val();
+				    	//return JSON.stringify(d);
+				    	}
+				},
+				//"order" : [ [ 1, "asc" ] ],
+				"ordering":false,
+				"orderMulti":false,
+				"columnDefs" : [ {
+					"data" : "id",
+					"targets":0,
+					"orderable":false,
+					 "render": function (data,type,row ) {
+                         return '<div style="text-align:center;"><input type="checkbox" id="'+row.id+'" name="checkbox" /></div>';
+                         }
+                      
+				}, {
+					"data" : "user_no",
+					"targets":1,
+					"sDefaultContent":'',
+					"class": "text-c"
+				},
+				{
+					"data":"nick_name",
+					"targets":2,
+					"sDefaultContent":'',
+					"class": "text-c"
+				},
+				{
+					"data":"gender",
+					"targets":3,
+					"sDefaultContent":'',
+					"render":function(data){
+						if(data=='0'){
+							return "男";
+						}else{
+							return "女";
+						}
+					},
+					"class": "text-c"
+				},
+				{
+					"data":"status",
+					"targets":4,
+					"sDefaultContent":'',
+					"render":function(data){
+						if(data=='1'){
+							return "已启用";
+						}else{
+							return "已禁用";
+						}
+					},
+					"class": "text-c"
+				},
+				{
+					"data":"club_short_name",
+					"targets":5,
+					"sDefaultContent":'',
+					"class": "text-c"
+				},{
+					"data":"phone_number",
+					"targets":6,
+					"sDefaultContent":'',
+					"class": "text-c"
+				},{
+					"data":"create_user_name",
+					"targets":7,
+					"sDefaultContent":'',
+					"class": "text-c"
+				},{
+					"data":"create_time",
+					"targets":8,
+					"sDefaultContent":'',
+					"class": "text-c"
+				},{
+					"data":"handler",
+					"targets":9,
+					"render":function(data,type,row){
+						if(row.status=='1'){
+							return '<button class="btn btn-danger radius size-MINI" onClick="leader_stop(this,\''+row.id+'\')" href="javascript:;" title="禁用">禁用</button>';
+						}else{
+							return '<button class="btn btn-success radius size-MINI" onClick="leader_start(this,\''+row.id+'\')" href="javascript:;" title="启用">启用</button>';
+						}
+						
+					},
+					"class": "text-c"
+				} ],
+				
+				"language" : {
+					"sProcessing" : "处理中...",
+					"sLengthMenu" : "显示 _MENU_ 项结果",
+					"sZeroRecords" : "没有匹配结果",
+					"sInfo" : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+					"sInfoEmpty" : "显示第 0 至 0 项结果，共 0 项",
+					"sInfoFiltered" : "(由 _MAX_ 项结果过滤)",
+					"sInfoPostFix" : "",
+					"sSearch" : "搜索:",
+					"sUrl" : "",
+					"sEmptyTable" : "表中数据为空",
+					"sLoadingRecords" : "载入中...",
+					"sInfoThousands" : ",",
+					"oPaginate" : {
+						"sFirst" : "首页",
+						"sPrevious" : "上页",
+						"sNext" : "下页",
+						"sLast" : "末页"
+					},
+					"oAria" : {
+						"sSortAscending" : ": 以升序排列此列",
+						"sSortDescending" : ": 以降序排列此列"
+					}
+				},
+				/* "aoColumnDefs": [
+				           	  //{"bVisible": false, "aTargets": [ 3 ]} //控制列的隐藏显示
+				           	  {"orderable":false,"aTargets":[0,8]}// 制定列不参与排序
+				           	], */
+			});
+		});
+		// 根据条件查询club
+		$("#select-club-condition").click(function(){
+			dataTable.ajax.reload();
+		});
+		function getPhone(){
+			// 判断是否是数字
+		  
+					$.ajax({
+						type:"POST",
+						url:"leader/selectPhone",
+						data:{"phoneNumber":$("#phoneNumber_").val()},
+						async: false,
+						success:function(data){
+							if(data.code=="999"){
+			            		layer.alert(data.msg);
+			            	}else{
+							if(data.success =='notNum'){
+								$("#div-message").text("").append("<font color='red'>请输入数字</font>");
+								disable();
+							}else if(data.success =='false'){
+								$("#div-message").text("").append("<font color='red'>请输入11位手机号</font>");
+								disable();
+							}else if(data.success =='null'){
+								$("#div-message").text("").append("<font color='red'>该手机用户不存在</font>");
+								disable();
+							}
+							else if(data.success =='have'){
+								$("#div-message").text("").append("<font color='red'>该手机用户已经是领队</font>");
+								disable();
+							}// 判断是否被禁用
+							else if(data.success == 'forbiden'){
+								$("#div-message").text("").append("<font color='red'>该手机用户已被禁用</font>");
+								disable();
+							}
+							else{
+								$("#div-message").text("").append("该手机用户可以添加");
+								$("#id_").val(data.success.id);
+								can();
+								// 将按钮高亮
+								
+							}
+			            	}
+							/* if(data){
+								$("#div-message").text("").append("<font color='red'>该手机用户不存在</font>");
+	
+							}
+							// 判断是否被禁用
+							else if(data.isDelete == '1'){
+								$("#div-message").text("").append("<font color='red'>该手机用户已被禁用</font>");
+							}
+							// 判断是否已经是领队
+							else if(data.category == '1'){
+								$("#div-message").text("").append("<font color='red'>该手机用户已经是领队</font>");
+							}
+							else{
+								$("#div-message").text("").append("该手机用户可以添加");
+	
+							}
+							 */
+							
+						}
+					});
+			
+				   
+				
+			
+		}
+		// 启用保存按钮
+		function can(){
+			$("#open-add-submit").removeClass("btn-default").addClass("btn-primary");
+			$("#open-add-submit").attr("disabled",false);
+		}
+		// 禁用保存按钮
+		function disable(){
+			$("#open-add-submit").removeClass("btn-primary").addClass("btn-default");
+			$("#open-add-submit").attr("disabled",true);
+		}
+		/*领队-添加*/
+		function leader_add(title, url, w, h) {
+			var index = layer.open({
+				type : 2,
+				title : title,
+				content : url
+			});
+			layer.full(index);
+			//layer_show(title,url,w,h);
+		}
+		function add(){
+			// 清空缓存
+			$("#id_").val("");
+			$("#phoneNumber_").val("");
+			$("#div-message").text("");
+			disable();
+			layer.open({
+				  type: 1, 
+				  area: ['400px', '200px'],
+				  title:"新增",
+				  content: $("#div-bind") //这里content是一个普通的String
+				});
+		}
+		/*用户-查看*/
+		function show() {
+			getCheck();
+			if(checkList.length==0){
+				layer.msg('请选择领队！', {icon: 2,time:2000});
+			}else if(checkList.length>1){
+				layer.msg('只能选择一个领队！', {icon:2,time:2000});
+			}else{
+				var index = layer.open({
+					type : 2,
+					title : "查看",
+					content : "leader/leaderShow/"+checkList[0]
+				});
+				layer.full(index);
+			}
+		}
+		/*用户-停用*/
+		function leader_stop(obj, id) {
+			layer.confirm(
+				'确认要禁用吗？',
+				function(index) {
+					// 更新数据库
+					$.ajax({
+			            cache: true,
+			            type: "POST",
+			            url:"leader/upateEnable",
+			            data:{"id":id,"status":0},
+			            async: false,
+			            error: function(request) {
+			                layer.msg("禁用失败！",{icon:2,time:2000});
+			            },
+			            success: function(data) {
+			            	if(data.code=="999"){
+			            		layer.alert(data.msg);
+			            	}else
+			                layer.msg("禁用成功！",{icon:1,time:2000}, function(index){
+			                	  //do something
+			                	  layer.close(index);
+			                	  dataTable.ajax.reload();
+			                	//location.replace(location.href);
+			                	});
+			                    
+			            }
+			        });
+				});
+		}
+
+		/*用户-启用*/
+		function leader_start(obj, id) {
+			layer.confirm(
+				'确认要启用吗？',
+				function(index) {
+					// 数据库更新
+					$.ajax({
+			            cache: true,
+			            type: "POST",
+			            url:"leader/upateEnable",
+			            data:{"id":id,"status":1},
+			            async: false,
+			            error: function(request) {
+			                layer.msg("启用失败！",{icon:2,time:2000});
+			            },
+			            success: function(data) {
+			            	if(data.code=="999"){
+			            		layer.alert(data.msg);
+			            	}else
+			                layer.msg("启用成功！",{icon:1,time:2000}, function(index){
+			                	  //do something
+			                	  layer.close(index);
+			                	  dataTable.ajax.reload();
+			                	//location.replace(location.href);
+			                	});
+			                    
+			            }
+			        });
+				});
+		}
+	
+		// 批量删除
+		function datadel(){
+			getCheck();
+			if(checkList!=null && checkList.length >0){
+				layer.confirm('确认要删除这'+checkList.length+'条记录吗？', function(index) {
+					// 数据库删除
+					$.ajax({
+			            cache: true,
+			            type: "POST",
+			            url:"leader/deleteLeader",
+			            data:{"idList":JSON.stringify(checkList)},
+			            async: false,
+			            error: function(request) {
+			                layer.msg("删除失败！",{icon:2,time:2000});
+			            },
+			            success: function(data) {
+			            	if(data.code=="999"){
+			            		layer.alert(data.msg);
+			            	}else
+			                layer.msg("删除成功！",{icon:1,time:2000}, function(index){
+			                	  //do something
+			                	location.replace(location.href);
+			                	});
+			                    
+			            }
+			        });
+				});
+			}else{
+				// 请选择要删除的记录
+				 layer.msg("请选择要删除的记录！",{icon:2,time:2000})
+			}
+			
+		}
+		
+		function getCheck(){
+			 checkList= new Array() ;
+			 $("input[name=checkbox]").each(function(i,d){
+							 if(d.checked){
+								 checkList.push(d.id);
+							 }
+				}) 
+		}
+		
+		// 关闭当前弹窗
+		function open_close(){
+			
+			layer.closeAll();
+		}
+		
+		// 绑定查询
+		function bing_leader(){
+	
+			$.ajax({
+				type:"POST",
+				url:"leader/updateLeader",
+				data:{"id":$("#id_").val()},
+				beforeSend : function() {
+					layer.load(2);
+				},
+				success:function(data){
+					layer.closeAll('loading');
+					if(data.code=="999"){
+	            		layer.alert(data.msg);
+	            	}else{
+						layer.msg("新增成功！",{icon:1,time:2000});
+						layer.closeAll();
+						dataTable.ajax.reload();					
+					//parent.dataTable.reload();
+	            	}
+				}
+			});
+		}
+	</script>
+</body>
+</html>

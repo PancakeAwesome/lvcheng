@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<base href="${basePath}" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<script type="text/javascript" src="lib/PIE_IE678.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css"
+	href="lib/Hui-iconfont/1.0.7/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="lib/icheck/icheck.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/skin/blue/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="static/h-ui/css/style.css" />
+<link rel="stylesheet" type="text/css"
+	href="lib/MultiDatesPicker/1.6.3/css/jquery-ui.css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+</head>
+<body>
+			<div class="page-container">
+				<form class="text-c" id= "condition">
+				<span class="select-box" style="width:150px">
+						<select class="select" id="clubId" name="clubId" size="1" >
+							<option value="">-俱乐部-</option>
+						</select>
+					</span>
+				<input type="text" class="input-text" style="width: 120px"
+						placeholder="线路编号" id="route_no" name="route_no" value="${routeNo?if_exists}"> 
+					
+					<input type="text" class="input-text" style="width: 120px"
+						placeholder="团期" id="corps_time" name="corps_time"> 
+					<button type="button" class="btn btn-success radius" id="search_button" name="">
+						<i class="Hui-iconfont">&#xe665;</i> 查询
+					</button>
+				</form>
+				<div class="mt-20">
+					<table id="table" width="100%"
+						class="table table-border table-bordered table-hover">
+						<thead>
+							<tr class="text-c">
+								<th>线路编号</th>
+								<th>俱乐部</th>
+								<th>线路名称</th>
+								<th>团期</th>
+								<th>支付订单数</th>
+								<th>未支付订单数</th>
+								<th>订单总额</th>
+								<th>参团人数(已支付)</th>
+								<th>参团人数(待支付)</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+					</table>
+				</div>
+			</div>
+	
+	<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/layer/2.1/layer.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.admin.js"></script>
+	<script type="text/javascript"
+		src="lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+	<script type="text/javascript"
+		src="lib/MultiDatesPicker/1.6.3/js/jquery-ui-1.11.1.js"></script>
+	<script type="text/javascript">
+		var dataTable = null;
+		$(function() {
+			$.datepicker.regional.zh = {
+					closeText : "关闭", // Display text for close link
+					prevText : "<<", // Display text for previous month link
+					nextText: ">>", // Display text for next month link
+					monthNames : [ '一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月',
+							'九月', '十月', '十－月', '十二月' ], // Names of months for drop-down and formatting
+					monthNamesShort : [ "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+							"Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ], // For formatting
+					dayNames : [ '日', '一', '二', '三', '四', '五', '六' ], // For formatting
+					dayNamesShort : [ '日', '一', '二', '三', '四', '五', '六' ], // For formatting
+					dayNamesMin : [ '日', '一', '二', '三', '四', '五', '六' ], // Column headings for days starting at Sunday
+					weekHeader : "周", // Column header for week of the year
+					dateFormat : "yy-mm-dd", // See format options on parseDate
+					isRTL : false, // True if right-to-left language, false if left-to-right
+					showMonthAfterYear : false, // True if the year select precedes month, false for month then year
+					yearSuffix : "" // Additional text to append to the year in the month headers
+				}
+			// 时间控件
+			 $( "#corps_time" ).datepicker($.datepicker.regional.zh);
+			
+			//获取俱乐部下拉框
+				$.ajax({
+					cache: true,
+		            type: "POST",
+		            url:"common/selectClublist",
+		            //async: false,
+		            success: function(data) {
+		            	$("#clubId").html("");
+		            	$("#clubId").append('<option value="">-俱乐部-</option>');
+		    			$.each(data,function(i,obj){
+		    				$("#clubId").append("<option value='"+obj.id+"'>"+obj.clubShortName+"</option>");
+		    			});
+		                    
+		            }
+				});
+			
+			dataTable = $("#table").DataTable({
+				"processing" : true,
+				"serverSide" : true,
+				"ordering": false,
+				searching:false,
+				"ajax" : {
+					"url" : "orderManager/ordersByCorps",
+					"type" : "POST",
+				    "data":function(d){
+				    	d['routeNo']=$('#route_no').val();
+				    	d['clubId']=$('#clubId').val();
+				    	d['corpsTime']=$('#corps_time').val();
+				    	}
+				},
+				//"order" : [ [ 0, "asc" ] ],
+				//"orderMulti" : false,
+				"columnDefs" : [ {
+					"data" : "route_no",
+					"targets" : 0,
+					"defaultContent" : ''
+				},{
+					"data" : "club_name",
+					"targets" : 1,
+					"defaultContent" : ''
+				}, {
+					"data" : "route_name",
+					"targets" : 2,
+					"defaultContent" : ''
+				}, {
+					"data" : "mission_time",
+					"targets" : 3,
+					"defaultContent" : ''
+				}, {
+					"data" : "order_paid",
+					"targets" : 4,
+					"defaultContent" : '0'
+				}, {
+					"data" : "order_unpaid",
+					"targets" : 5,
+					"defaultContent" : '0'
+				}, {
+					"data" : "fee_paid",
+					"targets" : 6,
+					"defaultContent" : '0'
+				}, {
+					"data" : "participants_number",
+					"targets" : 7,
+					"defaultContent" : '0'
+				}, {
+					"data" : "participants_number_unpaid",
+					"targets" : 8,
+					"defaultContent" : '0'
+				},  {
+					"data": "id",
+					"targets" : 9,
+					"defaultContent" : '',
+					render : function(data, type, row){
+						return '<div class="text-c"><input class="btn radius btn-warning size-MINI" type="button" value="查看" onclick="view(\''+row.mission_time+'\',\''+row.route_no+'\')"></div>'
+					}
+				} ],
+				"language" : {
+					"sProcessing" : "处理中...",
+					"sLengthMenu" : "显示 _MENU_ 项结果",
+					"sZeroRecords" : "没有匹配结果",
+					"sInfo" : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+					"sInfoEmpty" : "显示第 0 至 0 项结果，共 0 项",
+					"sInfoFiltered" : "(由 _MAX_ 项结果过滤)",
+					"sInfoPostFix" : "",
+					"sSearch" : "搜索:",
+					"sUrl" : "",
+					"sEmptyTable" : "表中数据为空",
+					"sLoadingRecords" : "载入中...",
+					"sInfoThousands" : ",",
+					"oPaginate" : {
+						"sFirst" : "首页",
+						"sPrevious" : "上页",
+						"sNext" : "下页",
+						"sLast" : "末页"
+					},
+					"oAria" : {
+						"sSortAscending" : ": 以升序排列此列",
+						"sSortDescending" : ": 以降序排列此列"
+					}
+				},
+			});
+		});
+		// 根据条件查询
+		$("#search_button").click(function(){
+			dataTable.ajax.reload();
+		});
+		
+		// type: 0 edit, 1 view
+		function view(mission_time,route_no) {
+			openDetailWin(mission_time,route_no,"订单查看");
+		}
+		
+		//TODO 加上需要的参数
+		function openDetailWin(mission_time,route_no, title){
+			parent.creatIframe("orderManager/index?mission_time=" + mission_time + "&route_no=" + route_no,title);
+			/* var index = layer.open({
+				type : 2,
+				title : title,
+				content : "orderManager/index?mission_time=" + mission_time + "&route_no=" + route_no
+			});
+			layer.full(index); */
+		}
+	</script>
+</body>
+</html>

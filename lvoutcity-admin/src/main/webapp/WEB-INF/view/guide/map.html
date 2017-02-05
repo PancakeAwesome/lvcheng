@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<base href="${basePath}" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<script type="text/javascript" src="lib/PIE_IE678.js"></script>
+<![endif]-->
+<link rel="stylesheet"
+	href="http://cache.amap.com/lbs/static/main1119.css" />
+	<link rel="stylesheet"
+	href="http://apps.bdimg.com/libs/jqueryui/1.9.1/themes/base/jquery-ui.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css"
+	href="lib/Hui-iconfont/1.0.7/iconfont.css" />
+<link rel="stylesheet"
+	href="http://cache.amap.com/lbs/static/AMap.WalkingRender1120.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/skin/blue/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="static/h-ui/css/style.css" />
+
+<!--[if IE 6]>
+<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+
+<style type="text/css">
+
+.context_menu {
+	margin: 2px;
+	padding: 2px;
+	list-style-type: none;
+	position: relative;
+	background-color: rgb(255, 255, 255);
+	border: 1px solid rgb(175, 175, 175);
+	border-radius: 5px;
+	box-shadow: rgb(153, 153, 153) 2px 2px 8px;
+	white-space: nowrap;
+	cursor: pointer;
+}
+
+.context_menu li {
+	text-indent: 0.5em;
+	color: blue;
+	font-size: 13px;
+	font-family: verdana;
+	height: 20px;
+	line-height: 20px;
+	word-break: break-all;
+	white-space: nowrap;
+}
+
+.context_menu li.split_line {
+	border-bottom-color: rgb(204, 204, 204);
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+}
+
+
+.amap-marker .marker-route {
+	position: absolute;
+	width: 40px;
+	height: 44px;
+	color: #e90000;
+	background:
+		url(http://webapi.amap.com/theme/v1.3/images/newpc/poi-1.png)
+		no-repeat;
+	cursor: pointer;
+}
+
+.amap-marker .marker-marker-bus-from {
+	background-position: -334px -180px;
+}
+
+.amap-marker .marker-marker-bus-end {
+	background-position: -334px -135px;
+}
+
+.amap-marker .marker-marker-bus-point {
+	background-position: -334px -15px;
+}
+.ui-tooltip {
+    color: #808080;
+    font: 0.8em "Helvetica Neue", Sans-Serif;
+  }
+</style>
+</head>
+<body>
+	<div id="container" style=""></div>
+	<div id="myPageTop">
+		<table>
+			<tr>
+				<td><label>请输入关键字：</label></td>
+			</tr>
+			<tr>
+				<td><input id="tipinput" /></td>
+			</tr>
+		</table>
+	</div>
+	<div id="buttonGroupId" class="button-group">
+		<#if type!='view'>
+		<input type="button" class="button" value="集合点" title="点击添加集合点"	 onClick="assembleMarker()" /> 
+		<input type="button" class="button"	value="起点" title="点击添加起点" onClick="startMarker()" /> 
+		<input type="button" class="button" value="终点" title="点击添加终点" onClick="endMarker()" /> 
+		${input!} 
+		<input id="drawBtn" type="button" class="button " value="开始画线" title='点击进入画线模式，连续点击地图进行画线，双击或右键结束画线'  	onClick="startDraw()" />
+		<input id="editBtn1" type="button" class="button" value="开始编辑折线"	title='点击进入折线编辑模式，拖动节点进行编辑' onClick="startEditLine()" />
+		<input id="editBtn2" type="button" class="button" value="结束编辑折线" title='点击退出折线编辑模式' onClick="closeEditLine()" />
+		<input id="saveBtn" type="button" class="button" value="保存编辑" title='点击保存地图'  onClick="saveEditMap()" />
+		</#if>	
+	</div>
+	<script>
+	
+if (/firefox/i.test(navigator.userAgent)){
+   window.oldGetComputedStyle = window .getComputedStyle;
+   window.getComputedStyle = function (element, pseudoElt) {
+      var t = window.oldGetComputedStyle(element, pseudoElt);
+      if (t === null) {
+         return {};
+      } else{
+         return t;
+      }
+   };
+}
+	</script>
+	<script src="http://cache.amap.com/lbs/static/es5.min.js"></script>
+	<script	src="http://webapi.amap.com/maps?v=1.3&key=da909d5c3491628df57768c4cfee4b52&plugin=AMap.Geocoder,AMap.MouseTool,AMap.Autocomplete,AMap.PlaceSearch,AMap.Walking,AMap.PolyEditor,AMap.CircleEditor,AMap.MouseTool"></script>
+	<script src="http://cache.amap.com/lbs/static/addToolbar.js"></script>
+	<script src="http://libs.baidu.com/jquery/1.9.1/jquery.js"></script>
+	<script src="http://apps.bdimg.com/libs/jqueryui/1.9.1/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="lib/layer/2.1/layer.js"></script>
+	<script type="text/javascript" src="lib/public.js?id=1as3"></script>
+	<script type="text/javascript" src="lib/json2.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.admin.js"></script>
+	
+	<script type="text/javascript">
+	
+	//------------------------------------
+	//id初始化	
+	var guideId='${bean.id!}';
+	var TYPE = '${type!}';
+	//景点列表
+	var attraList = '${list!}';	
+	//点标
+	var markers ='${markers!}';	
+	//折线点数组
+	var polyList = '${polyList!}'; 
+	//在地图上绘制折线
+	var POLYLINE=null;
+	var polylineEditor = null; 
+	
+	var editorTool ;
+	
+	var START_MARKER = null;
+	var ASSEMBLE_MARKER = null;
+	var END_MARKER = null;
+	var ITEM_CLICKED;
+	//---------------------------------
+	var zoom = 5;
+	var center = [103.23,35.33];
+	<#if mapInfo??>
+	zoom = ${mapInfo.zoom!5};
+	var centerStr = '${mapInfo.center!}'
+	if(!!centerStr)
+		center = centerStr.split(',');
+	</#if>
+	// 初始化地图
+	var map = new AMap.Map('container', {
+		zoom : zoom,
+		resizeEnable : true,
+		center:center
+	});
+	//---------------------------------	
+	//在地图中添加MouseTool插件
+    var mouseTool = new AMap.MouseTool(map);
+    AMap.event.addListener(mouseTool,'draw',function(o){
+		$('#drawBtn').css("background-color","gray").attr("disabled","disabled");
+		$('#editBtn1').css("background-color","").removeAttr("disabled");
+		$('#editBtn2').css("background-color","").removeAttr("disabled");
+		bindRClick(o.obj);
+		polylineEditor = new AMap.PolyEditor(map, o.obj);
+		polylineEditor.open();
+		mouseTool.close();
+	});
+  //---------------------------------	
+    var toolBar ; 
+	//地图中添加地图操作ToolBar插件
+	map.plugin([ 'AMap.ToolBar' ], function() {
+		//设置地位标记为自定义标记
+		toolBar = new AMap.ToolBar();
+		map.addControl(toolBar);
+	});
+	
+	//---------------------------------	
+	var placeSearch;
+	(function(){
+		var autoOptions = {     input: "tipinput"   };
+	   	var auto = new AMap.Autocomplete(autoOptions);
+	   	placeSearch = new AMap.PlaceSearch({
+	        map: map
+	    });  //构造地点查询类
+	    AMap.event.addListener(auto, "select", select);//注册监听，当选中某条记录时会触发
+	    function select(e) {
+	        placeSearch.setCity(e.poi.adcode);
+	        placeSearch.search(e.poi.name);  //关键字查询查询
+	    }
+	})();
+		
+   //----------------------------------
+   //创建右键菜单
+   var contextMenu;
+   (function(){
+    	contextMenu = new AMap.ContextMenu(); 
+        contextMenu.addItem("移除", function() {
+        	if(ITEM_CLICKED instanceof AMap.Polyline){
+    			$('#drawBtn').css("background-color","").removeAttr("disabled");
+    			$('#editBtn1').css("background-color","gray").attr("disabled","disabled");
+    			$('#editBtn2').css("background-color","gray").attr("disabled","disabled");
+        		polylineEditor.close();
+        	}
+        	ITEM_CLICKED.setMap(null);
+        }, 0);
+    })();
+    //---------------------------------------------
+	$(function() {
+		    
+		initMap();
+	    
+		$.Huitab("#tab_demo .tabBar span", "#tab_demo .tabCon", "current","click", "0");
+		
+		if(isNull(guideId)){
+			$('#buttonGroupId').hide();
+		}else{
+			$('#buttonGroupId').show();
+		} 
+		
+		 $( document ).tooltip();
+		
+	});
+	
+	function startDraw(){
+	    mouseTool.polyline({
+        	 strokeColor : "#FF33FF",//线颜色
+	 	     strokeOpacity : 1,//线透明度
+			 strokeWeight : 3,//线宽
+			 strokeStyle : "solid"//线样式
+	    });
+	}
+
+		
+	//地图初始化
+	function initMap(){
+		if(!!markers)
+			initMarkers();
+		
+		if(!!polyList){
+			initPolyline();
+			$('#drawBtn').css("background-color","gray").attr("disabled","disabled");
+		}else{
+			$('#editBtn1').css("background-color","gray").attr("disabled","disabled");
+			$('#editBtn2').css("background-color","gray").attr("disabled","disabled");
+		}
+		
+		if(!!attraList)
+			initAttra();
+	}
+	
+	
+	    
+		
+	
+		function startMarker() {
+			var markers = map.getAllOverlays("marker");
+			for(var j = 0;j<markers.length;j++){ //移除
+				var extData = markers[j].getExtData();
+				if(2==extData.type){
+					map.setCenter(markers[j].getPosition());
+					return;
+				}
+			}
+			
+			drawStartMarker(map.getCenter());
+		}
+		
+		function drawStartMarker(position) {
+			START_MARKER = new AMap.Marker({
+				map : map,
+				draggable : TYPE!='view',
+				cursor : 'move',
+				animation : 'AMAP_ANIMATION_DROP',
+				offset: new AMap.Pixel(-18,-40),
+				raiseOnDrag : false,
+				extData : {
+					id : 'sMarker',
+					sa : 2,
+					type:2
+				},
+				content: '<div class="marker-route marker-marker-bus-from"></div>' ,
+				clickable : true,
+				position : position
+			});
+			bindRClick(START_MARKER);
+		}
+		
+		
+		function setDay(i){
+			
+			var markers = map.getAllOverlays("marker");
+			
+			for(var j = 0;j<markers.length;j++){ //移除
+				var extData = markers[j].getExtData();
+				if(("D"+i)==extData.id){
+					map.setCenter(markers[j].getPosition());
+					return;
+				}
+			}
+			
+			 drawDayMarker(map.getCenter(),i)
+			
+		}
+		
+		function drawDayMarker(position,i){
+
+			var dayMarker = new AMap.Marker({ //添加自定义点标记
+				map : map,
+				draggable :  TYPE!='view', //是否可拖动
+				position:position,
+				offset: new AMap.Pixel(-18,-40),
+				extData:{
+					id:"D"+i,
+					sa : i,
+					type:'D'+i
+					},
+				icon: new AMap.Icon({            
+		            size: new AMap.Size(40, 50),  //图标大小
+		            image: "http://webapi.amap.com/theme/v1.3/images/newpc/way_btn2.png",
+		            imageOffset: new AMap.Pixel(0, -60)
+		        })
+			});
+			// 设置label标签
+		    dayMarker.setLabel({
+		        offset: new AMap.Pixel(-9, -17),//修改label相对于maker的位置
+		        content: "第"+i+"天"
+		    });
+		    bindRClick(dayMarker);
+			
+		}
+		
+		
+		function assembleMarker(){
+			var markers = map.getAllOverlays("marker");
+			for(var j = 0;j<markers.length;j++){ //移除
+				var extData = markers[j].getExtData();
+				if(1==extData.type){
+					map.setCenter(markers[j].getPosition());
+					return;
+				}
+			}
+			drawAssembleMarker(map.getCenter());
+		}
+		
+		function drawAssembleMarker(position){
+			ASSEMBLE_MARKER = new AMap.Marker({
+				map : map,
+				draggable :  TYPE!='view',
+				cursor : 'move',
+				animation : 'AMAP_ANIMATION_DROP',
+				offset: new AMap.Pixel(-15,-40),
+				raiseOnDrag : false,
+				extData : {
+					id : 'assMarker',
+					sa : 0,
+					type:1
+				},
+				content: '<div class="marker-route marker-marker-bus-point"></div>' ,
+				clickable : true,
+				position : position
+			});
+			
+			ASSEMBLE_MARKER.setLabel({
+		        offset: new AMap.Pixel(-9, -17),//修改label相对于maker的位置
+		        content: "集合点"
+		    });
+			
+			 bindRClick(ASSEMBLE_MARKER);
+			
+		}
+		
+		function endMarker() {
+			var markers = map.getAllOverlays("marker");
+			for(var j = 0;j<markers.length;j++){ //移除
+				var extData = markers[j].getExtData();
+				if(3==extData.type){
+					map.setCenter(markers[j].getPosition());
+					return;
+				}
+			}
+			
+			drawEndMarker(map.getCenter()) 
+		}
+		
+		function drawEndMarker(position) {
+			END_MARKER = new AMap.Marker({
+				map : map,
+				draggable :  TYPE!='view',
+				cursor : 'move',
+				animation : 'AMAP_ANIMATION_DROP',
+				offset: new AMap.Pixel(-18,-40),
+				raiseOnDrag : false,
+				extData : {
+					id : 'eMarker',
+					sa : 3,
+					type:3,
+					attrId:''
+				},
+				content: '<div class="marker-route marker-marker-bus-end"></div>' ,
+				clickable : true,
+				position : position
+			});
+			
+			 bindRClick(END_MARKER);
+		}
+		
+		
+		function initPolyline() {
+			var jsList = new Array();
+			if (!!polyList) {
+				var json = strToJson(polyList);
+				$.each(json, function(index, item) {
+					jsList.push(new AMap.LngLat(item.lng, item.lat));
+				});
+			
+			  //定义折线对象
+		    POLYLINE = new AMap.Polyline({
+		        path:jsList,     //设置折线的节点数组
+		        strokeColor : "#FF33FF",//线颜色
+		        strokeOpacity : 1,//线透明度
+				strokeWeight : 3,//线宽
+				strokeStyle : "solid"//线样式
+		    });
+			
+		    POLYLINE.setMap(map);//地图上添加折线
+		
+		    map.plugin(["AMap.PolyEditor"],function(){
+			    polylineEditor = new AMap.PolyEditor(map,POLYLINE);
+			});
+			}
+			bindRClick(POLYLINE);
+		}
+		    
+		
+		function startEditLine(){
+			polylineEditor.open();
+		}
+		
+		function closeEditLine(){
+			polylineEditor.close();
+		}
+
+		//获取数据信息
+		function saveEditMap() {
+			var mapinfo = [];
+			var markers = map.getAllOverlays("marker");
+			var polyline = map.getAllOverlays("polyline")[0];
+			 for(var i = 0;i<markers.length;i++){
+				var extData = markers[i].getExtData();
+				if(isNotNull(extData.sa)){
+					var mapJSON = {};
+					var postion = markers[i].getPosition();
+					var d = postion.getLng();
+					mapJSON.lng = d;
+					mapJSON.lat = postion.getLat();
+					mapJSON.type = markers[i].getExtData().type;
+// 					mapJSON.attrId = markers[i].getExtData().attrId;
+					
+					mapinfo.push(mapJSON);
+				}
+			}
+			 
+			var array_l = [];
+			var py_l =  polyline.getPath();
+			for(var i = 0;i<py_l.length; i++){
+				var lineJSON = {};
+				var tt = py_l[i].toString().split(",");
+				lineJSON.lng = tt[0];
+				lineJSON.lat = tt[1];
+				//lineJSON.lat = py_l.getLat();
+				array_l.push( lineJSON);
+			}
+			var mapzoom ={};
+			
+			mapzoom.zoom = map.getZoom();
+			mapzoom.center = map.getCenter().toString();			
+			 $.ajax({
+				cache : true,
+				type : "POST",
+				url : 'guide/saveOrUpdateMarker',
+				data : {
+					'lineList' : '',
+					'guideId' : guideId,
+					'mapinfo': objToJson(mapinfo),
+					'lineinfo':objToJson(array_l),
+					'mapzoom':objToJsonOb(mapzoom)
+				},
+				async : false,
+				error : function(request) {
+					layer.msg("操作失败！", function(index) {
+						icon: 2
+					});
+				},
+				success : function(data) {
+					console.log(data);
+					if(isNotNull(data.success)){
+						layer.msg(data.success,{icon:1,time:2000}, function(index) {
+						});
+					}
+					if(data.error){
+						layer.msg(data.error,{icon:2,time:2000}, function(index) {
+						});
+					}
+				}
+			}); 
+		}
+
+		//景点初始化
+		function initAttra() {
+			var json = strToJson(attraList);
+			$.each(json, function(index, item) {
+				var point = new AMap.LngLat(item.longitude, item.latitude);
+				var attrMarkes = new AMap.Marker({
+					map : map,
+					raiseOnDrag : false,
+					draggable : false,
+					extData : {
+						'id' : item.id,
+						'name' : item.name,
+						'type' : item.type,
+						'isDelete' : 0,
+						'v_o' : item.v_o
+					},
+					position : point
+				});
+				attrMarkes.setLabel({
+					content : attrMarkes.getExtData().name,offset:new AMap.Pixel(-13, -24)
+				})
+			});
+		}
+		//点标记初始化
+		function initMarkers(){
+			
+			var json = strToJson(markers);
+			$.each(json,function(index,item){
+				var point = new AMap.LngLat(item.lng,item.lat);
+				var sw = item.type
+				if(sw == 1){
+					drawAssembleMarker(point);
+					
+				}else if(sw == 2){
+					
+					drawStartMarker(point);
+					
+				}else if(sw == 3){
+					
+					drawEndMarker(point);
+					
+				}else{
+			    	var index = item.type.lastIndexOf('D');
+			    	var str = item.type.substring(index+1,item.type.length);
+			    	drawDayMarker(point,str);
+				}
+			});
+		}
+
+		function bindRClick(obj){
+			<#if type!='view'>
+				
+			obj.on('rightclick', function(e) {
+				ITEM_CLICKED = e.target;
+		        contextMenu.open(map, e.lnglat);
+			});
+			
+			</#if>
+		}
+		
+		
+	</script>
+	
+</body>
+</html>

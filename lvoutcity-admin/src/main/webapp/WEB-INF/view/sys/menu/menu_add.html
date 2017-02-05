@@ -1,0 +1,181 @@
+<!--_meta 作为公共模版分离出去-->
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<base href="${basePath}" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="stylesheet" type="text/css" href="static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="static/h-ui/css/H-ui.admin.css" />
+<link href="lib/icheck/icheck.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="lib/Hui-iconfont/1.0.7/iconfont.css" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<script type="text/javascript" src="lib/PIE_IE678.js"></script>
+<![endif]-->
+<!--[if IE 6]>
+<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<!--/meta 作为公共模版分离出去-->
+<title>新增新增菜单</title>
+</head>
+<body>
+	<div class="pd-20">
+		 <form action="sys/data/saveOrUpdate" method="post" class="form form-horizontal" id="form-member-add">
+			<table class="table" style="border: 0px;" border="0">
+			<!-- 	<tr>
+					<td class="text-r">
+						<p class="lowercase"><span class="c-red">*</span>编号：</p>
+					</td>
+					<td>
+						<input type="text" class="input-text" value="${bean.tCode!}"  placeholder="请输入" datatype="*1-16" nullmsg="用户名不能为空" id="tCode" name="tCode">
+					</td>
+				</tr> -->
+				<tr>
+					<td class="text-r">
+						<p class="lowercase"><span class="c-red">*</span>上级菜单：</p>
+					</td>
+					<td>
+						<span class="select-box">
+				        	<select class="select"  id="superName" size="1" name="superName" >
+							</select>
+						</span>
+						<input type="hidden" class="input-text" id="superId" name="superId" value="${bean.superId!}" />
+					</td>
+				</tr>
+				<tr>
+					<td class="text-r">
+						<p class="lowercase"><span class="c-red">*</span>名称：</p>
+					</td>
+					<td>
+						<input type="text" class="input-text" value="${bean.name!}" placeholder="请输入" id="name" name="name" datatype="*2-16" nullmsg="">
+						<input type="hidden" class="input-text" value="${bean.id!}" id="id" name="id" >
+					</td>
+				</tr>
+				<tr>
+					<td class="text-r">
+						<p class="lowercase"><span class="c-red">*</span>菜单url：</p>
+					</td>
+					<td>
+						<input type="text" class="input-text" value="${bean.menuUrl!}" placeholder="请输入" id="menuUrl" name="menuUrl" datatype="*2-16" nullmsg="">
+					</td>
+				</tr>
+				<tr>
+					<td class="text-r">
+						<p class="lowercase"><span class="c-red">*</span>菜单标识：</p>
+					</td>
+					<td>
+						<input type="text" class="input-text" value="${bean.orderType!}" placeholder="请输入" id="orderType" name="orderType" datatype="*1-16" nullmsg="">
+					</td>
+				</tr>
+				
+				<tr>
+					<td colspan="2" class="text-c">
+					       <button class="btn btn-primary radius" type="submit"  onclick="submitForm();" ><i class="Hui-iconfont">&#xe632;</i>确定</button>
+					       <button onClick="layer_close();" class="btn btn-default radius"	type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+					</td>
+				</tr>
+		    </table>
+		</form>
+	</div>
+
+	<!--_footer 作为公共模版分离出去-->
+	<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/layer/2.1/layer.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.admin.js"></script>
+	<script type="text/javascript" src="lib/public.js?id=a1231f"></script>
+	<script type="text/javascript" src="lib/icheck/jquery.icheck.min.js"></script>
+	<script type="text/javascript" src="lib/json2.js"></script>
+	<script type="text/javascript" src="lib/jquery.validation/1.14.0/jquery.validate.min.js"></script>
+	<script type="text/javascript" src="lib/jquery.validation/1.14.0/validate-methods.js"></script>
+	<script type="text/javascript" src="lib/jquery.validation/1.14.0/messages_zh.min.js"></script>
+	<!--/_footer /作为公共模版分离出去-->
+
+	<!--请在下方写此页面业务相关的脚本-->
+	
+	<script type="text/javascript">
+	$(function(){
+		selectDictionary({selectId:'superName',dataVal:'${bean.superId!}',url:'sys/menu/list',selectInit:true,changeBool:true,method:function(e){
+			console.log($('#superName').val())
+			var dd = $('#superName').val();			
+			$('#superId').val(dd);
+		}});
+		
+		$('.skin-minimal input').iCheck({
+			checkboxClass: 'icheckbox-blue',
+			radioClass: 'iradio-blue',
+			increaseArea: '20%'
+		});
+		submitForm();
+	}); 
+	
+	function submitForm(){
+		$("#form-member-add").validate({
+			rules : {
+				name : {
+					required : true,
+					minlength : 1,
+					maxlength : 11
+				}
+			},
+			onkeyup : false,
+			focusCleanup : true,
+			success : "valid",
+			submitHandler : function(form) {
+				var dd = $('#superName').val();
+				console.log(dd)
+				if(dd == -1){
+					layer.msg('请选择上级菜单',{icon:6,time:2000}, function(index) {
+					})
+					return ;
+				}
+				$('#superId').val(dd);
+				//ajax提交
+				var url = '';
+				$.ajax({
+					cache : true,
+					type : "POST",
+					url : "sys/menu/saveOrUpdate",
+					data : $('#form-member-add').serialize(),// 你的formid
+					async : false,
+					error : function(request) {
+						layer.msg("操作失败！");
+					},
+					success : function(data) {
+						//console.log(data);
+						if(isNull(data.error)){
+							layer.msg(data.success,{icon:1,time:2000}, function(index) {
+								console.log('aaaa'+window.name);
+								parent.location.reload();//location.replace(location.href);//refresh top.document.location.href='xxx.aspx?id=xx'。
+			                	layer_close();
+							});
+						}else{
+							layer.msg(data.error,{icon:6,time:2000}, function(index) {
+							})
+						}
+					}
+				});
+			}
+		});
+		
+	}
+
+	
+	function clickDistance(d){
+		var d = $("input[name='allowPush']:checked").val();
+		console.log('adsadada'+d);
+		if(d == 0){
+			$('#distanceAddId').hide();
+		}else{
+			$('#distanceAddId').show();
+		}
+	}
+	</script>
+</body>
+</html>

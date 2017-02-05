@@ -1,0 +1,6 @@
+name=13451840081
+url=http://sms.1xinxi.cn/asmx/smsservice.aspx?
+pwd=9FA6EB4D075A98F84F896CF0D451
+template_rpwd=您的新密码是：%s ，请妥善保管。
+template_pay=您的“%s”订单已经支付完成，订单编号为：%s。
+template_user_pwd=您好，已经为您创建后台账号，账号为：%s，密码为：%s，请妥善保存，登录后自行修改密码。

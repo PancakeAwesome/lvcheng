@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<base href="${basePath}" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css"
+	href="lib/Hui-iconfont/1.0.7/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="lib/icheck/icheck.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/skin/blue/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="static/h-ui/css/style.css" />
+
+<!--[if IE 6]>
+<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+
+<style type="text/css">
+span {
+	margin-left: 5px;
+	font-size: 11px;
+}
+
+.city {
+	background-color: #f0f0f0;
+	min-width: 80px;
+	padding: 3px;
+	display: inline-block;
+	padding: 5px;
+	cursor: pointer;
+	border: 1px solid #ddd;
+	margin-bottom: 5px;
+}
+
+.city:hover {
+	cursor: pointer;
+	background-color: #f9f9f9;
+}
+
+body {
+	z-index: -9;
+}
+</style>
+</head>
+<body>
+	<div id="tab_demo" class="HuiTab">
+		<div class="tabBar cl">
+			<span id="baseinfo">基本信息</span><span id = 'cover'>地图编辑</span>
+		</div>
+		<div class="tabCon">
+			<div class="page-container">
+				<form class="form form-horizontal"	id="guide_form">
+					<div class="row cl" id="div-club-id">
+						<label class="form-label col-xs-4 col-sm-2"><span
+							class="c-red">*</span>攻略名称：</label>
+						<div class="formControls col-xs-8 col-sm-9">
+							<input type="text" class="input-text" value="${bean.name!}"
+								placeholder="" id="name" name="name"> <input
+								type="hidden" class="input-text" value="${bean.id!} "
+								placeholder="" id="guideAddId" name="id"> <input
+								type="hidden" class="input-text" value="${bean.copyData!} "
+								placeholder="" id="copyData" name="copyData">
+
+						</div>
+					</div>
+					<div class="row cl" id="div-club-id">
+						<label class="form-label col-xs-4 col-sm-2"><span
+							class="c-red">*</span>时间：</label>
+						<div class="formControls col-xs-8 col-sm-9">
+							<input type="text" class="input-text" style="width: 15%;"
+								value="${bean.duration!}" placeholder="" id="duration"
+								name="duration"> 天 <input type="text" class="input-text"
+								style="width: 15%;" value="${bean.night!}" placeholder=""
+								id="night" name="night"> 夜
+
+						</div>
+					</div>
+					<div class="row cl" id="div-club-id">
+						<label class="form-label col-xs-4 col-sm-2"><span
+							class="c-red">*</span>途经：</label>
+						<div class="formControls col-xs-8 col-sm-8" id='cities'>
+							<#if cities??> <#list cities as c> <span id='${c}'
+								class='radius city' onclick='removeTag(this);'>${c}<i
+								class='Hui-iconfont' style='margin-left: 10px; color: #aaa'>&#xe6a6;</i><input
+								name='cities[]' value='${c}' hidden='true' required ></input></span> </#list>
+							</#if>
+						</div>
+						<input class="btn btn-primary radius" type="button" value="添加"
+							onclick="addCity()">
+					</div>
+
+					<div class="row cl" id="div-club-id">
+						<label class="form-label col-xs-4 col-sm-2"><span
+							class="c-red">*</span>摘要：</label>
+						<div class="formControls col-xs-8 col-sm-9">
+							<textarea class="textarea" value=" " placeholder=""
+								id="description" name="description"
+								onKeyUp="textarealength(this,500)">${bean.description!}</textarea>
+							<p class="textarea-numberbar">
+								<em class="textarea-length">0</em>/500
+							</p>
+						</div>
+					</div>
+					<#if type! != 'view'>
+					<div class="row cl">
+						<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+
+							<button class="btn btn-primary radius" type="button"
+								onclick="submitGuide();" id="guide_add_submit">
+								<i class="Hui-iconfont">&#xe632;</i> 保存
+							</button>
+							<button onClick="layer_close();" class="btn btn-default radius"
+								type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+						</div>
+					</div>
+					</#if>
+				</form>
+			</div>
+		</div>
+		<!-- 加载地图 -->
+		<div class="tabCon" >
+			<iframe src="guide/map?guideId=${bean.id!}&type=${type!}"   frameborder="0"   style="z-index:-1;position:absolute;bottom:0px;width:100%;height:100%;box-sizing:border-box;padding-top:33px;"></iframe>
+		</div>
+	</div>
+	<script src="http://libs.baidu.com/jquery/1.9.1/jquery.js"></script>
+	<script type="text/javascript" src="lib/layer/2.1/layer.js"></script>
+	<script type="text/javascript" src="lib/public.js?id=1as3"></script>
+	<script type="text/javascript" src="lib/json2.js"></script>
+	<script type="text/javascript"
+		src="lib/jquery.validation/1.14.0/jquery.validate.min.js"></script>
+	<script type="text/javascript"
+		src="lib/jquery.validation/1.14.0/validate-methods.js"></script>
+	<script type="text/javascript"
+		src="lib/jquery.validation/1.14.0/messages_zh.min.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.admin.js"></script>
+	<script type="text/javascript"
+		src="lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+	<script type="text/javascript">
+	var GUIDE_ID='${bean.id!}';//id初始化	
+	var type = '${type!}';
+
+    
+	$(function() {
+		$.Huitab("#tab_demo .tabBar span", "#tab_demo .tabCon", "current","click", "0");
+		
+		
+		if(isNull(GUIDE_ID)){
+			$('#buttonGroupId').hide();
+			 var cover = $('#cover');
+				$("<div id='mask'  onclick = 'changeToMap(this);' ></div>")    
+		        .appendTo(".tabBar")   
+		        .css({"top": cover.position().top , "left":  cover.position().left,"width":cover.outerWidth(),"height":cover.height(),"position":"relative"}) 
+			
+		}else{
+			$('#buttonGroupId').show();
+		} 
+	});
+
+		//
+		function initFromSubmit() {
+			if (type=='view') {
+				$("input").attr("disabled", true);
+				$("select").attr("disabled", true);
+				$("textarea").attr("disabled", true);
+				$("#guide_add_submit").hide();
+			}
+		}
+
+		function submitGuide() {
+			if($("#guide_form").validate({
+				rules : {
+					name : {
+						required : true,
+						minlength : 2,
+						maxlength : 16
+					},
+					duration : {
+						required : true,
+						digits : true,
+						minlength : 1,
+						maxlength : 3
+					},
+					night : {
+						required : true,
+						digits : true,
+						minlength : 1,
+						maxlength : 3
+					},
+					description : {
+						required : true
+					}
+		
+				}
+			}).form()){
+				if($('#cities').children().length == 0){
+					layer.msg("请至少选择一个途径城市！",{icon:2,time:2000});
+					return;
+				}
+					var duration = $('#duration').val();
+					var night = $('#night').val();
+					if(isNotNull(duration) && isNotNull(night)){
+						if(duration-night > 1){
+							layer.msg('天数添加不平均',{icon:1,time:2000});
+							return;
+						}
+						if(night-duration > 1){
+							layer.msg('天数添加不平均',{icon:1,time:2000});
+							return;
+						}
+					}
+					
+					$.ajax({
+						type : "POST",
+						url : "guide/saveOrUpdate",
+						data : $('#guide_form').serialize(),
+						beforeSend : function() {
+							layer.load(2);
+						},
+						error : function(request) {
+							layer.msg("操作失败！");
+						},
+						success : function(data) {
+							layer.closeAll('loading');
+							if(!!data.success){
+								parent.layer.msg("操作成功！",{icon:1,time:2000});
+				                GUIDE_ID = data.success.id;
+				                $('#guideAddId').val(GUIDE_ID);
+				                $("#select-club-condition",parent.document).click();
+				                window.location.href='${basePath}guide/edit?id='+GUIDE_ID;
+							}else if(data.error){
+								layer.msg(data.error,{icon:2,time:2000});
+							}
+						}
+					});
+			}
+		}
+	
+	</script>
+	<div id="cityModal" hidden="true">
+		<form id="cityForm" style="padding: 20px;"
+			class="form form-horizontal">
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-4">城市选择：</label>
+				<div class="formControls col-xs-4 col-sm-4">
+					<span class="select-box"> <select id="province"
+						class="select">
+					</select>
+					</span>
+				</div>
+				<div class="formControls col-xs-4 col-sm-4">
+					<span class="select-box"> <select id="city" class="select">
+					</select>
+					</span>
+				</div>
+				<input id="id" name="id" hidden="hidden"></input>
+			</div>
+		</form>
+		
+		<div class="modal-footer">
+			<button class="btn btn-primary" onclick="doAddCity()">确定</button>
+			<button class="btn" onclick="closeSG();">取消</button>
+		</div>
+	</div>
+	<script>
+	//---------------------------------------
+	$('#province').change(function(){
+		appendAreaControl(getAreaList($(this).val()),"city");
+	});
+	var closeSG = function(){};
+	// 弹出绑定窗口
+	function addCity() {
+		loadAreaControl('province','city');
+		var index = layer.open({
+			  type: 1,
+			  title: "添加途径城市",
+			  closeBtn: 1,
+			  shadeClose: true,
+			  content: $('#cityModal'),
+			  area:['400px','200px']
+			});
+		closeSG = function(){
+			layer.close(index);
+		}
+	}
+	
+	function loadAreaControl(provinceId,cityId){
+		appendAreaControl(getAreaList(1),"province");
+		appendAreaControl(getAreaList($("#province").val()),"city");
+	}
+	
+	function appendAreaControl(list,id){
+		$("#"+id).html("");
+		$.each(list,function(i,obj){
+			if(obj.name!="市辖区"&&obj.name!="县"){
+				$("#"+id).append("<option value='"+obj.id+"'>"+obj.name+"</option>");
+			}
+		});
+		console.dir(list)
+	}
+	
+	function getAreaList(pid){
+		var _data = null;
+		$.ajax({
+			url:"common/areaList/"+pid,
+			async:false,
+			dataType:'json',
+			type:"GET",
+			success:function(data){
+				_data = data;
+			}
+		})
+		return _data;
+	}
+	
+	
+	function doAddCity(){
+		var p = $('#province').find("option:selected").text();
+		var c = $('#city').find("option:selected").text();
+		var pid = $('#province').val();
+		var cid = $('#city').val();
+		if(!!!cid)
+			cid=pid
+		if(!!!c)
+			c=p;
+		if($('#'+p+"-"+c).length>0){
+			closeSG();
+			return;
+		}
+		
+		$('#cities').append("<span id='"+p+"-"+c+"' class='radius city' onclick='removeTag(this);'>"+p+"-"+c+"<i class='Hui-iconfont' style='margin-left:10px;color:#aaa'>&#xe6a6;</i><input name = 'cities[]' value='"+p+"-"+c+"' hidden='true'></input></span>")
+		closeSG();
+	}
+	
+
+	function removeTag(e) {
+		layer.confirm('确认移除吗？', function(index) {
+			layer.close(index);
+			$(e).remove();
+		});
+
+	}
+	
+	function changeToMap(){
+		if(!!!GUIDE_ID){
+			layer.msg("请先保存攻略再进行地图编辑！",{time:1000});	
+		}
+	}
+	</script>
+</body>
+</html>

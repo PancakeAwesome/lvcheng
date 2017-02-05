@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<base href="${basePath}" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<script type="text/javascript" src="lib/PIE_IE678.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css"
+	href="lib/Hui-iconfont/1.0.7/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="lib/icheck/icheck.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/skin/blue/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="static/h-ui/css/style.css" />
+<link rel="stylesheet" type="text/css"
+	href="lib/MultiDatesPicker/1.6.3/css/jquery-ui.css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+</head>
+<body>
+	<div style="width: 100%">
+		<div style="float: left;margin-bottom:10px;margin-top:10px;border-right: 1px solid #000;"">
+			<div class="page-container">
+				订单信息
+				<hr></hr>
+				<div class="mt-20">
+					<table id="table" width="750"
+						class="table table-border table-bordered table-hover table-bg table-striped">
+						<thead>
+							<tr class="text-c">
+								<th width="120">订单编号</th>
+								<!-- <th>线路编号</th> -->
+								<th width="90" >团期</th>
+								<th width="130" >订单状态</th>
+								<th width="80" >订单金额</th>
+								<!-- <th>订单人数</th> -->
+								<th width="120" >线路名称</th>
+								<th width="110" >俱乐部</th>
+								<!-- <th>旅城号</th> -->
+								<!-- <th>手机号</th> -->
+								<th width="160" >订单创建时间</th>
+								<!-- <th style="width:150px;">操作</th> -->
+							</tr>
+						</thead>
+					</table>
+				</div>
+			</div>
+
+			<div class="page-container">
+				线路信息
+				<hr></hr>
+				<div class="mt-20">
+					<table id="routes" width="750"
+						class="table table-border table-bordered table-hover table-bg table-striped">
+						<thead>
+							<tr class="text-c">
+								<!-- 								<th width="25"><input type="checkbox" name="" value=""></th>
+ -->
+								<th width="120">线路编号</th>
+								<!-- <th>攻略编号</th> -->
+								<th width="90" >线路状态</th>
+								<th width="120" >线路名称</th>
+								<!-- <th>分润费率(%)</th> -->
+								<th width="120" >俱乐部</th>
+								<!-- <th>创建者</th> -->
+								<!-- <th>提交者</th> -->
+								<th width="120" >审核者</th>
+								<th width="160" >提交时间</th>
+								<!-- <th>操作</th> -->
+							</tr>
+						</thead>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div style="float: left;">
+		<div >
+			<div class="page-container">
+				<div class="mt-20">
+					<table id="table" width="400"
+						class="table table-border table-bordered table-hover table-bg table-striped">
+
+						<tr>
+							<td width="250">基本信息</td>
+						</tr>
+						<tr>
+							<td>累计攻略：${guide_total} 上架攻略：${guide_up}<br>累计线路：${route_total}   上架线路：${route_up}<br>累计用户：${user_total}
+								<br>累计订单：${order_total}<br>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<div class="page-container">
+				<div class="mt-20">
+					<table id="table" width="100%"
+						class="table table-border table-bordered table-hover table-bg table-striped">
+
+						<tr>
+							<td >联系我们</td>
+						</tr>
+						<tr>
+							<td>业务服务电话：025-12345678<br> 财务服务电话：025-12345678<br>
+
+								系统服务电话：025-12345678<br> 诚信举报电话：025-12345678<br>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<!-- <div class="page-container">
+				<div class="mt-20">
+					<table id="table" width="100%"
+						class="table table-border table-bordered table-hover table-bg table-striped">
+
+						<tr>
+							<td>常见问题</td>
+						</tr>
+						<tr>
+							<td>* 攻略和线路的区别？<br> * 攻略和线路的区别？<br> * 攻略和线路的区别？<br>
+
+								* 攻略和线路的区别？<br>
+
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div> -->
+			</div>
+		</div>
+
+	</div>
+	<div style="clear: both"></div>
+	</div>
+
+
+
+	<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/layer/2.1/layer.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.admin.js"></script>
+	<script type="text/javascript" src="static/common/orderStatus.js"></script>
+	<script type="text/javascript"
+		src="lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+	<script type="text/javascript"
+		src="lib/MultiDatesPicker/1.6.3/js/jquery-ui-1.11.1.js"></script>
+	<script type="text/javascript" src="static/common/club.js"></script>
+	<script type="text/javascript">
+		var dataTable = null;
+
+		$(function() {
+			dataTable = $("#table").DataTable(
+					{
+						"processing" : true,
+						"serverSide" : true,
+						"ordering" : false,
+						"searching" : false,
+						"bPaginate" : false,
+						"bInfo" : false,
+						"ajax" : {
+							"url" : "orderManager/ordersForFront",
+							"type" : "POST",
+							"data" : function(d) {
+								d['routeNo'] = $('#route_no').val();
+								d['orderNo'] = $('#order_no').val();
+								d['clubId'] = $('#clubId option:selected')
+										.val();
+								d['corpsTime'] = $('#corps_time').val();
+							}
+						},
+						//"order" : [ [ 0, "asc" ] ],
+						//"orderMulti" : false,
+						"columnDefs" : [
+								{
+									"data" : "order_no",
+									"targets" : 0,
+									render : function(data, type, row) {
+										var r = "<a onclick='view(\"" + row.id
+												+ "\")'>" + data + "</a>";
+										return r;
+									},
+									"class" : "text-c"
+								/* }, {
+									"data" : "route_no",
+									"targets" : 1,
+									"defaultContent" : '',
+									"class": "text-c" */
+								}, {
+									"data" : "mission_time",
+									"targets" : 1,
+									"defaultContent" : '',
+									"class" : "text-c"
+								}, {
+									"data" : "status",
+									"targets" : 2,
+									"defaultContent" : '',
+									render : function(data, type, row) {
+										return ORDER_STATUS.colorfulRenderer(data);
+									},
+									"class" : "text-c"
+								}, {
+									"data" : "fee_total",
+									"targets" : 3,
+									"defaultContent" : '',
+									"class" : "text-c"
+								/* }, {
+									"data" : "participants_number",
+									"targets" : 5,
+									"defaultContent" : '',
+									"class": "text-c" */
+								}, {
+									"data" : "route_name",
+									"targets" : 4,
+									"defaultContent" : '',
+									"render":function(data){
+										if(data.length>7){
+											return data.substring(0,6)+"...";
+										}else{
+											return data;
+										}
+									},
+									"class" : "text-c"
+								}, {
+									"data" : "club_short_name",
+									"targets" : 5,
+									"defaultContent" : '',
+									"render":function(data){
+										if(data.length>7){
+											return data.substring(0,6)+"...";
+										}else{
+											return data;
+										}
+									},
+									"class" : "text-c"
+								/* }, {
+									"data" : "user_no",
+									"targets" : 8,
+									"defaultContent" : '',
+									"class": "text-c"
+								}, {
+									"data" : "phone_number",
+									"targets" : 9,
+									"defaultContent" : '',
+									"class": "text-c" */
+								}, {
+									"data" : "create_time",
+									"targets" : 6,
+									"defaultContent" : '',
+									"class" : "text-c"
+								/* }, {
+									"data": "id",
+									"targets" : 11,
+									"defaultContent" : '',
+									render : function(data, type, row){
+										var vbtn = '<div class="text-c"><input class="btn radius btn-warning size-MINI" type="button" value="查看" onclick="view(\''+row.id+'\')">'
+										var rbtn1 = '<input class="btn btn-danger radius ml-10 size-MINI" type="button" value="撤销" onclick="revokeBack(\''+row.id+'\')">'
+										var rbtn2 = '<input class="btn btn-danger radius ml-10 size-MINI" type="button" value="处理退款" onclick="revokeUser(\''+row.id+'\')">'
+										if(row.status == ORDER_STATUS.STATUS_REFUND_APPLY){
+											return vbtn+rbtn2+'</div>';
+										}else if(row.status == ORDER_STATUS.STATUS_PAID || row.status == ORDER_STATUS.STATUS_ON_TRIP){
+											return vbtn+rbtn1+'</div>';
+										}else{
+											return vbtn +'</div>';
+										}
+									},
+									"class": "text-c" */
+								} ],
+						"language" : {
+							"sProcessing" : "处理中...",
+							"sLengthMenu" : "显示 _MENU_ 项结果",
+							"sZeroRecords" : "没有匹配结果",
+							"sInfo" : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+							"sInfoEmpty" : "显示第 0 至 0 项结果，共 0 项",
+							"sInfoFiltered" : "(由 _MAX_ 项结果过滤)",
+							"sInfoPostFix" : "",
+							"sSearch" : "搜索:",
+							"sUrl" : "",
+							"sEmptyTable" : "表中数据为空",
+							"sLoadingRecords" : "载入中...",
+							"sInfoThousands" : ",",
+							"oPaginate" : {
+								"sFirst" : "首页",
+								"sPrevious" : "上页",
+								"sNext" : "下页",
+								"sLast" : "末页"
+							},
+							"oAria" : {
+								"sSortAscending" : ": 以升序排列此列",
+								"sSortDescending" : ": 以降序排列此列"
+							}
+						}
+					});
+
+			dataTable = $("#routes")
+					.DataTable(
+							{
+								"processing" : true,
+								"serverSide" : true,
+								"ordering" : false,
+								'searching' : false,
+								"bPaginate" : false,
+								"bInfo" : false,
+								"ajax" : {
+									"url" : "routeManager/routesForFront/",
+									"type" : "POST",
+									"data" : function(d) {
+										d['routeNo'] = $('#route_no').val();
+										d['guideNo'] = $('#guide_no').val();
+										d['status'] = $('#status').val();
+										d['clubId'] = $(
+												'#clubId option:selected')
+												.val();
+										//return JSON.stringify(d);
+									}
+								},
+								//"order" : [ [ 0, "asc" ] ],
+								//"orderMulti" : false,
+								"columnDefs" : [
+										{
+												"data" : "routeNo",
+												"targets" : 0,
+												render : function(data,type,row){
+													return '<a onclick=\'addRouteWin("'+row.id+'","线路查看",1)\'>'+data+'</a>';
+												},
+												"class": "text-c"
+											},
+										{
+											"data" : "status",
+											"targets" : 1,
+											"defaultContent" : '',
+											render : function(data, type, row) {
+												switch(data){
+												case '0': 
+													if(!!row.verifyUserName){
+														return  "<a style = 'color:red' onclick='layer.alert(\""+row.refuseMsg+"\", {title:\"驳回理由\",icon: 2});'>待提交(驳回)</a>";
+													}else
+														return  "<span style='color:red'>待提交</span>";
+												case '1': return  "<span style='color:orange'>待审核</span>";
+												case '2': return  "<span style='color:green'>已上架</span>";
+												case '3': return  "<span style='color:red'>已下架</span>";
+												}
+											},
+											"class" : "text-c"
+										}, {
+											"data" : "routeName",
+											"targets" : 2,
+											"defaultContent" : '',
+											"render":function(data){
+												if(data.length>7){
+													return data.substring(0,6)+"...";
+												}else{
+													return data;
+												}
+											},
+											"class" : "text-c"
+										/* }, {
+											"data" : "percentage",
+											"targets" : 5,
+											"defaultContent" : '',
+											"class": "text-c" */
+										}, {
+											"data" : "clubName",
+											"render":function(data){
+												if(data.length>7){
+													return data.substring(0,6)+"...";
+												}else{
+													return data;
+												}
+											},
+											"targets" : 3,
+											"defaultContent" : '',
+											"class" : "text-c"
+										/* }, {
+											"data" : "createUserName",
+											"targets" : 7,
+											"defaultContent" : '',
+											"class": "text-c"
+										}, {
+											"data" : "submitUserName",
+											"targets" : 8,
+											"defaultContent" : '',
+											"class": "text-c" */
+										}, {
+											"data" : "verifyUserName",
+											"targets" : 4,
+											"defaultContent" : '',
+											"class" : "text-c"
+										}, {
+											"data" : "submitTimeStr",
+											"targets" : 5,
+											"defaultContent" : '',
+											"class" : "text-c"
+										/* }, {
+											"data" : "id",
+											"targets" : 11,
+											"class":"btn-len text-c",
+											render : function(data, type, row){
+												return '<div class="text-c"><input class="btn radius btn-warning size-MINI " type="button" value="订单" onclick="orders(\''+row.routeNo+'\')">'
+												+'<input class="btn radius btn-success size-MINI ml-10" type="button" value="团期" onclick="corpsMgr(\''+row.id+'\',\''+row.clubId+'\',\''+row.routeNo+'\')"></div>'
+														
+											} */
+										} ],
+								"language" : {
+									"sProcessing" : "处理中...",
+									"sLengthMenu" : "显示 _MENU_ 项结果",
+									"sZeroRecords" : "没有匹配结果",
+									"sInfo" : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+									"sInfoEmpty" : "显示第 0 至 0 项结果，共 0 项",
+									"sInfoFiltered" : "(由 _MAX_ 项结果过滤)",
+									"sInfoPostFix" : "",
+									"sSearch" : "搜索:",
+									"sUrl" : "",
+									"sEmptyTable" : "表中数据为空",
+									"sLoadingRecords" : "载入中...",
+									"sInfoThousands" : ",",
+									"oPaginate" : {
+										"sFirst" : "首页",
+										"sPrevious" : "上页",
+										"sNext" : "下页",
+										"sLast" : "末页"
+									},
+									"oAria" : {
+										"sSortAscending" : ": 以升序排列此列",
+										"sSortDescending" : ": 以降序排列此列"
+									}
+								},
+							});
+		});
+		window.dataTable = dataTable;
+		// 根据条件查询
+		$("#search_button").click(function() {
+			dataTable.ajax.reload();
+		});
+
+		// type: 0 edit, 1 view, 2 revoke back, 3 revoke user
+		function view(id) {
+			openDetailWin(id, 1, "订单查看");
+		}
+		function revokeBack(id) {
+			openDetailWin(id, 2, "订单撤销");
+		}
+		function revokeUser(id) {
+			openDetailWin(id, 3, "处理退款");
+		}
+		function openDetailWin(id, type, title) {
+			var index = layer.open({
+				type : 2,
+				title : title,
+				content : "orderManager/edit?id=" + id + "&type=" + type
+			});
+			layer.full(index);
+		}
+		
+		
+		// type: 0 edit, 1 view, 2 copy, 3 super edit
+		function addRouteWin(id,title,type) {
+			creatIframe("routeManager/edit?id="+id+"&type="+type,title);
+		}
+	</script>
+</body>
+</html>

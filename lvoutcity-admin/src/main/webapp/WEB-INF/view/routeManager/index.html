@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<base href="${basePath}" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<script type="text/javascript" src="lib/PIE_IE678.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css"
+	href="lib/Hui-iconfont/1.0.7/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="lib/icheck/icheck.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/skin/blue/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="static/h-ui/css/style.css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<style>
+/*超级按钮*/
+.btn-super{color:#fff;background-color:#EEEE11; border-color:#EEEE11;}
+.btn-super:hover,
+.btn-super:focus,
+.btn-super:active,
+.btn-super.active{color:#fff;background-color:#FFFF00;border-color:#FFFF00;text-shadow:2px 2px 2px #3C3C3C}
+.btn-len{
+	width:120px;
+}
+</style>
+</head>
+<body>
+
+			<nav class="breadcrumb">
+				<i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span>
+				攻略线路管理 <span class="c-gray en">&gt;</span> 线路管理 <a
+					class="btn btn-success radius r"
+					style="line-height: 1.6em; margin-top: 3px"
+					href="javascript:location.replace(location.href);" title="刷新"><i
+					class="Hui-iconfont">&#xe68f;</i></a>
+			</nav>
+			<div class="page-container">
+				<div class="text-c">
+				<span id="is_club_hide" >
+					<select name="clubId" id ="clubId" class="select-box" style="width:120px;height:30px"></select>
+				</span>
+					<input type="text" class="input-text" style="width: 120px"
+						placeholder="线路编号" id="route_no" name=""> <input
+						type="text" class="input-text" style="width: 120px"
+						placeholder="攻略编号" id="guide_no" name=""> 
+						<span class="select-box" style="width:150px">
+							<select class="select" id="status" name="status" size="1" >
+								<option value=""></option>
+								<option value="0">待提交</option>
+								<option value="1">待审核</option>
+								<option value="2">已上架</option>
+								<option value="3">已下架</option>
+							</select>
+						</span>
+					<button type="submit" class="btn btn-success radius" id="search_button" name="">
+						<i class="Hui-iconfont">&#xe665;</i> 查询
+					</button>
+				</div>
+				<div class="cl pd-5 bg-1 bk-gray mt-20">
+					<span class="l"> 
+						${functBtn!}
+						<!-- <a class="btn btn-success radius" onclick = "selectGuide()" href="javascript:;">
+							<i class="Hui-iconfont"></i> 
+								新增
+						</a>  -->
+						<!-- <a	href="javascript:;" onclick="view()"
+						class="btn btn-primary radius"><i class="Hui-iconfont">&#xe695;</i>
+							查看</a>
+							<a	href="javascript:;" onclick="edit()"
+						class="btn btn-secondary radius"><i class="Hui-iconfont">&#xe6df;</i>
+							编辑</a>
+						<a	href="javascript:;" onclick="datadel()"
+						class="btn btn-danger radius"><i class="Hui-iconfont"></i>
+							删除</a>
+						<a	href="javascript:;" onclick="copy()"
+						class="btn btn-primary radius"><i class="Hui-iconfont">&#xe6ea;</i>
+							线路复制</a>
+						<span class="pipe">|</span>
+						<a	href="javascript:;" onclick="superEdit()"
+						class="btn btn-super radius"><i class="Hui-iconfont">&#xe603;</i>
+							后台修改</a> -->
+					</span>
+				</div>
+				<div class="mt-20">
+					<table id="routes" width="100%"
+						class="table table-border table-bordered table-hover table-bg table-striped">
+						<thead>
+							<tr class="text-c">
+								<th width="25"><input type="checkbox" name="" value=""></th>
+								<th>线路编号</th>
+								<th>攻略编号</th>
+								<th>线路状态</th>
+								<th>线路名称</th>
+								<th>分润费率(%)</th>
+								<th>俱乐部</th>
+								<th>创建者</th>
+								<th>提交者</th>
+								<th>审核者</th>
+								<th>提交时间</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+					</table>
+				</div>
+			</div>
+	
+	<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/layer/2.1/layer.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.admin.js"></script>
+	<script type="text/javascript"
+		src="lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" src="static/common/club.js"></script>
+	<script type="text/javascript">
+		var dataTable = null;
+		$(function() {
+
+			dataTable = $("#routes").DataTable({
+				"processing" : true,
+				"serverSide" : true,
+				"ordering": false,
+				'searching' : false,
+				"ajax" : {
+					"url" : "routeManager/routes/",
+					"type" : "POST",
+				    "data":function(d){
+				    	d['routeNo']=$('#route_no').val();
+				    	d['guideNo']=$('#guide_no').val();
+				    	d['status']=$('#status').val();
+				    	d['clubId']=$('#clubId option:selected') .val();
+				    	//return JSON.stringify(d);
+				    	}
+				},
+				//"order" : [ [ 0, "asc" ] ],
+				//"orderMulti" : false,
+				"columnDefs" : [ {
+					"data" : "id",
+					"targets" : 0,
+					"render": function (data,type,row ) {
+                        return '<div style="text-align:center;"><input type="checkbox" id="'+data+'" name="checkbox" status='+row.status+' /></div>';
+                        }
+				},{
+					"data" : "routeNo",
+					"targets" : 1,
+					render : function(data,type,row){
+						return '<a onclick=\'addRouteWin("'+row.id+'","线路查看",1)\'>'+data+'</a>';
+					},
+					"class": "text-c"
+				}, {
+					"data" : "guideNo",
+					"targets" : 2,
+					"defaultContent" : '',
+					render : function(data,type,row){
+						return '<a onclick=\'openWindowGuide("攻略详情","guide/edit?view=1&id='+row.guideId+'")\'>'+data+'</a>';
+					},
+					"class": "text-c"
+				}, {
+					"data" : "status",
+					"targets" : 3,
+					"defaultContent" : '',
+					render : function(data, type, row){
+						switch(data){
+						case '0': 
+							if(!!row.verifyUserName){
+								return  "<a style = 'color:red' onclick='layer.alert(\""+row.refuseMsg+"\", {title:\"驳回理由\",icon: 2});'>待提交(驳回)</a>";
+							}else
+								return  "<span style='color:red'>待提交</span>";
+						case '1': return  "<span style='color:orange'>待审核</span>";
+						case '2': return  "<span style='color:green'>已上架</span>";
+						case '3': return  "<span style='color:red'>已下架</span>";
+						}
+					},
+					"class": "text-c"
+				}, {
+					"data" : "routeName",
+					"targets" : 4,
+					"defaultContent" : '',
+					"class": "text-c",
+					render : function(data, type, row){
+						if(!!row.festival)
+							return "["+row.festival+"]"+data;
+						else
+							return data;
+					}
+				}, {
+					"data" : "percentage",
+					"targets" : 5,
+					"defaultContent" : '',
+					"class": "text-c"
+				}, {
+					"data" : "clubName",
+					"targets" : 6,
+					"defaultContent" : '',
+					"class": "text-c"
+				}, {
+					"data" : "createUserName",
+					"targets" : 7,
+					"defaultContent" : '',
+					"class": "text-c"
+				}, {
+					"data" : "submitUserName",
+					"targets" : 8,
+					"defaultContent" : '',
+					"class": "text-c"
+				}, {
+					"data" : "verifyUserName",
+					"targets" : 9,
+					"defaultContent" : '',
+					"class": "text-c"
+				}, {
+					"data" : "submitTimeStr",
+					"targets" : 10,
+					"defaultContent" : '',
+					"class": "text-c"
+				}, {
+					"data" : "id",
+					"targets" : 11,
+					"class":"btn-len text-c",
+					render : function(data, type, row){
+						return '<div class="text-c"><input class="btn radius btn-warning size-MINI " type="button" value="订单" onclick="orders(\''+row.routeNo+'\')">'
+						+'<input class="btn radius btn-success size-MINI ml-10" type="button" value="团期" onclick="corpsMgr(\''+row.id+'\',\''+row.clubId+'\',\''+row.routeNo+'\')"></div>'
+								
+					}
+				} ],
+				"language" : {
+					"sProcessing" : "处理中...",
+					"sLengthMenu" : "显示 _MENU_ 项结果",
+					"sZeroRecords" : "没有匹配结果",
+					"sInfo" : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+					"sInfoEmpty" : "显示第 0 至 0 项结果，共 0 项",
+					"sInfoFiltered" : "(由 _MAX_ 项结果过滤)",
+					"sInfoPostFix" : "",
+					"sSearch" : "搜索:",
+					"sUrl" : "",
+					"sEmptyTable" : "表中数据为空",
+					"sLoadingRecords" : "载入中...",
+					"sInfoThousands" : ",",
+					"oPaginate" : {
+						"sFirst" : "首页",
+						"sPrevious" : "上页",
+						"sNext" : "下页",
+						"sLast" : "末页"
+					},
+					"oAria" : {
+						"sSortAscending" : ": 以升序排列此列",
+						"sSortDescending" : ": 以降序排列此列"
+					}
+				},
+			});
+		});
+		// 根据条件查询
+		$("#search_button").click(function(){
+			dataTable.ajax.reload();
+		});
+		
+		document.reloadDataTable = function(){
+			dataTable.ajax.reload();
+		}
+		var closeSG = function(){};
+		// 弹出绑定窗口
+		function selectGuide() {
+			var index = layer.open({
+				  type: 1,
+				  title: "攻略绑定",
+				  closeBtn: 1,
+				  shadeClose: true,
+				  content: $('#bindGuideModal')
+				});
+			closeSG = function(){
+				layer.close(index);
+			}
+		}
+		
+
+
+		// 后台查取攻略名称
+		function requestGuideName(){
+			var guideNo = $('#guide_no_input').val();
+			$.ajax({
+				type:'POST',
+				url:"routeManager/requireGuideName",
+				data : {'guideNo':guideNo},
+				success:function(r){
+					if(r.data != undefined){
+						$("#guide_name").val(r.data.name);
+						$("#club_id").val(r.data.clubId);
+						$("#guide_id").val(r.data.id);
+						if($('#route_name').val()!='')
+							$("#toAddRouteBtn").removeClass('disabled');
+					}else{
+						$("#guide_name").val("未找到匹配攻略");
+						$("#club_id").val('');
+						$("#guide_id").val('');
+						$("#toAddRouteBtn").addClass('disabled');
+					}
+				}
+			})
+		}
+		// 不输入名称不能点确定
+		function routeNameToggle(){
+			if($('#route_name').val()!=''&&$("#guide_id").val()!=''){
+				$("#toAddRouteBtn").removeClass('disabled');
+			}else{
+				$("#toAddRouteBtn").addClass('disabled');
+			}
+		}
+		
+		function saveRoute(){
+			$.ajax({
+				type:'POST',
+				url:"routeManager/create",
+				data : $('#routeInfo').serialize(),
+				success:function(r){
+					if(!!r.fail){
+						layer.msg(r.fail, {icon: 2,time:2000});
+					}else
+					addRouteWin(r.routeId,"线路编辑",0)
+				}
+			})
+			
+		}
+		// type: 0 edit, 1 view, 2 copy, 3 super edit
+		function addRouteWin(id,title,type) {
+/* 			var index = layer.open({
+				type : 2,
+				title : title,
+				content : "routeManager/edit?id="+id+"&type="+type
+			});
+			layer.full(index); */
+			creatIframe("routeManager/edit?id="+id+"&type="+type,title);
+			closeSG();
+			
+		}
+		function getCheck(){
+			 var checkList= new Array() ;
+			 $("input[name=checkbox]").each(function(i,d){
+							 if(d.checked){
+								 checkList.push(d.id);
+							 }
+				})
+			return checkList;
+		}
+		
+		function view(){
+			var selected = getCheck();
+			if(selected.length == 0 )
+				layer.msg('请选择线路！', {icon: 2,time:2000});
+			else if(selected.length > 1)
+				layer.msg('只能选择一条线路查看！', {icon: 2,time:2000});
+			else{
+				addRouteWin(selected[0],"线路查看",1)
+			}
+		}
+		function edit(){
+			var selected = getCheck();
+			if(selected.length == 0 )
+				layer.msg('请选择线路！', {icon: 2,time:2000});
+			else if(selected.length > 1)
+				layer.msg('只能选择一条线路编辑！', {icon: 2,time:2000});
+			else if($('#'+selected).attr("status") != 0)
+				layer.msg('只有待提交状态的线路可以编辑！', {icon: 2,time:2000});
+			else{
+				addRouteWin(selected[0],"线路编辑",0)
+			}
+		}
+		
+		function copy(){
+			var selected = getCheck();
+			if(selected.length == 0 )
+				layer.msg('请选择线路！', {icon: 2,time:2000});
+			else if(selected.length > 1)
+				layer.msg('只能选择一条线路复制！', {icon: 2,time:2000});
+			else{
+				addRouteWin(selected[0],"线路复制",2)
+			}
+			
+		}
+		function datadel(){
+			var selected = getCheck();
+			if(selected.length == 0 )
+				layer.msg('请选择线路！', {icon: 2,time:2000});
+			else if(selected.length > 1)
+				layer.msg('只能选择一条线路删除！', {icon: 2,time:2000});
+			else if($('#'+selected).attr("status") != 0)
+				layer.msg('只有待提交状态的线路可以删除！', {icon: 2,time:2000});
+			else{
+				layer.confirm("确认删除吗？",function(){
+					$.ajax({
+						type:'POST',
+						url:"routeManager/delete",
+						data : {id:selected[0]},
+						success:function(r){
+							layer.msg('删除成功！', {icon: 1,time:2000});
+							dataTable.ajax.reload();
+						}
+					})
+				})
+			}
+		}
+		
+		function orders(routeNo){
+			var index = layer.open({
+				type : 2,
+				title : "线路订单",
+				content : "routeManager/orders?routeNo="+routeNo
+			});
+			layer.full(index);
+		}
+		
+		//打开攻略添加页面
+		function openWindowGuide(title, url) {
+			var index = layer.open({
+				type : 2,
+				title : title,
+				content : url
+			});
+			layer.full(index);
+		}
+		// 打开团期管理页面
+		function corpsMgr(id,clubId,routeNo){
+			//console.log(clubId)
+			var url = "corps/index?route_id="+id+"&club_id="+clubId+"&route_no="+routeNo;
+			var title = "团期管理 ( "+routeNo+" )";
+			var index = layer.open({
+				type : 2,
+				title : title,
+				content : url
+			});
+			layer.full(index);
+			//creatIframe("corps/index?route_id="+id+"&club_id="+clubId+"&route_no="+routeNo,"团期管理");
+		}
+		// 金手指编辑
+		function superEdit(){
+			var selected = getCheck();
+			if(selected.length == 0 )
+				layer.msg('请选择线路！', {icon: 2,time:2000});
+			else if(selected.length > 1)
+				layer.msg('只能选择一条线路编辑！', {icon: 2,time:2000});
+			else{
+				addRouteWin(selected[0],"线路编辑",3)
+			}
+		}
+	</script>
+	<div id="bindGuideModal" hidden="true">
+		 <form id="routeInfo" style="padding:20px;">
+	 		<input type="text" id="club_id" name='club_id' hidden='true'>
+	 		<input type="text" id="guide_id" name='guide_id' hidden='true'>
+	 		攻略编号 <input type="text" id="guide_no_input" class="input-text required:true radius size-M" oninput="requestGuideName()">
+	 		攻略名称 <input type="text" disabled="disabled"  id = "guide_name" class="input-text radius size-M">
+	 		线路名称 <input type="text" id = "route_name" name = "route_name" class="input-text required:true radius size-M" oninput="routeNameToggle();">
+		 </form>
+		 <div class="modal-footer">
+		 	<button class="btn btn-primary disabled" id = "toAddRouteBtn" onclick="saveRoute()">确定</button> <button class="btn" onclick="closeSG();">取消</button>
+		 </div>
+	</div>
+</body>
+</html>

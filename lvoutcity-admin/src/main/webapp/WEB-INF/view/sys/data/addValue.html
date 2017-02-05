@@ -1,0 +1,152 @@
+<!--_meta 作为公共模版分离出去-->
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,member-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<base href="${basePath}" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="stylesheet" type="text/css" href="static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="static/h-ui/css/H-ui.admin.css" />
+<link href="lib/icheck/icheck.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="lib/Hui-iconfont/1.0.7/iconfont.css" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<script type="text/javascript" src="lib/PIE_IE678.js"></script>
+<![endif]-->
+<!--[if IE 6]>
+<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<!--/meta 作为公共模版分离出去-->
+<title>新增俱乐部</title>
+</head>
+<body>
+	<div class="pd-20">
+		 <form action="sys/data/saveOrUpdateData" method="post" class="form form-horizontal" id="form-member-add">
+			<table class="table" style="border: 0px;" border="0">
+				<!-- <tr>
+					<td class="text-r">
+						<p class="lowercase"><span class="c-red">*</span>编号：</p>
+					</td>
+					<td>
+						<input type="text" readonly="readonly" class="input-text" value="${bean.dDoce!}" id="dDoce" name="dDoce" >
+					</td>
+				</tr> -->
+				<tr>
+					<td class="text-r">
+						<p class="lowercase"><span class="c-red">*</span>名称：</p>
+					</td>
+					<td>
+						<input type="text" class="input-text" value="${bean.name!}" placeholder="请输入" id="name" name="name" datatype="*2-16" nullmsg="用户名不能为空">
+					</td>
+				</tr>
+				<tr>
+					<td class="text-r">
+					      <p class="lowercase"><span class="c-red"></span>值：</p>
+					</td>
+					<td>
+					        <textarea name="value" cols="" rows="" class="textarea" >${bean.value!}</textarea>
+					</div>
+					</td>
+				</tr>
+				<input type="hidden" class="input-text" name="typeId" value="${bean.typeId!}" />
+				<input type="hidden" class="input-text" name="id" value="${bean.id!}" />
+				<tr>
+					<td colspan="2" class="text-c">
+					       <button class="btn btn-primary radius" type="submit" id="submitAddId" onclick="submitForm();" ><i class="Hui-iconfont">&#xe632;</i>确定</button>
+					       <button onClick="layer_close();" class="btn btn-default radius"	type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+					</td>
+				</tr>
+		    </table>
+		</form>
+	</div>
+
+	<!--_footer 作为公共模版分离出去-->
+	<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/layer/2.1/layer.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.admin.js"></script>
+	<script type="text/javascript" src="lib/public.js?id=12313"></script>
+	<script type="text/javascript" src="lib/icheck/jquery.icheck.min.js"></script>
+	<script type="text/javascript" src="lib/json2.js"></script>
+	<script type="text/javascript" src="lib/jquery.validation/1.14.0/jquery.validate.min.js"></script>
+	<script type="text/javascript" src="lib/jquery.validation/1.14.0/validate-methods.js"></script>
+	<script type="text/javascript" src="lib/jquery.validation/1.14.0/messages_zh.min.js"></script>
+	<!--/_footer /作为公共模版分离出去-->
+
+	<!--请在下方写此页面业务相关的脚本-->
+	
+	<script type="text/javascript">
+	var type ='${type!}';
+	
+	$(function(){
+		$('.skin-minimal input').iCheck({
+			checkboxClass: 'icheckbox-blue',
+			radioClass: 'iradio-blue',
+			increaseArea: '20%'
+		});
+		clickDistance();
+		submitForm();
+	}); 
+	
+	function submitForm(){
+		$("#form-member-add").validate({
+			rules : {
+				name : {
+					required : true,
+					minlength : 1,
+					maxlength : 11
+				}
+			},
+			onkeyup : false,
+			focusCleanup : true,
+			success : "valid",
+			submitHandler : function(form) {
+				//ajax提交
+				var url = '';
+				$.ajax({
+					cache : true,
+					type : "POST",
+					url : "sys/data/saveOrUpdateData",
+					data : $('#form-member-add').serialize(),// 你的formid
+					async : false,
+					error : function(request) {
+						layer.msg("操作失败！");
+					},
+					success : function(data) {
+						//console.log(data);
+						if(isNull(data.error)){
+							layer.msg(data.success,{icon:1,time:2000}, function(index) {
+								//parent.dataTable.ajax.reload(); 
+								location.replace('sys/data/index');
+			                	layer_close();
+							});
+						}else{
+							layer.msg(data.error,{icon:1,time:2000}, function(index) {
+							})
+						}
+					}
+				});
+			}
+		});
+		
+	}
+
+	
+	function clickDistance(){
+		if(type == "1"){
+			$("input").attr("disabled",true);
+		//	$("select").attr("disabled",true);
+			$("textarea").attr("disabled",true);
+			$("#submitAddId").hide();
+			
+		}
+	}
+	</script>
+</body>
+</html>

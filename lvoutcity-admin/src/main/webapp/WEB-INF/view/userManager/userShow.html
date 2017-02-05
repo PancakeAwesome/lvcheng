@@ -1,0 +1,191 @@
+<!--_meta 作为公共模版分离出去-->
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<base href="${basePath}" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<LINK rel="Bookmark" href="/favicon.ico">
+<LINK rel="Shortcut Icon" href="/favicon.ico" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<script type="text/javascript" src="lib/PIE_IE678.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css"
+	href="lib/Hui-iconfont/1.0.7/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="lib/icheck/icheck.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="static/h-ui/css/style.css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<!--/meta 作为公共模版分离出去-->
+
+<title>新增俱乐部</title>
+<link href="lib/webuploader/0.1.5/webuploader.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<div class="page-container">
+		<form class="form form-horizontal"  action="userManager/saveUser" method ="post" id="form-club-add">
+			<div class="row cl" id="div-club-id">
+				<label class="form-label col-xs-4 col-sm-2">
+				  <span  class="c-red">*</span>旅程号：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+						<input type="text" class="input-text" value="${user.userNo!}" placeholder="" id="userId"
+						name="userId">
+						<!--<input type="hidden" class="input-text" value="${user.id!}" placeholder="${user.id!}" id="id"
+						name="id">
+						-->
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2">真实名称：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<input type="text" class="input-text" value="${user.real_name!}" placeholder="" id="realName"
+						name="realName">
+				</div>
+			</div>
+			
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2">昵称：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<input type="text" class="input-text" value="${user.nickName!}" placeholder=""
+						id="nickName" name="nickName">
+				</div>
+			</div>
+			
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2"><span
+					class="c-red">*</span>联系方式：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<input type="text" class="input-text" value="${user.phoneNumber!}" placeholder="" id="phoneNumber"
+						name="phoneNumber">
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2">性别：</label>
+				<div class="formControls col-xs-8 col-sm-9 skin-minimal">
+					<div class="radio-box">
+						<input name="gender" type="radio" id="male" value="1"  <#if ("${user.gender!''}"== "1")> checked </#if> />
+						<label for="male">男</label>
+					</div>
+					<div class="radio-box">
+						<input type="radio" id="female" name="gender" value="0" <#if ("${user.gender!}"== "0")> checked </#if> />
+						<label for="female">女</label>
+					</div>
+
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2">状态：</label>
+				<div class="formControls col-xs-8 col-sm-9 skin-minimal">
+					<div class="radio-box">
+						<input name="enabled" type="radio" id="enabledOn" value="1"  <#if ("${backgroup.status!''}"== "1"||"${backgroup.status!''}"=="")> checked </#if> />
+						<label for="enabledOn">启用</label>
+					</div>
+					<div class="radio-box">
+						<input type="radio" id="enabledOff" name="enabled" value="0" <#if ("$backgroup.status!}"== "0")> checked </#if> />
+						<label for="enabledOff">禁用</label>
+					</div>
+
+				</div>
+			</div>
+			
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2">所属：</label>
+					<input type="text" class="input-text" value="${tourismClub.club_name!}" placeholder=""
+						id="clubName" style="width:576px" name="clubName"/>
+			</div>
+			
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2">角色：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<input type="text" class="input-text" value="${sysRole.role_name!}" placeholder=""
+						id="sysRole" name="sysRole">
+				</div>
+			</div>
+
+			<div class="row cl">
+				<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+					<button 
+						class="btn btn-primary radius" type="submit" id = "club-add_submit" >
+						<i class="Hui-iconfont">&#xe632;</i> 保存
+					</button>					
+					<button onClick="layer_close();" class="btn btn-default radius"
+						type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+				</div>
+			</div>
+		</form>
+	</div>
+
+	<!--_footer 作为公共模版分离出去-->
+	<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/layer/2.1/layer.js"></script>
+	<script type="text/javascript" src="lib/icheck/jquery.icheck.min.js"></script>
+	<script type="text/javascript"
+		src="lib/jquery.validation/1.14.0/jquery.validate.min.js"></script>
+	<script type="text/javascript"
+		src="lib/jquery.validation/1.14.0/validate-methods.js"></script>
+	<script type="text/javascript"
+		src="lib/jquery.validation/1.14.0/messages_zh.min.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.admin.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/comment.js"></script>
+	<!--/_footer /作为公共模版分离出去-->
+
+	<!--请在下方写此页面业务相关的脚本-->
+	<script type="text/javascript"
+		src="lib/webuploader/0.1.5/webuploader.min.js"></script>
+	<script type="text/javascript">
+
+
+		// 页面加载时判断页面类型
+		$(document).ready(function(){
+			var type="${type!}";
+			alert("type="+type);
+			if(type =="3" || type =="2"){ // 编辑状态, 查看状态
+				$("#userId").attr("disabled",true);
+				//赋值
+
+				var enable = "${user.is_delete!}";
+				if(enable == "1"){
+					$("#enabledOn").attr("checked","checked");
+					$("#enabledOff").attr("checked",false);
+				}else{
+					$("#enabledOn").attr("checked",false);
+					$("#enabledOff").attr("checked","checked");
+				}
+				if(type =="2"){
+					$("#realName").attr("disabled",true);
+					$("#nickName").attr("disabled",true);
+					$("#phoneNumber").attr("disabled",true);
+					$("#male").attr("disabled",true);
+					$("#female").attr("disabled",true);
+					$("#clubName").attr("disabled",true);
+					$("#sysRole").attr("disabled",true);
+					$("#enabledOn").attr("disabled",true);
+					$("#enabledOff").attr("disabled",true);
+					$("#club-add_submit").attr("disabled",true);
+					$("#sign").attr("disabled",true);
+				}
+
+			}else{
+//            // 新增状态
+//            $("#div-club-id").hide();
+
+			}
+		});
+	</script>
+</body>
+</html>

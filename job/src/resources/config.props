@@ -1,0 +1,7 @@
+#jdbc.url=jdbc:mysql://rm-bp1114093a6r2251wo.mysql.rds.aliyuncs.com:3306/lvc_hui1?characterEncoding=utf-8
+#jdbc.user=lvc
+#jdbc.password=lvc@123456
+jdbc.url=jdbc:mysql://rm-bp1114093a6r2251w.mysql.rds.aliyuncs.com/lvc_normal_run?characterEncoding=utf-8
+jdbc.user=lvc_normal
+jdbc.password=lvc@normal#123456
+jdbc.driverClassName=com.mysql.jdbc.Driver

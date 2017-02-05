@@ -1,0 +1,251 @@
+<!--_meta 作为公共模版分离出去-->
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<base href="${basePath}" />
+<LINK rel="Bookmark" href="/favicon.ico">
+<LINK rel="Shortcut Icon" href="/favicon.ico" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<script type="text/javascript" src="lib/PIE_IE678.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css"
+	href="lib/Hui-iconfont/1.0.7/iconfont.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/h-ui/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="static/h-ui/css/style.css" />
+
+<!--[if IE 6]>
+<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<style>
+.btn-default{border-color:#c7c7c7}
+</style>
+</head>
+<body>
+	<#if type='2'>
+	<div class="Huialert Huialert-danger" style="padding:15px;">是否确认对当前订单进行退款？
+	<input class="btn btn-default radius f-r ml-10 " type="button" value="取消" onclick="layer_close(false)">
+	<input class="btn btn-success radius f-r" type="button" value="退款" onclick = "refund(${type})">
+	</div>
+	</#if>
+	<#if type='3'>
+	<div class="Huialert Huialert-danger" style="padding:15px;">是否通过退款申请？
+	<input class="btn btn-danger radius f-r ml-10 " type="button" value="拒绝" onclick="refuseRefund();">
+	<input class="btn btn-success radius f-r" type="button" value="通过并退款" onclick = "refund(${type})">
+	</div>
+	</#if>
+	<div class='container'>
+		<form class="form form-horizontal" id="info" style="margin-bottom:20px;">
+			<div class="row cl">
+				<label class="form-label col-xs-2 col-sm-2">订单编号：</label>
+				<div class="formControls col-xs-6 col-sm-6">
+					<input type="text" class="input-text"
+						placeholder="" id="order_no" name="order_no" value="${order.order_no?if_exists}">
+				</div>
+			</div>
+
+			<div class="row cl">
+				<label class="form-label col-xs-2 col-sm-2">线路编号：</label>
+				<div class="formControls col-xs-6 col-sm-6">
+					<input type="text"  class="input-text"
+						placeholder="" id="route_no" name="route_no" value="${order.route_no?if_exists}">
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-2 col-sm-2">旅城号：</label>
+				<div class="formControls col-xs-6 col-sm-6">
+					<input type="text"  class="input-text"
+						placeholder="" id="user_no" name="user_no" value="${order.user_no?if_exists}">
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-2 col-sm-2">团期：</label>
+				<div class="formControls col-xs-6 col-sm-6">
+					<input type="text"  class="input-text"
+						placeholder="" id="mission_time" name="mission_time" value="${order.mission_time?if_exists}">
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-2 col-sm-2">订单状态：</label>
+				<div class="formControls col-xs-6 col-sm-6">
+					<input type="text"  class="input-text"
+						placeholder="" id="status" name="status" value="${order.status?if_exists}">
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-2 col-sm-2">订单佣金费率：</label>
+				<div class="formControls col-xs-6 col-sm-6">
+					<input type="text" class="input-text"
+						placeholder="" id="order_rebate" name="order_rebate" value="${(order.order_rebate!0)*100}%">
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-2 col-sm-2">订单总金额：</label>
+				<div class="formControls col-xs-6 col-sm-6">
+					<input type="text" class="input-text"
+						placeholder="" id="fee_total" name="fee_total" value="${order.fee_total?if_exists}">
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-2 col-sm-2">订单佣金：</label>
+				<div class="formControls col-xs-6 col-sm-6">
+					<input type="text" class="input-text"
+						placeholder="" id=order_commission name="order_commission" value="${order.order_commission?if_exists}">
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-2 col-sm-2">金币抵扣金额：</label>
+				<div class="formControls col-xs-6 col-sm-6">
+					<input type="text" class="input-text"
+						placeholder="" id="fee_gold" name="fee_gold" value="${order.fee_gold?if_exists}">
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-2 col-sm-2">现金支付金额：</label>
+				<div class="formControls col-xs-6 col-sm-6">
+					<input type="text" class="input-text"
+						placeholder="" id="fee_cash" name="fee_cash" value="${order.fee_cash?if_exists}">
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-2 col-sm-2">支付类型：</label>
+				<div class="formControls col-xs-6 col-sm-6">
+					<input type="text" class="input-text"
+						placeholder="" id="pay_type" name="pay_type" value="<#switch order.pay_type!><#case '1'>支付宝<#break><#case '2'>微信<#break><#case '3'>金币</#switch>">
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-2 col-sm-2">订单人数：</label>
+				<div class="formControls col-xs-6 col-sm-6">
+					<input type="text" class="input-text"
+						placeholder="" id="participants_number" name="participants_number" value="${order.participants_number?if_exists}">
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-2 col-sm-2">线路名称：</label>
+				<div class="formControls col-xs-6 col-sm-6">
+					<input type="text"   class="input-text"
+						placeholder="" id="route_name" name="route_name" value="${order.route_name?if_exists}">
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-2 col-sm-2">手机号：</label>
+				<div class="formControls col-xs-6 col-sm-6">
+					<input type="text" class="input-text"
+						placeholder="" id="phone_number" name="phone_number" value="${order.phone_number?if_exists}">
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-2 col-sm-2">创建时间：</label>
+				<div class="formControls col-xs-6 col-sm-6">
+					<input type="text"  class="input-text"
+						placeholder="" id="create_time" name="create_time" value="${order.create_time?if_exists}">
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-2 col-sm-2">完成时间：</label>
+				<div class="formControls col-xs-6 col-sm-6">
+					<input type="text"  class="input-text"
+						placeholder="" id="pay_time" name="pay_time" value="${order.pay_time?if_exists}">
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-2 col-sm-2">游客信息：</label>
+				<div class="formControls col-xs-6 col-sm-6">
+					<table class="table table-border table-bordered table-bg radius">
+						<thead>
+							<tr>
+								<th>姓名</th>
+								<th>身份证</th>
+								<th>手机</th>
+							</tr>
+						</thead>
+						<tbody>
+						<#list tourists as tourist>
+							<tr>
+								<td>${tourist.real_name?if_exists}</td>
+								<td>${tourist.id_number?if_exists}</td>
+								<td>${tourist.phone?if_exists}</td>
+							</tr>
+						</#list>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</form>
+	</div>
+	
+	<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/layer/2.1/layer.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.js"></script>
+	<script type="text/javascript" src="static/h-ui/js/H-ui.admin.js"></script>
+	<script type="text/javascript" src="static/common/orderStatus.js"></script>
+	
+
+	<!--请在下方写此页面业务相关的脚本-->
+
+	<script type="text/javascript">
+			$('#status').val(ORDER_STATUS.renderer($('#status').val()));
+	
+		function refuseRefund(){
+			var id = "${id}";
+			$.ajax({
+	            type: "POST",
+	            url:"orderManager/refuseRefund",
+	            data : {id:id},
+	            beforeSend : function() {
+					layer.load(2);
+				},
+	            success: function(data) {
+	            	layer.closeAll('loading');
+	                    if(data.result=='success'){
+							parent.layer.msg('操作成功！', {icon: 1,time:1000});
+							layer_close();
+	                    }else if (data.code==999){
+							parent.layer.msg(data.msg, {icon: 2,time:1000});
+	                    }else{
+	                    	parent.layer.msg(data.result, {icon: 2,time:1000});
+	                    }
+	            }
+			});
+		}
+		
+		function refund(type){
+			var id = "${id}";
+			$.ajax({
+	            type: "POST",
+	            url:"orderManager/refund",
+	            data : {id:id,type:type},
+	            beforeSend : function() {
+					layer.load(2);
+				},
+	            success: function(data) {
+	            	layer.closeAll('loading');
+	                    if(data.result=='success'){
+							parent.layer.msg('操作成功！', {icon: 1,time:1000});
+							layer_close();
+	                    }else if (data.code==999){
+							parent.layer.msg(data.msg, {icon: 2,time:1000});
+	                    }else{
+	                    	parent.layer.msg(data.result, {icon: 2,time:1000});
+	                    }
+	            }
+			});
+		}
+	</script>
+	<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>
